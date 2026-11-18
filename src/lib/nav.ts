@@ -333,6 +333,11 @@ export function navDoNegocio(m: { ativos: ReadonlySet<string> }, nomeGerenciador
   );
   // Caminho não usado: um cartão só, com o caminho de upgrade (sem dez itens com cadeado).
   else itens.push({ label: "Ligar loja virtual", href: "/merchant/negocio/plano", icon: "Store", group: "Loja virtual", locked: true });
+  // Ecossistema (D336): o NextLevel Business (com cadeado para quem não tem) e a ponte para a agência.
+  itens.push(
+    { label: "NextLevel Business", href: "/merchant/negocio/plano#business", icon: "LayoutDashboard", group: B, ...(m.ativos.has("business") ? { badge: "Ligado" } : { locked: true }) },
+    { label: "Pedir ajuda da equipe", href: "/merchant/services", icon: "Sparkles", group: B },
+  );
   itens.push(
     { label: "Plano do negócio", href: "/merchant/negocio/plano", icon: "LayoutGrid", group: "Ajustes" },
     { label: "Empresa", href: "/merchant/settings", icon: "Settings", group: "Ajustes" },

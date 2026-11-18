@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
+import { comDesconto } from "@/lib/business/precos-frentes";
 import { businessLigado, chaveDoModulo, modulosDe, modulosDoNegocio, requireModulo, temLoja } from "@/lib/business/modulos";
 import { caminhoDe, CAMINHOS, NOME_GERENCIADOR } from "@/lib/marcas/nextlevel-ecommerce";
 import { eq } from "drizzle-orm";
@@ -135,11 +136,11 @@ describe("pacotes do negócio (NB8, D308/D310)", () => {
       const m = await modulosDoNegocio(ctx.db, r.storeId);
       expect(m.ativos.has("loja") && m.ativos.has("site")).toBe(true);
       expect((await ligarLojaVirtual(ctx.db, ator)).nova).toBe(false);
-      // Lojista contrata o site: fatura com o preço da tabela; paga, o site liga.
+      // Lojista contrata o site (D336): Sites do mesmo nível com o desconto do segundo produto; paga, o site liga.
       const l = await signupMember(ctx.db, { storeName: "Moda Plano", ownerName: "Ana Lima", email: "ana@plano.com.br", password: "senha-segura-1", taxId: "111.444.777-35", offer: "STORE_SUBDOMAIN", brand: "NEXTLEVEL_COMMERCE", independent: true });
       const lojista = { userId: l.userId, role: "STORE_OWNER" as const, organizationId: "x", supplierId: null, storeId: l.storeId };
       const f = await contratarModulo(ctx.db, lojista, "MODULO_SITE", "MONTHLY");
-      expect(f.amountCents).toBe(DEFAULT_PRICE_BOOK.addons.MODULO_SITE.monthlyCents);
+      expect(f.amountCents).toBe(comDesconto(DEFAULT_PRICE_BOOK.frentes.sitesStartCents, DEFAULT_PRICE_BOOK.frentes.segundoProdutoBps));
       await markInvoicePaid(ctx.db, f.invoiceId);
       expect((await modulosDoNegocio(ctx.db, l.storeId)).ativos.has("site")).toBe(true);
     } finally { delete process.env.BUSINESS_V1; }

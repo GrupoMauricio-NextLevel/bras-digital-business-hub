@@ -12,7 +12,7 @@ import { origensDe, ROTULO_VIA, type OrigemResumo } from "./trafego/origem-conta
 import { enfileirarConversao } from "./trafego/retorno";
 
 /** Caminho escolhido na entrada (NB1, D306), mostrado no detalhe do cartão do Comercial. */
-const ROTULO_CAMINHO: Record<string, string> = { site: "Quer: site para a empresa", loja: "Quer: loja virtual", indeciso: "Ainda não sabe: site ou loja" };
+const ROTULO_CAMINHO: Record<string, string> = { site: "Quer: site para a empresa", loja: "Quer: loja virtual", business: "Quer: sistema de gestão (Business)", agencia: "Quer: ajuda da agência", indeciso: "Ainda não sabe: site ou loja" };
 
 /**
  * Comercial da Commerce (D202): UM funil do contato ao pagante. Junta interessados (formulário), conversas do site com

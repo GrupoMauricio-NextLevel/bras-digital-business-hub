@@ -15,6 +15,7 @@ import { commercePlansView } from "@/lib/domain/commerce-plans";
 import { formatBRL } from "@/lib/money";
 import { CommercePlansSection } from "@/components/portal/commerce/plans-section";
 import { finFlag } from "@/lib/finance/flags";
+import { businessLigado } from "@/lib/business/modulos";
 import { FotoOpcional } from "@/components/portal/imagem-em-criacao";
 
 export const dynamic = "force-dynamic";
@@ -31,6 +32,14 @@ export default async function Planos() {
     {ec ? <CabecalhoTech rotulo="Planos" titulo={<>Preço claro, <em>sem taxa da plataforma</em> nas vendas.</>} texto="Sem fidelidade. Comece com dias grátis e escolha mensal ou anual. Os planos mudam pelo que entregam, não pelo quanto você vende."
       dados={[{ rotulo: "Taxa da plataforma", valor: "0%" }, ...(pv?.offer ? [{ rotulo: "Teste grátis", valor: `${pv.offer.trialDays} dias` }] : []), ...(anualMin ? [{ rotulo: "A partir de, no anual", valor: `${formatBRL(anualMin).replace(",00", "")}/mês` }] : []), { rotulo: "Fidelidade", valor: "Nenhuma" }]} /> : null}
     <div className="mx-auto max-w-6xl px-4 py-16">
+      {ec && businessLigado() ? (
+        // Ecossistema tudo em um (D336): os planos das quatro frentes, a partir daqui.
+        <nav aria-label="Planos por frente" className="-mt-6 mb-10 flex flex-wrap gap-2">
+          {[["/planos", "Loja virtual", true], ["/sites#planos", "Sites", false], ["/business#niveis", "Business", false], [`${solucoes}`, "Soluções da agência", false]].map(([h, l, atual]) => (
+            <Link key={String(h)} href={String(h)} aria-current={atual ? "page" : undefined} className={`rounded-full border px-4 py-2 text-sm font-semibold ${atual ? "border-[var(--ds-link)] bg-[var(--ds-link)]/10 text-[var(--ds-link)]" : "border-border hover:border-[var(--ds-link)]"}`}>{String(l)}</Link>
+          ))}
+        </nav>
+      ) : null}
       {ec ? null : <><h1 className="font-[family-name:var(--nl-font-display)] text-4xl font-extrabold tracking-tight">Planos {brand.name}</h1>
       <p className="mt-3 max-w-2xl text-lg text-muted-foreground">Preço claro, sem fidelidade. Comece com dias grátis e escolha mensal ou anual.</p></>}
       <div className={ec ? "" : "mt-10"}><CommercePlansSection cta={brand.signupOpen ? "/cadastro" : "/quero-minha-loja"} signupOpen={brand.signupOpen} /></div>

@@ -18,21 +18,25 @@ export const leadSchema = z.object({
   message: z.string().trim().max(600).optional(),
   affiliateRef: z.string().trim().max(60).optional(),
   /** Caminho escolhido na entrada (NB1, D306): site da empresa, loja virtual ou ainda não sabe. Vai para `needs` como "caminho:<valor>". */
-  caminho: z.enum(["site", "loja", "indeciso"]).optional(),
+  caminho: z.enum(["site", "loja", "business", "agencia", "indeciso"]).optional(),
   /** "Como você conheceu a NextLevel?" (D303): opcional; guardado na origem do contato, não no pedido. */
   conheceuPor: z.string().max(20).optional(),
 });
 
+/** Caminhos da entrada: site, loja, Business (gestão) e ajuda da agência (D336), ou ainda não sabe. */
+export const CAMINHOS_INTERESSADO = ["site", "loja", "business", "agencia", "indeciso"] as const;
+export type CaminhoInteressado = (typeof CAMINHOS_INTERESSADO)[number];
+
 /** Marca o caminho nas necessidades do interessado, trocando a escolha anterior (um caminho só). */
-export function comCaminho(needs: string[], caminho: "site" | "loja" | "indeciso" | undefined): string[] {
+export function comCaminho(needs: string[], caminho: CaminhoInteressado | undefined): string[] {
   if (!caminho) return needs;
   return [...needs.filter((n) => !n.startsWith("caminho:")), `caminho:${caminho}`];
 }
 
 /** Caminho que o interessado escolheu (para o Comercial e para criar a conta no formato certo). */
-export const caminhoDoInteressado = (needs: readonly string[]): "site" | "loja" | "indeciso" | null => {
+export const caminhoDoInteressado = (needs: readonly string[]): CaminhoInteressado | null => {
   const v = needs.find((n) => n.startsWith("caminho:"))?.slice(8);
-  return v === "site" || v === "loja" || v === "indeciso" ? v : null;
+  return (CAMINHOS_INTERESSADO as readonly string[]).includes(v ?? "") ? (v as CaminhoInteressado) : null;
 };
 
 /** Interessado numa marca (lista de espera e implantação assistida). Repetir o mesmo e-mail na marca atualiza o pedido em vez de duplicar. */

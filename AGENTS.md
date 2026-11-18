@@ -34,7 +34,7 @@ O Render publica **a cada push** da branch de publicação, que hoje é `claude/
 6. Segredos: nunca no código. Tokens só criptografados (`encryptSecret`); nada em log, tela ou e-mail.
 
 ## Foco
-**Regra de foco 60/25/15 (decisão do dono, 19/10/2026, D174):** até a NextLevel Commerce ter **10 lojistas pagantes**, o esforço vai **60% para a E-commerce, 25% para o SuperDrop e 15% para o resto** (Brás, Cargas, grupo). Todo título de decisão nova em `DECISIONS.md` leva a frente entre colchetes (`[E-commerce]`, `[SuperDrop]`, `[Brás]`, `[Cargas]`, `[Grupo]`) e todo relatório do dia traz a linha "Esforço do dia por frente". Na dúvida sobre o que fazer primeiro, vence o que aproxima a E-commerce do 10º lojista pagante.
+**Regra de foco 60/25/15 (decisão do dono, 19/10/2026, D174):** até a NextLevel Commerce ter **10 empresas pagantes em qualquer porta** (Sites, Loja virtual ou Business; D336, antes "10 lojistas pagantes"), o esforço vai **60% para a E-commerce, 25% para o SuperDrop e 15% para o resto** (Brás, Cargas, grupo). Todo título de decisão nova em `DECISIONS.md` leva a frente entre colchetes (`[E-commerce]`, `[SuperDrop]`, `[Brás]`, `[Cargas]`, `[Grupo]`) e todo relatório do dia traz a linha "Esforço do dia por frente". Na dúvida sobre o que fazer primeiro, vence o que aproxima a E-commerce do 10º lojista pagante.
 
 ## Regras que não podem quebrar
 - Página que consulta o banco declara `export const dynamic = "force-dynamic"`.

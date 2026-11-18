@@ -4370,3 +4370,32 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Diferença de números:** a "Receita mensal" do topo é a recorrente dos planos ativos (anual ÷ 12); o gráfico é o dinheiro que entrou no mês (inclui adicionais e serviços). A legenda diz isso.
 - **Código:** `src/lib/domain/master-vivo.ts` (`recebidoPorMes`, `fraseDoRecebido`, `ultimosMeses`, `movimentoDaPlataforma`), `ColunasPorMes` (`src/components/graficos/colunas-mes.tsx`) e `FeedAoVivo` (`src/components/vida/feed-ao-vivo.tsx`), reaproveitáveis nos outros painéis.
 - **Teste:** `tests/painel-vivo.test.ts` (meses no fuso de Brasília, soma e lojas por mês, frase).
+
+## D336 — [E-commerce] Ecossistema tudo em um: quatro frentes (Commerce, Sites, Business, Soluções), um painel e pontes entre elas (2026-11-18)
+- **Pedido do dono:** "aceito as recomendações"; "quero muito seguir para o caminho do Bitrix"; "aproveitar o que já tem pronto ao máximo"; "isso tudo precisa se conectar por algum caminho sempre"; "usar o mesmo escopo da página do NextLevel Commerce para essas outras frentes, mudando apenas a copy". Plano: `docs/prompts/ecossistema-tudo-em-um-aproveitamento.md` (Etapa 1).
+- **Regras aceitas (recomendações de 17/11, `estrategia-dono-nextlevel-commerce-business.md`):**
+  1. portal do cliente sem limite e sem cobrança por cliente; o preço é por empresa, com a equipe inclusa no nível;
+  2. **Sites Start** com preço próprio na tabela do Master (padrão R$ 79); Sites Pro e Scale com o preço dos planos da loja;
+  3. **segundo produto com 50% de desconto** (tabela do Master), no lugar do adicional fixo do site (D310/D311); quem já pagou o adicional mantém o preço antigo;
+  4. **o plano Scale traz o NextLevel Business Essencial** (de loja ou de site);
+  5. **meta: 10 empresas pagantes em qualquer porta** (texto da regra de foco no `CLAUDE.md` e no `AGENTS.md`);
+  6. Business vendido **por proposta** até o primeiro pagante, com níveis de referência Essencial, Profissional e Avançado (R$ 199, R$ 499 e R$ 999, até 5, 20 e 50 pessoas) e 30% para quem já tem Sites ou Loja;
+  7. ficam para depois das 10 pagantes: Rede NextLevel, Business + IA, adicionais por uso e a regra 50% no 1º ano / 30% depois.
+- **Páginas públicas (mesmo molde, copy diferente):**
+  - `src/lib/marcas/frentes.ts` (`FRENTES`, `pontes`): nome, linha, herói, benefícios, passos, dúvidas e quadro "peças soltas × NextLevel" de cada frente, sem preço;
+  - `PaginaDeFrente`, `PlanosFrente`, `TambemDaNextLevel` e `FrentesRodape` (`src/components/portal/frentes/`), feitos com `CabecalhoTech`, `ec-cartao` e `BlocoEquipe`;
+  - **`/sites`** (a antiga `/empresas`, que agora leva para lá) e **`/business`** (nova); preços lidos da tabela e do catálogo;
+  - home da Commerce com "Quatro portas, um painel"; `/solucoes` com a ponte para as outras três (no site do grupo, com o endereço da Commerce); `/planos` com abas Loja virtual, Sites, Business e Soluções;
+  - topo da Commerce: Loja virtual, Sites, Business, Soluções, Comparativo e Temas; Recursos, Integrações, Clientes, Parceiros, Calculadoras e Dúvidas no rodapé;
+  - "O que você quer?" ganha "Sistema de gestão (NextLevel Business)" e "Ajuda da agência", que chegam ao Comercial do Master com o rótulo certo.
+- **Cobrança:**
+  - tabela de preços com a seção `frentes` (`segundoProdutoBps`, `sitesStartCents`, `businessClienteBps`, níveis do Business), editável no Master (Financeiro → Operação); tabela salva antes ganha os valores padrão;
+  - cadastro pelo caminho Site no Start cobra o Sites Start, **só quando ele é mais barato que o Start da loja**; ao ligar a loja, a assinatura passa ao Start da loja virtual (com o site incluso), valendo na próxima fatura;
+  - site para quem tem loja: Sites do mesmo nível com o desconto do segundo produto (`precoDoSiteDoNegocio`, `buyAddon` com preço calculado).
+- **Painel:**
+  - módulo `business` em `MODULOS` (direito `MODULO_BUSINESS` ou plano Scale);
+  - cartão "Seu ecossistema NextLevel" na visão geral, com o estado e o próximo passo de cada frente;
+  - itens "NextLevel Business" (com cadeado para quem não tem) e "Pedir ajuda da equipe" no menu do Meu negócio;
+  - Plano do negócio vira a vitrine interna das quatro frentes.
+- **Honestidade:** só aparece como incluso o que já funciona. Portal do cliente, projetos e tarefas, contratos com os clientes e caixa aparecem como "em breve" (Etapa 2 e depois).
+- **Teste:** `tests/ecossistema-frentes.test.ts` (frentes e pontes, copy sem preço, Sites Start, 50%, níveis, tabela antiga, Business no Scale, cartão, menu, cobrança do Sites Start e passagem ao Start da loja); `business-modulos` e `seo-paginas` atualizados.

@@ -29,7 +29,7 @@ export function DoisCaminhos({ signupOpen, className = "" }: { signupOpen: boole
                 <Link href={destino(c)} className="inline-flex items-center gap-2 font-semibold text-link underline underline-offset-4">
                   {c === "site" ? "Quero um site para minha empresa" : "Quero minha loja virtual"}<ArrowRight className="size-4" aria-hidden />
                 </Link>
-                <Link href={c === "site" ? "/empresas" : "/planos"} className="text-sm text-link underline underline-offset-4">{c === "site" ? "Como funciona e preços" : "Ver os planos"}</Link>
+                <Link href={c === "site" ? "/sites" : "/planos"} className="text-sm text-link underline underline-offset-4">{c === "site" ? "Como funciona e preços" : "Ver os planos"}</Link>
               </span>
             </li>
           ))}

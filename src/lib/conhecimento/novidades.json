@@ -1,5 +1,12 @@
 [
  {
+  "numero": 336,
+  "frente": "E-commerce",
+  "titulo": "Ecossistema tudo em um: quatro frentes (Commerce, Sites, Business, Soluções), um painel e pontes entre elas",
+  "data": "2026-11-18",
+  "resumo": "Pedido do dono: \"aceito as recomendações\"; \"quero muito seguir para o caminho do Bitrix\"; \"aproveitar o que já tem pronto ao máximo\"; \"isso tudo precisa se conectar por algum caminho sempre\"; \"usar o mesmo escopo da página do NextLevel C…"
+ },
+ {
   "numero": 335,
   "frente": "E-commerce",
   "titulo": "Master \"Agora\" com gráfico do recebido e movimento das lojas ao vivo",
@@ -271,12 +278,5 @@
   "titulo": "Busca e IA, fase S0: tabela central das páginas públicas, perguntas com fatos do sistema, robôs de IA e IndexNow",
   "data": "2026-11-14",
   "resumo": "Pedido do dono: começar o plano v3 de busca, IA e Academy (docs/prompts/busca-ia-academy-funil-organico.md). A troca de domínio com redirecionamento já estava feita (D281, D287); a S0 virou a base técnica e a correção dos textos vencidos."
- },
- {
-  "numero": 292,
-  "frente": "E-commerce",
-  "titulo": "Tráfego: cidade e aparelho de cada visita e notificações em tempo real",
-  "data": "2026-11-13",
-  "resumo": "Pedido do dono: \"um campo com notificação em tempo real dizendo pelo menos a cidade de onde a pessoa está acessando e por qual dispositivo; se puder, ainda mais profundo\"."
  }
 ]

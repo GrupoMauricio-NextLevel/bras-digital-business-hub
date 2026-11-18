@@ -22,6 +22,7 @@ import { OFFER_KEYS } from "@/lib/finance/price-book";
 import { SignupForm } from "./signup-form";
 import { commercePlansView } from "@/lib/domain/commerce-plans";
 import { finFlag } from "@/lib/finance/flags";
+import { precosDoSites } from "@/lib/business/precos-frentes";
 import { businessLigado } from "@/lib/business/modulos";
 import { FotoOpcional, formatosDisponiveis } from "@/components/portal/imagem-em-criacao";
 
@@ -55,7 +56,10 @@ export default async function CadastroPage({ searchParams }: { searchParams: Pro
   const plano = (OFFER_KEYS as readonly string[]).includes(sp.plano ?? "") ? (sp.plano as (typeof OFFER_KEYS)[number]) : "STORE_SUBDOMAIN";
   // Commerce com planos (D90): Start, Pro e Scale com a oferta de entrada; Enterprise é por proposta.
   const pv = independent && finFlag("FIN_COMMERCE_PLANS") ? await commercePlansView(db) : null;
-  const plans = pv?.plans.filter((p) => !p.quote && p.monthlyCents && p.annualCents).map((p) => ({ key: p.key as "COMMERCE_START", name: nomePlanoEc(p.name), monthlyCents: p.monthlyCents!, annualCents: p.annualCents!, feeBps: p.feeBps ?? 0 }));
+  // Sites Start (D336): no caminho Site, o Start sai pelo preço do Sites Start da tabela do Master (o servidor cobra o mesmo).
+  const sitesStart = site && pv ? (() => { const s = precosDoSites(book, pv.plans).START; const loja = pv.plans.find((p) => p.key === "COMMERCE_START"); return loja?.monthlyCents && s.monthlyCents < loja.monthlyCents ? s : null; })() : null;
+  const plans = pv?.plans.filter((p) => !p.quote && p.monthlyCents && p.annualCents).map((p) => ({ key: p.key as "COMMERCE_START", name: nomePlanoEc(p.name), monthlyCents: p.monthlyCents!, annualCents: p.annualCents!, feeBps: p.feeBps ?? 0 }))
+    .map((p) => (sitesStart && p.key === "COMMERCE_START" ? { ...p, monthlyCents: sitesStart.monthlyCents, annualCents: sitesStart.annualCents } : p));
   const initialPlan = plans?.some((p) => p.key === sp.plano) ? (sp.plano as "COMMERCE_START") : undefined;
   const fornecedor = suppliers.some((s) => s.slug === sp.fornecedor) ? sp.fornecedor! : suppliers.length === 1 ? suppliers[0]!.slug : "";
   // Commerce: foto ao lado do formulário no computador; no celular, uma faixa baixa acima do formulário (Commerce v3).

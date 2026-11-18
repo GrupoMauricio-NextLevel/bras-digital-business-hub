@@ -97,6 +97,21 @@ export function Rules({ book }: { book: PriceBook }) {
               <MoneyField id="co-sup" label="Suporte por fornecedor/mês" valueCents={b.costs.supportPerSupplierCents} onChange={(v) => setB({ ...b, costs: { ...b.costs, supportPerSupplierCents: v } })} />
             </div>
           </Section>
+          <Section title="Frentes: Sites, segundo produto e NextLevel Business (D336)">
+            <p className="text-xs text-muted-foreground">Sites Pro e Scale têm o preço dos planos da loja (catálogo). O Business é vendido por proposta até o primeiro pagante; estes valores aparecem como “a partir de” nas páginas.</p>
+            <div className="grid gap-3 sm:grid-cols-3">
+              <MoneyField id="fr-sites" label="Mensalidade do Sites Start" valueCents={b.frentes.sitesStartCents} onChange={(v) => setB({ ...b, frentes: { ...b.frentes, sitesStartCents: v } })} />
+              <PercentField id="fr-seg" label="Desconto no segundo produto" hint="Site para quem tem loja e vice-versa" bps={b.frentes.segundoProdutoBps} onChange={(v) => setB({ ...b, frentes: { ...b.frentes, segundoProdutoBps: v } })} />
+              <PercentField id="fr-cli" label="Desconto do Business para clientes" hint="Quem já tem Sites ou Loja" bps={b.frentes.businessClienteBps} onChange={(v) => setB({ ...b, frentes: { ...b.frentes, businessClienteBps: v } })} />
+              {(["essencial", "profissional", "avancado"] as const).map((n) => (
+                <div key={n} className="space-y-2 rounded-lg border border-border p-3">
+                  <div className="text-sm font-medium">Business {n === "essencial" ? "Essencial" : n === "profissional" ? "Profissional" : "Avançado"}</div>
+                  <MoneyField id={`fr-b-${n}`} label="Mensalidade" valueCents={b.frentes.business[`${n}Cents`]} onChange={(v) => setB({ ...b, frentes: { ...b.frentes, business: { ...b.frentes.business, [`${n}Cents`]: v } } })} />
+                  <IntField id={`fr-p-${n}`} label="Pessoas inclusas" value={b.frentes.business[`${n}Pessoas`]} min={1} onChange={(v) => setB({ ...b, frentes: { ...b.frentes, business: { ...b.frentes.business, [`${n}Pessoas`]: Math.max(1, v) } } })} />
+                </div>
+              ))}
+            </div>
+          </Section>
           <div className="flex justify-end"><Button disabled={!dirty} loading={pending} onClick={() => start(async () => { const r = await savePriceBookAction(b); if (r.ok) { toast.success("Tabela de preços salva"); router.refresh(); } else toast.error(r.error); })}><Save /> Salvar tabela de preços</Button></div>
         </CardContent>
       </Card>

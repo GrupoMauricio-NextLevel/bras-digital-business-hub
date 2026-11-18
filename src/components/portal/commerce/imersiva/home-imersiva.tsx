@@ -25,6 +25,7 @@ import { SecaoEquipe } from "@/components/portal/equipe/secao-equipe";
 import { groupLink } from "@/lib/brand-server";
 import { DoisCaminhos } from "@/components/portal/commerce/dois-caminhos";
 import { businessLigado } from "@/lib/business/modulos";
+import { TambemDaNextLevel } from "@/components/portal/frentes/tambem-da-nextlevel";
 import "../commerce.css";
 import "../capa/capa.css";
 
@@ -61,6 +62,8 @@ export async function HomeImersivaEc({ brand }: { brand: Brand }) {
       <JsonLd data={entidadeCommerce({ baseUrl: brand.baseUrl, whatsapp: suporte.whatsapp, email: suporte.email, perfis: perfisOficiais(process.env.PERFIS_COMMERCE), planos: pv.plans.filter((p) => !p.quote).map((p) => ({ nome: p.name.replace(/^Commerce\s+/i, ""), mensalCents: p.monthlyCents })) })} />
       <HeroiCapaEc cta={cta} signupOpen={brand.signupOpen} offer={offer} aPartirDeCents={aPartirDe} black={bkCont} />
       {businessLigado() ? <DoisCaminhos signupOpen={brand.signupOpen} className="bg-surface" /> : null}
+      {/* Ecossistema tudo em um (D336): as quatro portas, logo depois dos dois caminhos. */}
+      {businessLigado() ? <TambemDaNextLevel atual={null} solucoesHref={solucoes} titulo="Quatro portas, um painel" className="" /> : null}
       <DueloBlack cta={cta} />
       <FaixaTaxaZero black={bkCont} />
       <PlacarSecao cta={cta} />

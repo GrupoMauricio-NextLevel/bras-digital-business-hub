@@ -35,6 +35,14 @@ export async function subscriptionOf(db: Database, storeId: string) {
   return (await db.query.nlSubscriptions.findFirst({ where: eq(nlSubscriptions.storeId, storeId) })) ?? null;
 }
 
+/** A assinatura está no Sites Start (D336): plano Start com valor abaixo do Start da loja no catálogo. */
+export async function noSitesStart(db: Database, storeId: string, now = new Date()) {
+  const sub = await subscriptionOf(db, storeId);
+  if (!sub || sub.productKey !== "COMMERCE_START" || ["cancelled", "expired"].includes(sub.status)) return null;
+  const cat = await planPrice(db, sub.productKey, sub.cycle, now).catch(() => null);
+  return cat && sub.amountCents < cat.amountCents ? { sub, lojaCents: cat.amountCents } : null;
+}
+
 async function planPrice(db: Database, productKey: string, cycle: PlanCycle, now = new Date()) {
   if (!(COMMERCE_PLAN_KEYS as readonly string[]).includes(productKey)) throw new DomainError("PLAN", "Plano inválido. Para o Enterprise, peça uma proposta.");
   const p = await getCatalogItem(db, { key: productKey }, {}, now);
@@ -56,10 +64,11 @@ export async function entryOfferFor(db: Database, taxId: string | null, cycle: P
  * Abre a assinatura de uma loja Commerce. Com a oferta de entrada: teste de N dias, primeiro mês pelo valor da oferta
  * e taxa zero pelos meses de carência; sem ela (CPF/CNPJ já usou): acesso só depois do pagamento.
  */
-export async function startCommerceSubscription(db: Database, input: { storeId: string; productKey: string; cycle: PlanCycle; taxId: string | null; actor?: Actor | null; now?: Date; allowOffer?: boolean }) {
+export async function startCommerceSubscription(db: Database, input: { storeId: string; productKey: string; cycle: PlanCycle; taxId: string | null; actor?: Actor | null; now?: Date; allowOffer?: boolean; /** Preço do ciclo vindo de outra regra (Sites Start, D336); sem ele, o do catálogo. */ precoBase?: number }) {
   const now = input.now ?? new Date();
   if (await subscriptionOf(db, input.storeId)) throw new DomainError("SUB_EXISTS", "Esta loja já tem assinatura.");
-  const price = await planPrice(db, input.productKey, input.cycle, now);
+  const catalogo = await planPrice(db, input.productKey, input.cycle, now);
+  const price = input.precoBase !== undefined ? { ...catalogo, amountCents: input.precoBase } : catalogo;
   const { version } = price;
   // Black NextLevel (D229): anual com 2 meses grátis, congelado na assinatura (vale nas renovações enquanto ativa).
   const black = await blackAgora(db, now);
@@ -70,7 +79,7 @@ export async function startCommerceSubscription(db: Database, input: { storeId: 
     if (claimed.length) {
       // Experimento com os preços da Proposta (D140): mensalidade e taxa do plano vêm da porta, congeladas na assinatura.
       const dp = door.planPrices?.[input.productKey];
-      const base = dp ? dp.monthlyCents * (input.cycle === "ANNUAL" ? (door.annualPromo?.paidMonths ?? 12) : 1) : price.amountCents;
+      const base = dp && input.precoBase === undefined ? dp.monthlyCents * (input.cycle === "ANNUAL" ? (door.annualPromo?.paidMonths ?? 12) : 1) : price.amountCents;
       const amountCents = input.cycle === "ANNUAL" && black.ativa ? anualBlackCents(base) : base;
       const feeBps = dp?.feeBps ?? price.feeBps;
       const ends = new Date(now.getTime() + door.trialDays * DAY);
@@ -180,9 +189,10 @@ export async function choosePlan(db: Database, actor: Actor, raw: z.input<typeof
  * Troca plano e ciclo de uma assinatura existente (lojista em `choosePlan` ou o Master na CX2, D270). O novo preço vale
  * a partir da próxima fatura; a fatura em aberto é cancelada e refeita.
  */
-export async function trocarPlanoDaAssinatura(db: Database, actor: Actor | null, storeId: string, sub: NlSubscription, input: { productKey: (typeof COMMERCE_PLAN_KEYS)[number]; cycle: PlanCycle }, now = new Date()) {
+export async function trocarPlanoDaAssinatura(db: Database, actor: Actor | null, storeId: string, sub: NlSubscription, input: { productKey: (typeof COMMERCE_PLAN_KEYS)[number]; cycle: PlanCycle }, now = new Date(), opts: { repreciar?: boolean } = {}) {
   const store = { id: storeId };
-  if (sub.productKey === input.productKey && sub.cycle === input.cycle && !["cancelled", "expired"].includes(sub.status)) return { subscriptionId: sub.id, trial: sub.status === "trial", trialEndsAt: sub.trialEndsAt ? new Date(sub.trialEndsAt) : null, offerApplied: !!sub.offerKey };
+  // `repreciar` (D336): mesmo plano, preço novo do catálogo (Sites Start que liga a loja passa ao Start da loja).
+  if (!opts.repreciar && sub.productKey === input.productKey && sub.cycle === input.cycle && !["cancelled", "expired"].includes(sub.status)) return { subscriptionId: sub.id, trial: sub.status === "trial", trialEndsAt: sub.trialEndsAt ? new Date(sub.trialEndsAt) : null, offerApplied: !!sub.offerKey };
   const pp = await planPrice(db, input.productKey, input.cycle, now);
   const { version, feeBps } = pp;
   // Trocar para o anual durante a Black também ganha os 2 meses grátis (D229).

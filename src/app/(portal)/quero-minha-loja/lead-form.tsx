@@ -6,10 +6,12 @@ import { OpcoesConheceu } from "@/components/portal/trafego/conheceu-select";
 
 const field = "mt-1 h-11 w-full rounded-lg border border-border bg-surface px-3 text-base text-foreground focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-ring";
 
-type Caminho = "site" | "loja" | "indeciso";
+type Caminho = "site" | "loja" | "business" | "agencia" | "indeciso";
 const OPCOES: { v: Caminho; t: string; d: string }[] = [
   { v: "site", t: "Site para minha empresa", d: "Páginas da empresa, serviços e pedidos de orçamento" },
   { v: "loja", t: "Loja virtual", d: "Vender online com catálogo, carrinho, Pix e cartão" },
+  { v: "business", t: "Sistema de gestão (NextLevel Business)", d: "Funil de clientes, atendimento, contratos e equipe" },
+  { v: "agencia", t: "Ajuda da agência", d: "A equipe NextLevel monta, anuncia e cuida com você" },
   { v: "indeciso", t: "Ainda não sei", d: "A equipe ajuda você a escolher" },
 ];
 
