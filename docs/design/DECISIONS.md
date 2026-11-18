@@ -4511,3 +4511,15 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Banco (migração 0117, só acrescenta):** `agencias.interna`; em `agencia_contratos`: modelo, versão, origem, contrato de origem (único), aditivo, aceito por, hash do aceite, e-mail da cópia, valor total, encerramento; em `agencia_faturas`: contrato, parcela (única por contrato), meio, registrado no Master; em `contratos`: transferido em/para.
 - **Fica para a AGC2:** baixa da agência interna lançando direto no caixa do Master e a caixa de e-mail (Hostinger) dentro da agência. A home da agência (AGS1) fica para a próxima rodada, a pedido do dono.
 - **Testes:** `tests/agencias-contratos-projeto.test.ts` (modelos, interna x externa, aceite com PDF por e-mail, edição refaz só o pendente, "Recebi por fora", aditivo, encerrar, isolamento, trazer do Master com texto e prova iguais, idempotente e fora da receita) e `e2e/agencias-contratos-projeto.mjs`. A pedido do dono, sem a bateria completa nesta rodada.
+
+## D343 — [E-commerce] Abacus no computador do dono para acelerar o visual, com cópia própria e trava de envio (2026-11-18)
+- **Pedido do dono:** "quero iniciar a migração deste trabalho para o Abacus; eles têm um modo desktop que vai ajudar a acelerar a evolução visual. Como fazer isso de forma segura para rodar localmente?" Aceitou as recomendações.
+- **Decisão:**
+  - o Abacus trabalha **só no computador do dono**, numa pasta própria, na branch `abacus/visual`, com a demonstração local (`scripts/dev-demo.ps1`, banco de treino em memória);
+  - **só visual** (mesma área que era do Codex em `AGENTS.md`); lógica, banco, pagamentos, permissões e testes continuam com o Claude;
+  - **nenhuma senha de produção** na pasta nem no chat do Abacus; desligar o uso de dados para treino se o Abacus oferecer;
+  - **quem envia é o dono**; o Claude revisa a `abacus/visual`, roda a bateria completa e junta à publicação (uma montagem por rodada, regra do Render).
+- **Trava de envio:** o `.githooks/pre-push` ganhou uma trava que só age quando a cópia tem `git config nextlevel.branchPermitida` (gravado pelo script); aí o push só vai para essa branch. As outras cópias (Claude, Codex) não mudam.
+- **Imagens:** o Abacus gera imagens; as listas com os nomes exatos já existem (`imagens-paginas-publicas-gpt.md`, `imagens-temas-gpt.md`). Novo conversor `scripts/imagens/converter-webp.mjs` (Node + sharp, funciona no Windows): WebP qualidade 80, sem metadados, reduz até caber em 250 KB e avisa o que passar.
+- **Arquivos:** `scripts/preparar-abacus.ps1`, `scripts/imagens/converter-webp.mjs`, `.githooks/pre-push`, `docs/abacus/COMECE-AQUI.md` (guia, regras e a primeira mensagem para colar), avisos em `AGENTS.md` e `docs/nextlevel-commerce/visualizar-ao-vivo.md`.
+- **Teste:** `tests/abacus-trava-envio.test.ts` (a trava bloqueia outra branch, libera a permitida e não age sem a configuração).

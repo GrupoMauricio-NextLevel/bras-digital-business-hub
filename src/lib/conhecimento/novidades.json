@@ -1,5 +1,12 @@
 [
  {
+  "numero": 343,
+  "frente": "E-commerce",
+  "titulo": "Abacus no computador do dono para acelerar o visual, com cópia própria e trava de envio",
+  "data": "2026-11-18",
+  "resumo": "Pedido do dono: \"quero iniciar a migração deste trabalho para o Abacus; eles têm um modo desktop que vai ajudar a acelerar a evolução visual. Como fazer isso de forma segura para rodar localmente?\" Aceitou as recomendações."
+ },
+ {
   "numero": 342,
   "frente": "E-commerce",
   "titulo": "Contratos da agência a 100%: projetos com entrega, parcelas, tela Contratos, aditivo, e-mail e contratos trazidos do Master",
@@ -271,12 +278,5 @@
   "titulo": "A plataforma continua NextLevel Commerce, com dois caminhos (Site e Loja virtual) e o gerenciador do negócio \"NextLevel Business\" dentro do painel",
   "data": "2026-11-13",
   "resumo": "Pedido do dono: a NextLevel deixa de ser só plataforma de loja virtual e vira o coração do negócio do cliente, sem marca nova. Plano completo (racional técnico e prompt engenheiro mestre, fases NB0 a NB10): docs/prompts/nextlevel-busines…"
- },
- {
-  "numero": 303,
-  "frente": "E-commerce",
-  "titulo": "Busca e IA: \"Como nos conheceu?\", o que cada página trouxe de cliente, robôs de IA, llms.txt e trilha de navegação",
-  "data": "2026-11-16",
-  "resumo": "Pedido do dono: fechar os 5 itens pequenos que faltavam na base do plano de busca, IA e Academy (docs/prompts/busca-ia-academy-funil-organico.md), antes de começar o conteúdo. Tudo estende o trabalho de Tráfego e campanhas (D290 a D298 e…"
  }
 ]
