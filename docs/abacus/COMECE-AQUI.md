@@ -14,6 +14,17 @@
    O script confere o Node, cria a branch `abacus/visual`, instala tudo, liga a conferência de tipos e estilo e **trava o envio**: esta pasta só consegue mandar para `abacus/visual`. A branch de publicação (que monta o site no Render e custa minutos) fica bloqueada aqui.
 3. Ligue a demonstração: `powershell -ExecutionPolicy Bypass -File scripts/dev-demo.ps1` e abra **http://localhost:3100**. Banco de treino em memória; dados reais nunca são tocados. Loja virtual em `/lojas`; perfis em `/login` (senha `demo1234`).
 
+## 1A. Levar o histórico das conversas para o Abacus
+As conversas com o Claude não se exportam, mas tudo o que foi decidido nelas está registrado no repositório. Para o Abacus já começar sabendo de tudo:
+1. Gere o pacote: `node scripts/gerar-pacote-abacus.mjs` (cria `contexto-nextlevel-abacus.md` com as regras, a base de conhecimento, as observações do dono e as decisões D300 em diante).
+2. No Abacus, crie um **Projeto** "NextLevel visual" e suba esse arquivo nele.
+3. Gere e suba de novo quando houver decisões novas.
+
+## 1B. Conexões: o que ligar e o que não ligar
+- **GitHub: sim, com limite.** Dê acesso **só a este repositório**. Proteja a branch de publicação no GitHub (Settings → Branches → regra para `claude/wonderful-cannon-5o38v5` exigindo pull request), para nenhuma ferramenta externa publicar direto.
+- **Render: não.** O Abacus não publica; quem publica é o fluxo atual (Claude + dono), com o controle de minutos.
+- **Neon: não.** É o banco real, com dados dos clientes. O visual usa o banco de treino local (`dev-demo.ps1`).
+
 ## 2. Regras de segurança
 - **Nenhuma senha de produção nesta pasta nem no chat do Abacus:** endereço do Neon, chaves do Render, Mercado Pago, Resend, chave Pix. O visual não precisa de nenhuma. O script avisa se encontrar um `.env` suspeito.
 - **Nas configurações do Abacus**, desligue (se existir) o uso dos seus dados e código para treinar o modelo. A pasta tem documentos internos da empresa em `docs/`.
