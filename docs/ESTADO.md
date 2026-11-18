@@ -17,10 +17,10 @@
 | **Business = Painel da Agência** (D344) | ligar o cartão "NextLevel Business" do Meu negócio ao painel personalizável; trazer as telas novas para o visual "com vida" | planos da loja |
 | **Meu negócio / Sites** | Captação: Pixel e link curto por loja (fica para depois da D339) | painel da agência |
 | **Loja virtual** | ajustes que os lojistas reais pedirem | Business |
-| **Planos tudo em um (Bitrix24)** | proposta para o dono aprovar (item 1 abaixo) | código, até a aprovação |
+| **Planos tudo em um (Bitrix24)** | dono responde a seção 14 da proposta; depois, a rodada de sistema da seção 13 | código, até a aprovação |
 
 ## Esperando o dono
-1. **Planos "tudo em um" no padrão Bitrix24 (dono, 18/11):** o racional de preço baseado em concorrentes (mapa de 14/11, Pro R$ 167 × R$ 157, Natal no anual, Loja Integrada) foi **abandonado**. Próximo passo: proposta de planos tudo em um (loja, site, Business e portal em níveis por empresa e por pessoas da equipe) para o dono aprovar. Ponto a decidir junto: a D311 diz que Start, Pro e Scale ficam intactos; planos tudo em um mudam isso, então a proposta precisa dizer o que acontece com os lojistas atuais e com a virada de 01/12.
+1. **Precificação tudo em um (proposta pronta, 18/11):** `docs/precificacao/PRECIFICACAO-TUDO-EM-UM.md`. Quatro planos (Começo R$ 97, Crescer R$ 297, Performance R$ 897, Sob medida a partir de R$ 2.500), zero taxa sobre as vendas e implantação em todo plano (R$ 497 grátis no anual, R$ 2.997, R$ 7.997, diagnóstico R$ 2.500). Falta o dono responder a seção 14. Brás e Cargas já saíram do Render.
 2. **Neon:** limitar o processamento a no máximo 1 CU e acompanhar o consumo (D338).
 3. **Google e Bing:** criar a propriedade no Search Console e colar o código no Render (`GOOGLE_SITE_VERIFICATION`, `BING_SITE_VERIFICATION`) (D343).
 4. **Master:** criar o usuário da equipe pedido na conversa do editor de temas (Equipe do Master, sem Financeiro) e mandar o e-mail.
