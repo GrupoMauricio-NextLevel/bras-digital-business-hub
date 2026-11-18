@@ -1,5 +1,12 @@
 [
  {
+  "numero": 333,
+  "frente": "E-commerce",
+  "titulo": "Painéis com vida no Master (\"Agora\") e no Painel da Agência",
+  "data": "2026-11-18",
+  "resumo": "Pedido do dono: \"segue pelo meu master, pelo painel da agência e vou olhar entrando como agência\"; foco alto no NextLevel Business como produto, com o acesso do Léo (UP), que vai trazer 30 empresas pagantes."
+ },
+ {
   "numero": 332,
   "frente": "E-commerce",
   "titulo": "Painéis com vida, rodada relâmpago: início do lojista com números em destaque, cores por assunto e gráfico de vendas",
@@ -271,12 +278,5 @@
   "titulo": "Tráfego e campanhas, fases TR0 e TR1: aviso de cookies, origem completa e links rastreados",
   "data": "2026-11-13",
   "resumo": "Pedido do dono: saber de onde vem cada visita e cada lead (anúncio da Meta, do Google, orgânico), com links rastreados em tudo, como base para a campanha de teste e para devolver vendas à Meta e ao Google. Plano completo: docs/prompts/tr…"
- },
- {
-  "numero": 289,
-  "frente": "Grupo",
-  "titulo": "Caixa de e-mail da Hostinger: apelidos, respostas e contratos no domínio novo",
-  "data": "2026-11-13",
-  "resumo": "Plano do dono: e-mail da Hostinger (teste de 30 dias) com a caixa mauricio@nextlevelcommerce.com.br. Limites: 5 GB, 1.000 envios por dia, 5 apelidos e 5 encaminhamentos. O conector Hostinger Mail está ligado no Claude."
  }
 ]

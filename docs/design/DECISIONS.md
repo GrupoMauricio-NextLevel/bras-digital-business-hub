@@ -4340,3 +4340,16 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Imagens do dono (lote 1, Gemini):** 12 aprovadas, convertidas para AVIF e WebP (todas até 62 KB) em `public/paineis/v1/` com `MANIFESTO.md`. A abertura do lojista já usa `pv-abertura-loja-escuro` (fitas de luz somadas ao vidro roxo, calma à esquerda); as outras ficam guardadas para Master, convite de próximo nível, calendário comercial e conquistas. As três de tela vazia vieram com o quadriculado desenhado dentro (sem transparência de verdade) e vão ser refeitas.
 - **Cores no lugar certo:** os valores das famílias `--vida-*` moram em `src/design-system/themes.ts` (`CORES_VIDA`), a única fonte de cor do núcleo (teste `design-system`).
 - **Fica para as próximas fases:** consulta agregada no banco (PV2), "O que a NextLevel fez por você", meta, Jornada, conquistas e "venda aprovada" ao vivo (PV2 a PV4), Master (PV5).
+
+## D333 — [E-commerce] Painéis com vida no Master ("Agora") e no Painel da Agência (2026-11-18)
+- **Pedido do dono:** "segue pelo meu master, pelo painel da agência e vou olhar entrando como agência"; foco alto no NextLevel Business como produto, com o acesso do Léo (UP), que vai trazer 30 empresas pagantes.
+- **Master, tela "Agora":**
+  - abertura com a constelação do Brasil (imagem do dono) e a **estrela-guia em destaque**: anel "X de 10 lojistas pagantes", quanto falta para a meta, cortesias e a receita mensal;
+  - os números de agora viram cartões coloridos com ícone 3D (conversas esperando, novos em 24 h, em teste, receita mensal), cada um levando à tela que resolve;
+  - o cartão "Meta do mês" saiu do lado (está no topo); o funil de ativação ganhou barras nas cores da família dinheiro → crescimento.
+- **Painel da Agência, tela "Agora":**
+  - abertura com as fitas de luz e a **receita do mês em destaque** (para quem vê valores), com clientes ativos e o que vence em 7 dias; para a equipe sem acesso a valores, o anel da produção do mês (publicados de contratados);
+  - os números de dinheiro (clientes ativos, receita contratada, vence em 7 dias, ticket médio) sobem para logo abaixo da abertura, com ícones 3D; os números da produção usam a mesma peça com ícone de traço;
+  - cada função continua vendo só o que é dela (D317, D325).
+- **Peças reaproveitadas:** `FundoAbertura` e `AnelMeta` (`src/components/vida/abertura.tsx`), `NumeroVivo` com a opção de ícone de traço.
+- **Verificação:** capturas em 1440 (claro e escuro) e 390 px, sem rolagem lateral; demonstração local com `AGENCIAS_V1=true`.

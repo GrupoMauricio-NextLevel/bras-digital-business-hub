@@ -3,6 +3,7 @@ import Image from "next/image";
 import type { LucideIcon } from "lucide-react";
 import { ArrowRight, Eye, ExternalLink, Package, Palette, Plus, ShoppingBag, Users, Wallet } from "lucide-react";
 import { NumeroVivo, Variacao } from "@/components/vida/numero-vivo";
+import { FundoAbertura } from "@/components/vida/abertura";
 import { GraficoVendas } from "@/components/graficos/grafico-vendas";
 import { RoscaCanais } from "@/components/graficos/rosca-canais";
 import { comparaHoje, conversaoConfiavel, fatiasDeCanal, fraseDoPeriodo, miniSerie, serieDoPeriodo, type Periodo } from "@/lib/domain/painel-vivo";
@@ -134,7 +135,7 @@ export function CommerceHome({ firstName, greeting, store, o, readiness, attenti
     {/* Abertura compacta (D331): saudação à esquerda, o número de hoje em destaque à direita. */}
     <section className="ds-hero ds-enter !py-5 px-5 sm:!py-6 sm:px-8">
       {/* Fundo da abertura (D331, imagem do lote A): fitas de luz que somam ao vidro roxo (mistura "screen"). */}
-      <span className="vida-abertura-img" aria-hidden><picture><source srcSet="/paineis/v1/pv-abertura-loja-escuro.avif" type="image/avif" /><img src="/paineis/v1/pv-abertura-loja-escuro.webp" alt="" width={1584} height={672} decoding="async" fetchPriority="high" /></picture></span>
+      <FundoAbertura nome="pv-abertura-loja-escuro" />
       <div className="relative flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
         <div className="min-w-0">
           <p className="text-[11px] font-semibold uppercase tracking-[.18em] text-[var(--ds-link)]">{negocio ? `${negocio.nome} · Visão geral` : "Visão geral da loja"}</p>

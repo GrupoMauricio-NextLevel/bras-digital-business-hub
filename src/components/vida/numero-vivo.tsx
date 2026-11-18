@@ -30,12 +30,14 @@ export function Variacao({ valor, base }: { valor: number | null | undefined; ba
  * Cartão de número vivo (D331): família de cor por assunto, valor grande, variação e mini gráfico.
  * `titulo` vai no aria-label quando o valor é compacto ("R$ 48,8 mil" → valor completo).
  */
-export function NumeroVivo({ familia, icone: Icone, rotulo, valor, valorCompleto, variacao, base, nota, serie = [], href, i = 0 }: {
+export function NumeroVivo({ familia, icone: Icone, rotulo, valor, valorCompleto, variacao, base, nota, serie = [], href, i = 0, traco = false }: {
   familia: FamiliaVida; icone: LucideIcon; rotulo: string; valor: string; valorCompleto?: string;
   variacao?: number | null; base?: string; nota?: React.ReactNode; serie?: number[]; href?: string; i?: number;
+  /** Ícone de traço em vez do 3D (quando a mesma família se repete na tela). */
+  traco?: boolean;
 }) {
   const corpo = <>
-    <span className="flex items-center gap-2">{ICONE_3D[familia] ? <Image src={ICONE_3D[familia]!} alt="" width={44} height={44} className="vida-num__icone3d" /> : <span className="vida-num__icone"><Icone className="size-4" aria-hidden /></span>}<span className="vida-num__rotulo truncate">{rotulo}</span></span>
+    <span className="flex items-center gap-2">{ICONE_3D[familia] && !traco ? <Image src={ICONE_3D[familia]!} alt="" width={44} height={44} className="vida-num__icone3d" /> : <span className="vida-num__icone"><Icone className="size-4" aria-hidden /></span>}<span className="vida-num__rotulo truncate">{rotulo}</span></span>
     <span className="vida-num__valor mt-1 min-w-0" title={valorCompleto}>{valor}{valorCompleto && valorCompleto !== valor ? <span className="sr-only"> ({valorCompleto})</span> : null}</span>
     <span className="flex min-h-8 items-end justify-between gap-2 text-xs text-muted-foreground"><span className="flex min-w-0 flex-wrap items-center gap-x-2"><Variacao valor={variacao} base={base} />{nota ? <span>{nota}</span> : null}</span><Mini dados={serie} /></span>
   </>;
