@@ -26,3 +26,11 @@ export async function atualizarContatoAction(id: string, input: z.input<typeof a
 export async function registrarContatoManualAction(input: z.input<typeof manualSchema>) {
   return runAction(async () => { const { session, storeId, db } = await ctx(); const r = await registrarContatoManual(db, session.actor, storeId, input); revalidatePath("/merchant/contatos", "layout"); return r; });
 }
+/** Maurício no contato (D337): resumo, próxima ação e resposta sugerida. Usa a cota de IA do plano; sem ela, regras. */
+export async function sugestaoDoContatoAction(id: string) {
+  return runAction(async () => {
+    const { session, storeId, db } = await ctx();
+    const { sugestaoDoContato } = await import("@/lib/business/assistente-contato");
+    return sugestaoDoContato(db, session.actor, storeId, idContato.parse(id), session.store?.name ?? "nossa empresa");
+  });
+}

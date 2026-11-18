@@ -101,6 +101,18 @@ export async function listarContatos(db: Database, actor: Actor, storeId: string
   return rows.map((r) => ({ ...r, servicoNome: r.servicoId ? servicos.get(r.servicoId) ?? null : null }));
 }
 
+/**
+ * Funil em quadro (ecossistema, Etapa 2, D337): os contatos por etapa, com a soma do valor de cada coluna. Regra pura
+ * (testada); fechados e perdidos só dos últimos `dias` dias para o quadro não crescer sem fim.
+ */
+export function funilEmQuadro<T extends { situacao: ContatoSituacao; valorCents: number | null; updatedAt: string }>(lista: T[], agora = new Date(), dias = 30) {
+  const limite = agora.getTime() - dias * 86_400_000;
+  return CONTATO_SITUACOES.map((situacao) => {
+    const itens = lista.filter((c) => c.situacao === situacao && (situacao === "GANHO" || situacao === "PERDIDO" ? new Date(c.updatedAt).getTime() >= limite : true));
+    return { situacao, rotulo: SITUACAO_ROTULO[situacao], itens, valorCents: itens.reduce((t, c) => t + (c.valorCents ?? 0), 0) };
+  });
+}
+
 export async function fichaDoContato(db: Database, actor: Actor, storeId: string, id: string) {
   podeVer(actor, storeId);
   const c = await db.query.contatosNegocio.findFirst({ where: and(eq(contatosNegocio.id, id), eq(contatosNegocio.storeId, storeId)) });

@@ -4399,3 +4399,21 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
   - Plano do negócio vira a vitrine interna das quatro frentes.
 - **Honestidade:** só aparece como incluso o que já funciona. Portal do cliente, projetos e tarefas, contratos com os clientes e caixa aparecem como "em breve" (Etapa 2 e depois).
 - **Teste:** `tests/ecossistema-frentes.test.ts` (frentes e pontes, copy sem preço, Sites Start, 50%, níveis, tabela antiga, Business no Scale, cartão, menu, cobrança do Sites Start e passagem ao Start da loja); `business-modulos` e `seo-paginas` atualizados.
+
+## D337 — [E-commerce] Business por dentro, Etapa 2: funil em quadro, "O que fazer hoje" e o Maurício no contato (2026-11-18)
+- **Pedido do dono:** "inicie o desenvolvimento imediatamente, trabalhe durante um longo período vencendo todas as etapas"; Etapa 2 do plano `docs/prompts/ecossistema-tudo-em-um-aproveitamento.md` (IA e o Business por dentro).
+- **Funil em quadro** (`/merchant/contatos?ver=quadro`): as cinco etapas lado a lado (Novo, Em atendimento, Orçamento enviado, Fechou, Perdeu), com a quantidade e a soma do valor de cada coluna; fechados e perdidos só dos últimos 30 dias (`funilEmQuadro`). A lista continua sendo o padrão.
+- **O que fazer hoje** (`/merchant/contatos?ver=hoje`): as tarefas saem do próprio funil, sem tabela nova (`tarefasDeHoje`):
+  - novos sem resposta primeiro (o mais antigo antes);
+  - depois orçamentos enviados há 2 dias ou mais sem retorno;
+  - depois atendimentos parados há 1 dia ou mais.
+  - Cada um vem com a próxima ação em português claro.
+- **Maurício no contato** (ficha do contato, cartão "Pede pro Maurício"):
+  - resumo, próxima ação e resposta sugerida para copiar ou abrir no WhatsApp; **nada é enviado sozinho**;
+  - com a cota de IA do plano (ou a chave da loja, D243) a IA escreve e o uso entra na cota; sem ela, as regras escrevem (`sugestaoPorRegras`), e a tela diz qual das duas foi usada;
+  - só lê o contato da própria loja.
+- **O que ficou para depois (questionar antes de seguir):** a Produção, os Contratos e o Portal da agência são presos ao modelo de agência (cliente, ciclo do mês, etapas de vídeo). Abrir esses módulos para qualquer empresa exige mudar o banco e o acesso. Fica para uma rodada com decisão do dono sobre o modelo:
+  - **opção A:** projetos e tarefas genéricos por loja, estendendo a tabela de peças com um dono genérico;
+  - **opção B:** começar pelo portal da academia (NB10), quando `portal-academia-piloto.md` estiver preenchido.
+- **Código:** `src/lib/business/assistente-contato.ts`, `funilEmQuadro` em `src/lib/business/contatos.ts`, `sugestaoDoContatoAction`, `MauricioNoContato` e as visões em `src/app/merchant/contatos/page.tsx`.
+- **Teste:** `tests/business-funil-ia.test.ts` (etapas e soma, ordem do dia, próxima ação, regras, leitura da IA, sem IA usa regras, contato de outra loja não aparece).

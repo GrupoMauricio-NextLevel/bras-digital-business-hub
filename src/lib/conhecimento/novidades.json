@@ -1,5 +1,12 @@
 [
  {
+  "numero": 337,
+  "frente": "E-commerce",
+  "titulo": "Business por dentro, Etapa 2: funil em quadro, \"O que fazer hoje\" e o Maurício no contato",
+  "data": "2026-11-18",
+  "resumo": "Pedido do dono: \"inicie o desenvolvimento imediatamente, trabalhe durante um longo período vencendo todas as etapas\"; Etapa 2 do plano docs/prompts/ecossistema-tudo-em-um-aproveitamento.md (IA e o Business por dentro)."
+ },
+ {
   "numero": 336,
   "frente": "E-commerce",
   "titulo": "Ecossistema tudo em um: quatro frentes (Commerce, Sites, Business, Soluções), um painel e pontes entre elas",
@@ -271,12 +278,5 @@
   "titulo": "Tráfego e campanhas, fase TR3: origem de cada contato no Comercial, Fechou/Perdeu e código da visita no WhatsApp",
   "data": "2026-11-13",
   "resumo": "Origem de cada contato: quando alguém deixa o contato (lista de espera, janela de saída, diagnóstico) ou cria a loja, o sistema guarda de onde veio na tabela nova origens_contato, ligada à mesma chave do Comercial: canal, campanha, peça,…"
- },
- {
-  "numero": 293,
-  "frente": "E-commerce",
-  "titulo": "Busca e IA, fase S0: tabela central das páginas públicas, perguntas com fatos do sistema, robôs de IA e IndexNow",
-  "data": "2026-11-14",
-  "resumo": "Pedido do dono: começar o plano v3 de busca, IA e Academy (docs/prompts/busca-ia-academy-funil-organico.md). A troca de domínio com redirecionamento já estava feita (D281, D287); a S0 virou a base técnica e a correção dos textos vencidos."
  }
 ]
