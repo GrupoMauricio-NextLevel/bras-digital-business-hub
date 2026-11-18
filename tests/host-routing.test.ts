@@ -64,6 +64,8 @@ describe("Master central e produtos em breve", () => {
     expect(go("master.nextlevelgroup.com.br", "/store/vestiario-das-lendas", {})).toEqual({ kind: "next" });
     expect(go("master.nextlevelgroup.com.br", "/store/vestiario-das-lendas/catalog", {})).toEqual({ kind: "next" });
     expect(go("master.nextlevelgroup.com.br", "/storefront", {})).toEqual({ kind: "redirect", url: "/login" });
+    // Imagens enviadas pela loja (banners, fotos): sem isto, o banner não carregava no editor em modo suporte.
+    expect(go("master.nextlevelgroup.com.br", "/assets/ast_abc123", {})).toEqual({ kind: "next" });
   });
   it("o /master dos produtos leva ao endereço central, mantendo o caminho (MASTER_HOST_ONLY=false desliga)", () => {
     const e = {};

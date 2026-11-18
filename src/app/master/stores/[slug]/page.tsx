@@ -7,10 +7,6 @@ import { getDb } from "@/db/client";
 import { getStoreDiagnostics } from "@/lib/domain/diagnostics";
 import { NotFoundError } from "@/lib/domain/errors";
 import { formatDateTime } from "@/lib/utils";
-import { LiberarTema } from "@/components/master/liberar-tema";
-import { temasParaLiberar } from "@/lib/themes/liberar-equipe";
-import { hasStorefront } from "@/lib/themes/license";
-import { THEME_BY_KEY } from "@/lib/themes/catalog";
 
 export const dynamic = "force-dynamic";
 
@@ -19,7 +15,6 @@ export default async function StoreDiagnosticsPage({ params }: { params: Promise
   const { slug } = await params;
   const d = await getStoreDiagnostics(await getDb(), session.actor, slug).catch((e) => { if (e instanceof NotFoundError) return null; throw e; });
   if (!d) notFound();
-  const temas = hasStorefront(d.store) ? await temasParaLiberar(await getDb(), d.store.id) : null;
   return (
     <>
       <PageHeader backHref="/master/stores" title={d.store.name} description={`Diagnóstico da loja · ${d.store.slug} · ${d.store.published ? "publicada" : "em rascunho"}`} actions={<StatusBadge value={d.store.status} dot />} />
@@ -46,13 +41,6 @@ export default async function StoreDiagnosticsPage({ params }: { params: Promise
           <h3 className="mt-4 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Eventos nos últimos 7 dias</h3>
           <p className="mt-1 text-sm">{Object.keys(d.events7d).length ? Object.entries(d.events7d).map(([k, v]) => `${k}: ${v}`).join(" · ") : "Nenhum."}</p>
         </section>
-        {temas ? (
-          <section id="temas" className="border border-border bg-surface p-4 lg:col-span-2">
-            <h2 className="text-sm font-semibold">Temas e edição avançada</h2>
-            <p className="mt-1 text-xs text-muted-foreground">Tema ativo: <span className="font-medium text-foreground">{THEME_BY_KEY[temas.ativo]?.name ?? temas.ativo}</span>{temas.editorCompleto ? " · Edição completa liberada" : ""}. Libere um tema pago sem custo ou registre o pagamento que o cliente fez por fora (entra no caixa), e instale na hora.</p>
-            <div className="mt-3 max-w-xl"><LiberarTema via="master" storeId={d.store.id} temas={temas.temas} editorCompleto={temas.editorCompleto} /></div>
-          </section>
-        ) : null}
         <section className="border border-border bg-surface p-4">
           <h2 className="text-sm font-semibold">Erros ligados a esta loja</h2>
           {d.errors.length === 0 ? <p className="mt-3 text-sm text-muted-foreground">Nenhum erro registrado para esta loja.</p> : (

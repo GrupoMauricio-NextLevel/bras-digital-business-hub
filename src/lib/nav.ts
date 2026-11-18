@@ -386,7 +386,7 @@ export const MASTER_ECOMMERCE_NAV: NavItem[] = [
   { label: "Funil de ativação", href: "/commerce", icon: "LayoutGrid", group: "Ferramentas", exact: true },
   { label: "Financeiro", href: "/master/financeiro", icon: "Landmark", group: "Ferramentas", exact: true },
   { label: "Planos e recursos", href: "/commerce/plans", icon: "CreditCard", group: "Ferramentas" },
-  { label: "Templates", href: "/master/templates", icon: "LayoutTemplate", group: "Ferramentas" },
+  { label: "Temas das lojas", href: "/commerce/temas", icon: "LayoutTemplate", group: "Ferramentas" },
   { label: "Loja NextLevel (serviços)", href: "/master/services", icon: "Sparkles", group: "Ferramentas" },
   { label: "Equipe do Master", href: "/master/equipe", icon: "UsersRound", group: "Ferramentas" },
   { label: "Erros do sistema", href: "/master/errors", icon: "Settings", group: "Ferramentas" },
