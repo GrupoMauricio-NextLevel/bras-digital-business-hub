@@ -4443,3 +4443,43 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
   - o último lugar de "Vivência de rua" e os números de índice ficaram com contraste suficiente.
 - **Código:** `src/lib/business/campanhas.ts`, `criarCampanhaAction`, `src/app/merchant/captacao/*`, item "Captação" no grupo Site do menu.
 - **Teste:** `tests/business-captacao.test.ts` (montagem por objetivo, links, contato da campanha, criação publicando só a campanha e números com fechamento); `nav-business` atualizado.
+
+## D340 — [E-commerce] Painel da Agência personalizável para qualquer segmento de serviços (50% agências, 50% outros), e a academia sai de cena (2026-11-18)
+- **Pedido do dono:**
+  - "não vamos falar em academia mais";
+  - "os termos da agência precisam ser mais adaptados para que mais segmentos possam usar, e podemos aproveitar o painel da agência que estava sendo feito para a UP";
+  - "os departamentos precisam ter um alto nível de edição, porque o foco é 50% para agências e 50% genérico para diversos outros segmentos".
+- **Como ficou:** as chaves internas (9 departamentos, 9 etapas, 6 tipos de entrega) viram "vagas" com as mesmas regras de permissão e fluxo. A empresa decide o **nome**, se está **ligada** e, nas etapas, **quem recebe** e **o que o cliente vê** no portal.
+- **Modelos de partida (8):** Agência de marketing (o de sempre), Empresa de serviços, Consultoria, Contabilidade, Escritório de advocacia, Arquitetura/engenharia/obras, Tecnologia e software, Eventos e produção. Trocar de modelo carrega os nomes dele; o que a empresa edita por cima fica gravado (só a diferença é guardada).
+- **O que é editável** (tela **Ajustes → Personalizar o painel**, só o Administrador):
+  - nomes principais: painel, cliente e clientes, entrega e entregas, tela do trabalho;
+  - departamentos (nome e ligado; Administrador e Gestor sempre ligados);
+  - etapas (usa ou não, nome, quem recebe, o que o cliente vê; Publicado/Entregue sempre ligada);
+  - tipos de entrega (nome, ligado, "pula a execução");
+  - gavetas do menu (Tráfego, Comercial, Placar e metas, Soluções NextLevel);
+  - "exigir links para avançar" (ligado na agência, desligado nos outros modelos).
+- **Regras do fluxo:**
+  - entrega nasce na primeira etapa ligada;
+  - etapa desligada é pulada;
+  - departamento desligado passa a etapa ao Gestor;
+  - ajuste volta à Edição/Acabamento ou, se desligada, à última etapa ligada antes da revisão;
+  - aprovação do cliente segue para a próxima etapa ligada.
+  - Entregas que já estão numa etapa desligada continuam visíveis na coluna dela (nada se perde).
+- **Onde os nomes aparecem:**
+  - menu (nome do painel, "Produção", "Clientes", gavetas escondidas) e topo;
+  - Produção (título, colunas, cartões, números, "Nova …", tipos);
+  - ficha da entrega, Minha fila, tela inicial (textos sem "agência" fora do modelo de agência), Equipe, Clientes, Semana, Placar, Executivos, Aprender;
+  - portal do cliente (tipos e situação de cada etapa);
+  - situações dentro da etapa neutras fora da agência ("Em andamento" no lugar de "Editando").
+- **A UP não percebe mudança:** personalização vazia = agência como sempre foi (teste confere, inclusive o que o cliente vê no portal).
+- **Academia:**
+  - o modelo de site "Academia e estúdio" deixa de ser oferecido (fica no código só para sites que já nasceram com ele);
+  - textos de Sites e da Captação sem academia;
+  - o cliente de demonstração virou "Clínica Movimento";
+  - `portal-academia-piloto.md` arquivado. A opção "B" da D337 sai; a "A" (painel para qualquer empresa) é esta decisão.
+- **Banco:** `agencias.personalizacao` (jsonb, padrão vazio), migração `0117_personalizacao-painel`.
+- **Código:**
+  - `src/lib/agencias/personalizacao.ts` (modelos, `vocabulario`, `compactar`, `rotuloSituacao`) e `personalizar.ts` (gravar, só admin);
+  - regras em `fluxo.ts` (`etapaSeAplica` com etapas ligadas, `escolherResponsavel` com departamento da etapa, `etapaInicial`);
+  - tela `src/app/agencia/personalizar/*`.
+- **Teste:** `tests/agencias-personalizacao.test.ts` (padrão = agência, travas, edição por cima do modelo, etapas puladas, gravação compacta, fluxo real de uma contabilidade, só o admin grava); `nav-agencia` atualizado; produção, portal, demonstração e agências continuam passando.

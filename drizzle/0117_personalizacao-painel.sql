@@ -1,0 +1,1 @@
+ALTER TABLE "agencias" ADD COLUMN "personalizacao" jsonb DEFAULT '{}'::jsonb NOT NULL;

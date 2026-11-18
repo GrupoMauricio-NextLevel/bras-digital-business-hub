@@ -1,5 +1,12 @@
 [
  {
+  "numero": 340,
+  "frente": "E-commerce",
+  "titulo": "Painel da Agência personalizável para qualquer segmento de serviços (50% agências, 50% outros), e a academia sai de cena",
+  "data": "2026-11-18",
+  "resumo": "Pedido do dono: \"não vamos falar em academia mais\";"
+ },
+ {
   "numero": 339,
   "frente": "E-commerce",
   "titulo": "Captação (NB4): página de campanha em poucos cliques, links por lugar, QR e números de cada campanha",
@@ -271,12 +278,5 @@
   "titulo": "Anúncios na Meta pelo painel do lojista: diagnóstico, mesa da equipe e sala da campanha",
   "data": "2026-11-14",
   "resumo": "Pedido do dono: dar ao lojista a sensação de integração com a Meta, mesmo com a configuração feita à mão pela equipe: diagnóstico dinâmico no painel, pedido na mesa do Master, a equipe configura no Gerenciador de Anúncios e marca o andam…"
- },
- {
-  "numero": 298,
-  "frente": "E-commerce",
-  "titulo": "Tráfego e campanhas, fase TR5: retorno à Meta e ao Google pelo servidor (contato, conta, pagante e venda)",
-  "data": "2026-11-14",
-  "resumo": "O que volta para as plataformas: Fila (conversoes_envio, migração 0097): uma linha por plataforma, resultado e contato (não duplica). O identificador é o mesmo do navegador (D295), então a Meta não conta duas vezes. A rotina de 5 a 10 mi…"
  }
 ]

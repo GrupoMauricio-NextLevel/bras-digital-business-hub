@@ -26,8 +26,9 @@ export const situacaoInicial = (e: PecaEtapa) => SITUACOES[e][0]![0];
 export const situacaoValida = (e: PecaEtapa, s: string) => SITUACOES[e].some(([v]) => v === s);
 export const situacaoRotulo = (e: PecaEtapa, s: string) => SITUACOES[e].find(([v]) => v === s)?.[1] ?? s;
 
-/** O que o cliente vê (status simplificados do briefing). */
-export function etapaParaCliente(e: PecaEtapa): string {
+/** O que o cliente vê (status simplificados do briefing). Com a personalização (D340), o nome que a empresa escolheu. */
+export function etapaParaCliente(e: PecaEtapa, nomes?: Partial<Record<PecaEtapa, string>>): string {
+  if (nomes?.[e]) return nomes[e]!;
   if (e === "PLANEJAMENTO" || e === "ROTEIRO") return "Em planejamento";
   if (e === "CAPTACAO") return "Em produção";
   if (e === "EDICAO" || e === "REVISAO") return "Em edição";
@@ -42,15 +43,20 @@ export const FUNCAO_DA_ETAPA: Record<PecaEtapa, AgenciaFuncao> = {
   APROVACAO: "ATENDIMENTO", AGENDAMENTO: "SOCIAL_MEDIA", PUBLICADO: "SOCIAL_MEDIA", CONCLUIDO: "SOCIAL_MEDIA",
 };
 
-/** Peça sem gravação (arte, carrossel) pula a captação; cliente que não aprova pula a aprovação. */
-export function etapaSeAplica(e: PecaEtapa, ctx: { tipo: PecaTipo; exigeAprovacao: boolean }): boolean {
-  if (e === "CAPTACAO") return ctx.tipo !== "ARTE" && ctx.tipo !== "CARROSSEL";
+/**
+ * Peça sem gravação (arte, carrossel) pula a captação; cliente que não aprova pula a aprovação. Com a personalização
+ * (D340): etapa desligada pela empresa é pulada e o tipo de entrega diz se pula a execução.
+ */
+export type ContextoEtapa = { tipo: PecaTipo; exigeAprovacao: boolean; ativas?: ReadonlySet<PecaEtapa>; pulaExecucao?: boolean };
+export function etapaSeAplica(e: PecaEtapa, ctx: ContextoEtapa): boolean {
+  if (ctx.ativas && !ctx.ativas.has(e)) return false;
+  if (e === "CAPTACAO") return ctx.pulaExecucao !== undefined ? !ctx.pulaExecucao : ctx.tipo !== "ARTE" && ctx.tipo !== "CARROSSEL";
   if (e === "APROVACAO") return ctx.exigeAprovacao;
   return true;
 }
 
 /** A etapa seguinte (ou null, quando já está concluída). */
-export function proximaEtapa(atual: PecaEtapa, ctx: { tipo: PecaTipo; exigeAprovacao: boolean }): PecaEtapa | null {
+export function proximaEtapa(atual: PecaEtapa, ctx: ContextoEtapa): PecaEtapa | null {
   for (let i = PECA_ETAPAS.indexOf(atual) + 1; i < PECA_ETAPAS.length; i++) {
     const e = PECA_ETAPAS[i]!;
     if (etapaSeAplica(e, ctx)) return e;
@@ -58,11 +64,14 @@ export function proximaEtapa(atual: PecaEtapa, ctx: { tipo: PecaTipo; exigeAprov
   return null;
 }
 
+/** Primeira etapa ligada (D340): onde nasce uma entrega nova. */
+export const etapaInicial = (ativas?: ReadonlySet<PecaEtapa>): PecaEtapa => (ativas ? PECA_ETAPAS.find((x) => ativas.has(x)) : undefined) ?? "PLANEJAMENTO";
+
 /** Ajuste pedido (na revisão interna ou pelo cliente) volta para a edição. */
 export const podePedirAjuste = (e: PecaEtapa) => e === "REVISAO" || e === "APROVACAO";
 
-export function escolherResponsavel(etapa: PecaEtapa, equipe: readonly { userId: string; funcao: AgenciaFuncao }[], responsavelCliente: string | null): string | null {
-  const f = FUNCAO_DA_ETAPA[etapa];
+export function escolherResponsavel(etapa: PecaEtapa, equipe: readonly { userId: string; funcao: AgenciaFuncao }[], responsavelCliente: string | null, funcaoDaEtapa: Partial<Record<PecaEtapa, AgenciaFuncao>> = {}): string | null {
+  const f = funcaoDaEtapa[etapa] ?? FUNCAO_DA_ETAPA[etapa];
   return equipe.find((p) => p.funcao === f)?.userId ?? (f === "GESTOR" ? equipe.find((p) => p.funcao === "ADMIN")?.userId : undefined) ?? responsavelCliente;
 }
 

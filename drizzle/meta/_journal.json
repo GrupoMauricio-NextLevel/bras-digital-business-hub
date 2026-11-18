@@ -820,6 +820,13 @@
       "when": 1794955599945,
       "tag": "0116_variacao-codigo-barras",
       "breakpoints": true
+    },
+    {
+      "idx": 117,
+      "version": "7",
+      "when": 1795002972527,
+      "tag": "0117_personalizacao-painel",
+      "breakpoints": true
     }
   ]
 }

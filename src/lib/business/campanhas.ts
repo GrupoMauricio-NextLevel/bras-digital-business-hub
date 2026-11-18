@@ -18,7 +18,7 @@ import { criarPagina, publicarPaginas } from "./paginas";
  */
 export const OBJETIVOS = {
   ORCAMENTO: { rotulo: "Pedir orçamento", descricao: "Para serviços: o cliente conta o que precisa e você responde com o preço.", botao: "Quero meu orçamento", formulario: "Peça seu orçamento" },
-  VISITA: { rotulo: "Agendar visita ou aula experimental", descricao: "Para academias, estúdios, clínicas e quem atende com hora marcada.", botao: "Quero agendar", formulario: "Escolha o melhor horário" },
+  VISITA: { rotulo: "Agendar visita ou horário", descricao: "Para quem atende com hora marcada: visita técnica, consulta, reunião ou avaliação.", botao: "Quero agendar", formulario: "Escolha o melhor horário" },
   CONTATO: { rotulo: "Receber o contato da equipe", descricao: "Para quem prefere conversar antes: o cliente deixa o WhatsApp e a equipe chama.", botao: "Quero que me chamem", formulario: "Deixe seu contato" },
 } as const;
 export type Objetivo = keyof typeof OBJETIVOS;

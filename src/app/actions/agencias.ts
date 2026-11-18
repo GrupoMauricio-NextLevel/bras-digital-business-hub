@@ -181,3 +181,8 @@ export async function cancelarContratoAgenciaAction(id: string) {
 export async function salvarCaptacaoAction(input: z.input<typeof captacaoSchema>) {
   return runAction(async () => { const { actor, db } = await ctx(); await salvarCaptacao(db, actor, input); revalidatePath("/agencia/comercial"); return undefined; });
 }
+
+/** Personalizar o painel (D340): segmento, nomes, departamentos, etapas, tipos de entrega e gavetas. Só o Administrador. */
+export async function salvarPersonalizacaoAction(input: import("zod").input<typeof import("@/lib/agencias/personalizacao").personalizacaoSchema>) {
+  return runAction(async () => { const { actor, db } = await ctx(); const { salvarPersonalizacao } = await import("@/lib/agencias/personalizar"); const r = await salvarPersonalizacao(db, actor, input); refresh(); return r; });
+}

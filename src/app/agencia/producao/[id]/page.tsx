@@ -3,12 +3,14 @@ import { notFound } from "next/navigation";
 import { ExternalLink } from "lucide-react";
 import { getDb } from "@/db/client";
 import { requireRole } from "@/lib/require-session";
+import { vocabularioDaAgencia } from "@/lib/agencias/personalizar";
+import { rotuloSituacao } from "@/lib/agencias/personalizacao";
 import { PageHeader } from "@/components/app/page-header";
 import { EtapaChip, PrazoTexto } from "@/components/agencia/producao";
 import { NotFoundError } from "@/lib/domain/errors";
-import { FUNCAO_ROTULO } from "@/lib/agencias/acesso";
+
 import { hojeEmSaoPaulo } from "@/lib/agencias/clientes";
-import { ETAPA_ROTULO, TIPO_ROTULO, atrasada, etapaSeAplica, mesRotulo, situacaoRotulo, SITUACOES } from "@/lib/agencias/fluxo";
+import { atrasada, etapaSeAplica, mesRotulo, situacaoRotulo, SITUACOES } from "@/lib/agencias/fluxo";
 import { fichaDaPeca, pessoasDaAgencia } from "@/lib/agencias/producao";
 import { PECA_ETAPAS } from "@/db/schema";
 import { AcoesDaPeca, CamposDaPeca, NovoComentario } from "./peca-cliente";
@@ -22,22 +24,24 @@ const card = "ds-card p-5 sm:p-6";
 /** Peça de conteúdo (D314): etapas, campos de cada departamento, ações, comentários internos e histórico. */
 export default async function PecaPage({ params }: { params: Promise<{ id: string }> }) {
   const session = await requireRole("AGENCY");
+  // Personalização (D340): nomes de etapas, tipos e departamentos da empresa.
+  const { v: voc } = await vocabularioDaAgencia(await getDb(), session.actor);
   const db = await getDb();
   const { id } = await params;
   const f = await fichaDaPeca(db, session.actor, id).catch((e) => { if (e instanceof NotFoundError) notFound(); throw e; });
   const pessoas = f.podeGerir || f.podeMexer ? await pessoasDaAgencia(db, session.actor) : [];
   const p = f.peca;
-  const ctxEtapa = { tipo: p.tipo, exigeAprovacao: f.cliente.exigeAprovacao };
+  const ctxEtapa = { tipo: p.tipo, exigeAprovacao: f.cliente.exigeAprovacao, ativas: voc.etapasAtivas, pulaExecucao: voc.tipos[p.tipo].pulaExecucao };
   const etapas = PECA_ETAPAS.filter((e) => etapaSeAplica(e, ctxEtapa));
   const idx = etapas.indexOf(p.etapa);
   const links: [string, string | null][] = [["Brutos", p.linkBrutos], [`Versão ${p.versao || ""}`.trim(), p.linkVersao], ["Publicação", p.linkPublicacao]];
   return (
     <div className="mx-auto max-w-[1240px] space-y-5">
-      <PageHeader backHref="/agencia/producao" eyebrow={`${f.cliente.nome} · ${TIPO_ROTULO[p.tipo]}${f.mes ? ` · ${mesRotulo(f.mes)}` : ""}${p.extra ? " · extra" : ""}`} title={p.titulo}
-        badge={<EtapaChip etapa={p.etapa} />} description={<>{situacaoRotulo(p.etapa, p.situacao)} · {f.responsavelNome ? `com ${f.responsavelNome}` : "sem responsável"} · prazo <PrazoTexto prazo={p.prazo} atrasada={atrasada(p, hojeEmSaoPaulo())} /></>} />
+      <PageHeader backHref="/agencia/producao" eyebrow={`${f.cliente.nome} · ${voc.tipo[p.tipo]}${f.mes ? ` · ${mesRotulo(f.mes)}` : ""}${p.extra ? " · extra" : ""}`} title={p.titulo}
+        badge={<EtapaChip etapa={p.etapa} nomes={voc.etapa} />} description={<>{rotuloSituacao(voc, p.etapa, p.situacao, situacaoRotulo)} · {f.responsavelNome ? `com ${f.responsavelNome}` : "sem responsável"} · prazo <PrazoTexto prazo={p.prazo} atrasada={atrasada(p, hojeEmSaoPaulo())} /></>} />
 
       <ol className="ds-card flex flex-wrap gap-x-1 gap-y-2 !p-3 text-xs" aria-label="Etapas da peça">
-        {etapas.map((e, i) => <li key={e} aria-current={e === p.etapa ? "step" : undefined} className={`rounded-full px-2.5 py-1 font-semibold ${i < idx ? "bg-success-soft text-success" : e === p.etapa ? "bg-[var(--primary)] text-[var(--primary-foreground)]" : "bg-surface-muted text-muted-foreground"}`}>{i < idx ? "✓ " : ""}{ETAPA_ROTULO[e]}</li>)}
+        {etapas.map((e, i) => <li key={e} aria-current={e === p.etapa ? "step" : undefined} className={`rounded-full px-2.5 py-1 font-semibold ${i < idx ? "bg-success-soft text-success" : e === p.etapa ? "bg-[var(--primary)] text-[var(--primary-foreground)]" : "bg-surface-muted text-muted-foreground"}`}>{i < idx ? "✓ " : ""}{voc.etapa[e]}</li>)}
       </ol>
 
       <div className="grid gap-5 lg:grid-cols-[1.5fr_1fr]">
@@ -45,8 +49,8 @@ export default async function PecaPage({ params }: { params: Promise<{ id: strin
           {f.podeMexer ? (
             <section className={card} aria-labelledby="pc-acoes">
               <h2 id="pc-acoes" className="mb-3 text-base font-semibold">O que fazer agora</h2>
-              <AcoesDaPeca id={p.id} etapa={p.etapa} situacao={p.situacao} situacoes={SITUACOES[p.etapa].map(([v, l]) => ({ v, l }))} proxima={f.proxima ? ETAPA_ROTULO[f.proxima] : null} requisito={f.requisito} podeAjuste={f.podeAjuste} podeGerir={f.podeGerir}
-                responsavelId={p.responsavelId} prazo={p.prazo} prioridade={p.prioridade} pessoas={pessoas.map((x) => ({ id: x.id, nome: `${x.nome} · ${FUNCAO_ROTULO[x.funcao]}` }))} />
+              <AcoesDaPeca id={p.id} etapa={p.etapa} situacao={p.situacao} situacoes={SITUACOES[p.etapa].map(([v]) => ({ v, l: rotuloSituacao(voc, p.etapa, v, situacaoRotulo) }))} proxima={f.proxima ? voc.etapa[f.proxima] : null} requisito={f.requisito} podeAjuste={f.podeAjuste} podeGerir={f.podeGerir}
+                responsavelId={p.responsavelId} prazo={p.prazo} prioridade={p.prioridade} pessoas={pessoas.map((x) => ({ id: x.id, nome: `${x.nome} · ${voc.funcao[x.funcao]}` }))} />
             </section>
           ) : null}
           <section className={card} aria-labelledby="pc-campos">
