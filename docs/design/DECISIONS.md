@@ -4517,4 +4517,5 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
   - uma conversa por frente, no máximo duas conversas de código ao mesmo tempo em frentes que não se tocam;
   - número de decisão e de migração só se escolhe na hora de juntar à branch de publicação;
   - `CLAUDE.md` enxuto: só regras em vigor; o histórico fica nos documentos.
-- **Pendente do dono:** as perguntas de preço antes de 01/12 (ESTADO, "Esperando o dono").
+- **Preço (resposta do dono, 18/11):** "esquece esse racional de se basear nos concorrentes, tudo mudou e precisamos pensar em planos all in one igual ao Bitrix24". O mapa de preços de 14/11 (`claude/vigilant-bell-neurpc`) fica descartado. Próximo passo: proposta de planos tudo em um para o dono aprovar, dizendo o que muda na D311 (planos da loja intactos), nos lojistas atuais e na virada de 01/12.
+- **Next 16.4.6:** a 16.4.1 da branch de segurança também tinha falha conhecida e o build parava; subimos para a última correção da linha 16.4.

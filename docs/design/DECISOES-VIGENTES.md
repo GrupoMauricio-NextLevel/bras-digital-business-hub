@@ -18,6 +18,7 @@
 - **Um motor só:** o NextLevel Business é o painel de serviços personalizável (o antigo Painel da Agência, com o modelo "Agência de marketing" como um dos modelos). O "Meu negócio" de todo cliente fica com o funil simples (Contatos e orçamentos, quadro, Hoje e Maurício). Não se constrói projeto, contrato, cobrança ou portal de novo em outro lugar. (D343)
 - **Nome do painel:** o painel de todo cliente se chama "Meu negócio". "NextLevel Business" só para o produto avançado. (D324)
 - **Soluções Digitais:** serviços da agência NextLevel. Agências parceiras não compram o código; o degrau maior é a Licença dedicada. (D312)
+- **Preço (dono, 18/11):** nada de preço baseado em concorrentes; a direção é planos **tudo em um, no padrão Bitrix24**, ainda em proposta. Até a aprovação, valem os preços da tabela do Master. (D343)
 - **Portal do cliente** sem limite e sem cobrança por cliente; o preço é por empresa. (D336)
 
 ## Dinheiro e cobrança

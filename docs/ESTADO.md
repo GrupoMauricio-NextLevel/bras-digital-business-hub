@@ -17,19 +17,19 @@
 | **Business = Painel da Agência** (D343) | ligar o cartão "NextLevel Business" do Meu negócio ao painel personalizável; trazer as telas novas para o visual "com vida" | planos da loja |
 | **Meu negócio / Sites** | Captação: Pixel e link curto por loja (fica para depois da D339) | painel da agência |
 | **Loja virtual** | ajustes que os lojistas reais pedirem | Business |
-| **Preço** | decidir as perguntas abaixo antes de 01/12 | código (é decisão) |
+| **Planos tudo em um (Bitrix24)** | proposta para o dono aprovar (item 1 abaixo) | código, até a aprovação |
 
 ## Esperando o dono
-1. **Preço até 01/12** (mapa de preços de 14/11, branch `claude/vigilant-bell-neurpc`, escrito antes da D336): campanha de Natal no anual de 15/12 a 05/01? Plano Pro a R$ 167 ou R$ 157 antes de 01/12? Aceitar perder para a Loja Integrada quem vende até R$ 2,1 mil por mês?
+1. **Planos "tudo em um" no padrão Bitrix24 (dono, 18/11):** o racional de preço baseado em concorrentes (mapa de 14/11, Pro R$ 167 × R$ 157, Natal no anual, Loja Integrada) foi **abandonado**. Próximo passo: proposta de planos tudo em um (loja, site, Business e portal em níveis por empresa e por pessoas da equipe) para o dono aprovar. Ponto a decidir junto: a D311 diz que Start, Pro e Scale ficam intactos; planos tudo em um mudam isso, então a proposta precisa dizer o que acontece com os lojistas atuais e com a virada de 01/12.
 2. **Neon:** limitar o processamento a no máximo 1 CU e acompanhar o consumo (D338).
 3. **Google e Bing:** criar a propriedade no Search Console e colar o código no Render (`GOOGLE_SITE_VERIFICATION`, `BING_SITE_VERIFICATION`) (D342).
 4. **Master:** criar o usuário da equipe pedido na conversa do editor de temas (Equipe do Master, sem Financeiro) e mandar o e-mail.
 5. **Comercial:** plano e valor dos dois lojistas, origem do Bazar Prime, autorização de uso do nome e depoimento (plano comercial, branch `claude/cool-hamilton-xfcd23`).
 
 ## Branches fora do ar
-- **Juntar só o documento quando der:** `claude/vigilant-bell-neurpc` (preços; rever com a D336), `claude/peaceful-fermi-m20pc2` (checklist do dono), `claude/cool-hamilton-xfcd23` (plano comercial), `claude/fabrica-conteudo-redes-sociais-sxu3ne` (fábrica de conteúdo).
+- **Juntar só o documento quando der:** `claude/peaceful-fermi-m20pc2` (checklist do dono), `claude/cool-hamilton-xfcd23` (plano comercial), `claude/fabrica-conteudo-redes-sociais-sxu3ne` (fábrica de conteúdo).
 - **Conferir antes:** `claude/design-content-audit-kfs4gm` (auditoria fase 1; pode já estar superada).
-- **Descartadas (D343), não juntar:** `claude/upbeat-babbage-ianepy` (academia), `claude/eloquent-ramanujan-rfizdl` (Club), `revisao/ecommerce-home-imersiva` (versão antiga da caixa de entrada).
+- **Descartadas (D343), não juntar:** `claude/vigilant-bell-neurpc` (preço pelos concorrentes, abandonado em 18/11), `claude/upbeat-babbage-ianepy` (academia), `claude/eloquent-ramanujan-rfizdl` (Club), `revisao/ecommerce-home-imersiva` (versão antiga da caixa de entrada).
 - **Adiadas:** atualizações do TypeScript 7 e do ESLint 10 (dependabot).
 
 ## Filas guardadas (prompts prontos para quando a frente voltar)
