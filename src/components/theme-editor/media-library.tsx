@@ -2,6 +2,7 @@
 import * as React from "react";
 import { ImagePlus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { mensagemDeEnvio } from "@/lib/erro-de-envio";
 import { Button, Degraus } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { compressImage } from "@/lib/client-image";
@@ -37,7 +38,7 @@ export function MediaLibraryDialog({ open, minWidth, onClose, onPick }: { open: 
   const load = React.useCallback(async () => { const r = await listMediaAction(); if (r.ok) setItems(r.data); else { toast.error(r.error); setItems([]); } }, []);
   React.useEffect(() => {
     if (!open) return; let live = true;
-    listMediaAction().then((r) => { if (!live) return; if (r.ok) setItems(r.data); else { toast.error(r.error); setItems([]); } });
+    listMediaAction().then((r) => { if (!live) return; if (r.ok) setItems(r.data); else { toast.error(r.error); setItems([]); } }).catch((e) => { if (!live) return; toast.error(mensagemDeEnvio(e, "Não foi possível abrir a biblioteca de imagens.")); setItems([]); });
     return () => { live = false; };
   }, [open]);
   const upload = async (file: File | undefined) => {
@@ -46,7 +47,7 @@ export function MediaLibraryDialog({ open, minWidth, onClose, onPick }: { open: 
       const dataUrl = await compressImage(file, 2400, 0.86);
       const r = await uploadStoreImageAction(dataUrl, { name: file.name.replace(/\.[a-z0-9]+$/i, "") });
       if (r.ok) { toast.success("Imagem enviada para a biblioteca"); await load(); } else toast.error(r.error);
-    } catch (e) { toast.error(e instanceof Error ? e.message : "Não foi possível enviar a imagem."); }
+    } catch (e) { toast.error(mensagemDeEnvio(e)); }
     finally { setBusy(false); if (input.current) input.current.value = ""; }
   };
   const remove = async (m: MediaItem) => {

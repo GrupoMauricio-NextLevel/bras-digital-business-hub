@@ -1,6 +1,18 @@
 #!/bin/bash
 # Antes de cada push: tipos e estilo no projeto inteiro. Os testes completos rodam no GitHub (ver .github/workflows/ci.yml).
 cd "$(git rev-parse --show-toplevel)" || exit 1
+# Trava da cópia de trabalho visual (D342): se esta cópia tem "nextlevel.branchPermitida" (o scripts/preparar-abacus.ps1
+# grava), o push só vai para essa branch. Assim um agente local nunca publica no Render por engano.
+permitida="$(git config --get nextlevel.branchPermitida)"
+if [ -n "$permitida" ]; then
+  while read -r _local_ref _local_sha remote_ref _remote_sha; do
+    [ -z "$remote_ref" ] && continue
+    if [ "$remote_ref" != "refs/heads/$permitida" ]; then
+      echo "✖ Esta cópia só envia para a branch $permitida (tentou: ${remote_ref#refs/heads/}). Push cancelado."
+      exit 1
+    fi
+  done
+fi
 echo "▶ verificando tipos e estilo antes de enviar…"
 npx tsc --noEmit || { echo "✖ Erro de tipos: push cancelado."; exit 1; }
 npx eslint src e2e tests --max-warnings=0 || { echo "✖ Erro de estilo: push cancelado."; exit 1; }

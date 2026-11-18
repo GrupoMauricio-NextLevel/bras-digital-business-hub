@@ -2,6 +2,7 @@
 import * as React from "react";
 import { ImagePlus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { mensagemDeEnvio } from "@/lib/erro-de-envio";
 import { Button } from "@/components/ui/button";
 import { compressImage } from "@/lib/client-image";
 import { uploadStoreImageAction } from "@/app/actions/assets";
@@ -17,7 +18,7 @@ export function ImageUploadButton({ onUploaded, maxSide = 1600, format = "jpeg",
       const dataUrl = await compressImage(file, maxSide, 0.85, format);
       const r = await uploadStoreImageAction(dataUrl);
       if (r.ok) { onUploaded(r.data.url); toast.success("Imagem enviada"); } else toast.error(r.error);
-    } catch (e) { toast.error(e instanceof Error ? e.message : "Não foi possível enviar a imagem."); }
+    } catch (e) { toast.error(mensagemDeEnvio(e)); }
     finally { setBusy(false); if (ref.current) ref.current.value = ""; }
   };
   return (

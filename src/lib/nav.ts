@@ -280,6 +280,8 @@ export const COMMERCE_STORE_NAV: NavItem[] = [
   { label: "Categorias", href: "/merchant/catalogo/categorias", icon: "Tag", group: "Loja e ajustes" },
   { label: "Aparência", href: "/theme-editor", icon: "Palette", group: "Loja e ajustes" },
   { label: "Temas", href: "/merchant/templates", icon: "LayoutTemplate", group: "Loja e ajustes" },
+  // Domínio próprio (D234) com item próprio no menu: antes só aparecia dentro de "Minha loja".
+  { label: "Domínio próprio", href: "/merchant/storefront#dominio", icon: "Globe", group: "Loja e ajustes" },
   { label: "Cadastro de clientes", href: "/merchant/customers", icon: "Users", group: "Loja e ajustes" },
   { label: "Ferramentas", href: "/merchant/ferramentas", icon: "LayoutGrid", group: "Loja e ajustes" },
   { label: "Aplicativos", href: "/merchant/aplicativos", icon: "Boxes", group: "Loja e ajustes" },
@@ -335,6 +337,7 @@ export function navDoNegocio(m: { ativos: ReadonlySet<string> }, nomeGerenciador
     { label: "Migrar e anunciar", href: "/merchant/migrar", icon: "Link2", group: "Loja virtual" },
     { label: "Aparência", href: "/theme-editor", icon: "Palette", group: "Loja virtual" },
     { label: "Temas", href: "/merchant/templates", icon: "LayoutTemplate", group: "Loja virtual" },
+    ...(site ? [] : [{ label: "Domínio próprio", href: "/merchant/storefront#dominio", icon: "Globe", group: "Loja virtual" } as NavItem]),
     { label: "Cadastro de clientes", href: "/merchant/customers", icon: "Users", group: "Loja virtual" },
   );
   // Caminho não usado: um cartão só, com o caminho de upgrade (sem dez itens com cadeado).

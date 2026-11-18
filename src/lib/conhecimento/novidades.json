@@ -1,5 +1,12 @@
 [
  {
+  "numero": 346,
+  "frente": "E-commerce",
+  "titulo": "Abacus no computador do dono: começa pelo visual com trava de envio e passa a tocar 100% do projeto",
+  "data": "2026-11-18",
+  "resumo": "Pedido do dono: \"quero iniciar a migração deste trabalho para o Abacus; eles têm um modo desktop que vai ajudar a acelerar a evolução visual. Como fazer isso de forma segura para rodar localmente?\" Aceitou as recomendações."
+ },
+ {
   "numero": 345,
   "frente": "E-commerce",
   "titulo": "Precificação tudo em um aprovada: quatro planos, zero taxa sobre as vendas e implantação em todo plano",
@@ -271,12 +278,5 @@
   "titulo": "NextLevel Business, fase NB2: páginas do site, serviços da empresa e modelos prontos (Institucional e Academia)",
   "data": "2026-11-16",
   "resumo": "Pedido do dono: \"vamos desenvolver\" (depois da junção com as outras conversas, D304 a D306). Plano: docs/prompts/nextlevel-business-coracao-do-negocio.md, NB2."
- },
- {
-  "numero": 306,
-  "frente": "E-commerce",
-  "titulo": "NextLevel Business, fase NB1: dois caminhos na entrada, menu do gerenciador do negócio e vitrine do caminho Site",
-  "data": "2026-11-14",
-  "resumo": "Pedido do dono: \"prossiga\" (NB1 do plano docs/prompts/nextlevel-business-coracao-do-negocio.md, depois da NB0, D305)."
  }
 ]
