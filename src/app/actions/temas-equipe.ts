@@ -7,7 +7,7 @@ import { requireMaster } from "@/lib/domain/access";
 import { ForbiddenError } from "@/lib/domain/errors";
 import { liberarTemaPelaEquipe, type LiberarTemaInput } from "@/lib/themes/liberar-equipe";
 
-const atualizar = (slug: string) => { revalidatePath(`/store/${slug}`, "layout"); revalidatePath("/merchant", "layout"); revalidatePath("/master", "layout"); revalidatePath("/theme-editor"); };
+const atualizar = (slug: string) => { revalidatePath(`/store/${slug}`, "layout"); revalidatePath("/merchant", "layout"); revalidatePath("/master", "layout"); revalidatePath("/commerce", "layout"); revalidatePath("/theme-editor"); };
 
 /** Master: libera um tema pago (ou a Edição completa) para qualquer loja, sem custo ou com o pagamento recebido por fora. */
 export async function liberarTemaMasterAction(storeId: string, input: LiberarTemaInput) {
@@ -17,6 +17,10 @@ export async function liberarTemaMasterAction(storeId: string, input: LiberarTem
     requireMaster(s.actor);
     if (s.support) throw new ForbiddenError("Saia do modo suporte para usar o Master.");
     const db = await getDb();
+    // Só lojas da NextLevel Commerce (o SuperDrop fica fora desta função).
+    const org = await db.query.stores.findFirst({ where: (t, { eq }) => eq(t.id, storeId), columns: { organizationId: true } });
+    const marca = org ? (await db.query.organizations.findFirst({ where: (t, { eq }) => eq(t.id, org.organizationId), columns: { brand: true } }))?.brand : null;
+    if (marca !== "NEXTLEVEL_COMMERCE") throw new ForbiddenError("Esta função é só para lojas da NextLevel Commerce.");
     const r = await liberarTemaPelaEquipe(db, { ...input, storeId, operatorId: s.user.id, operatorName: s.user.name });
     const store = await db.query.stores.findFirst({ where: (t, { eq }) => eq(t.id, storeId), columns: { slug: true } });
     if (store) atualizar(store.slug);
