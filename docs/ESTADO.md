@@ -21,6 +21,7 @@
 
 ## Esperando o dono
 1. **Precificação tudo em um aprovada (D345):** falta o "pode começar" da rodada 1 do sistema (seção 13 de `docs/precificacao/PRECIFICACAO-TUDO-EM-UM.md`), para estar no ar em 01/12.
+1b. **Racional comercial e páginas de venda (18/11):** `docs/vendas/RACIONAL-COMERCIAL-E-PAGINAS.md`. Falta o dono responder a Parte 8. Nada implementado.
 2. **Neon:** limitar o processamento a no máximo 1 CU e acompanhar o consumo (D338).
 3. **Google e Bing:** criar a propriedade no Search Console e colar o código no Render (`GOOGLE_SITE_VERIFICATION`, `BING_SITE_VERIFICATION`) (D343).
 4. **Master:** criar o usuário da equipe pedido na conversa do editor de temas (Equipe do Master, sem Financeiro) e mandar o e-mail.
