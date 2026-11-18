@@ -9,12 +9,26 @@ export function storeUrl(slug: string, offer?: string, customDomain?: string | n
   return `/store/${slug}`;
 }
 
-/** Extrai o slug de `slug.dominio-raiz`; null para o domínio raiz, www e hosts que não pertencem à rede. */
-export function slugFromHost(host: string | null | undefined, root = ROOT_DOMAIN): string | null {
-  if (!host || !root) return null;
+/**
+ * Endereço de teste das lojas da Commerce (como "loja.lojawbuy.com.br"): `slug.<LOJA_TESTE_DOMINIO>`, sempre ativo, ao lado
+ * do domínio oficial. Exige no DNS do domínio da plataforma um registro coringa (`*` → hospedagem) e o mesmo coringa nos
+ * domínios do Render. Sem a variável, não existe (as lojas seguem em /store/slug).
+ */
+export const TESTE_DOMAIN = process.env.LOJA_TESTE_DOMINIO?.trim().toLowerCase().replace(/^\*\./, "") || "";
+export const enderecoDeTeste = (slug: string, raiz = TESTE_DOMAIN) => (raiz ? `https://${slug}.${raiz}` : null);
+
+/** Subdomínios que são da plataforma, nunca de loja. */
+const RESERVADOS = ["www", "app", "admin", "api", "painel", "master", "office", "lojas", "mail", "email", "webmail", "smtp", "blog", "ajuda", "status", "cdn", "assets", "static", "demo", "teste", "suporte"];
+
+/** Extrai o slug de `slug.dominio-raiz` (das lojas SuperDrop ou do endereço de teste); null para a raiz, www e hosts de fora. */
+export function slugFromHost(host: string | null | undefined, root: string | string[] = [ROOT_DOMAIN, TESTE_DOMAIN]): string | null {
+  if (!host) return null;
   const h = host.split(":")[0]!.toLowerCase();
-  if (!h.endsWith(`.${root}`)) return null;
-  const sub = h.slice(0, -(root.length + 1));
-  if (!sub || sub.includes(".") || ["www", "app", "admin", "api"].includes(sub)) return null;
-  return /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/.test(sub) ? sub : null;
+  for (const r of (Array.isArray(root) ? root : [root]).filter(Boolean)) {
+    if (!h.endsWith(`.${r}`)) continue;
+    const sub = h.slice(0, -(r.length + 1));
+    if (!sub || sub.includes(".") || RESERVADOS.includes(sub)) return null;
+    return /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/.test(sub) ? sub : null;
+  }
+  return null;
 }

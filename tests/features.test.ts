@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { canUse, minOfferFor, requireFeature } from "@/lib/features";
-import { slugFromHost, storeUrl } from "@/lib/store-url";
+import { enderecoDeTeste, slugFromHost, storeUrl } from "@/lib/store-url";
 
 describe("gates por oferta", () => {
   it("Drop manual não tem vitrine nem domínio; Loja própria libera tudo", () => {
@@ -27,6 +27,11 @@ describe("subdomínio da loja", () => {
     expect(slugFromHost("a.b.superdrop.com.br", "superdrop.com.br")).toBeNull();
     expect(slugFromHost("evil.com", "superdrop.com.br")).toBeNull();
     expect(slugFromHost("x.superdrop.com.br.evil.com", "superdrop.com.br")).toBeNull();
+    // Endereço de teste da Commerce (slug.nextlevelcommerce.com.br): subdomínios da plataforma nunca viram loja.
+    expect(slugFromHost("vestiario-das-lendas.nextlevelcommerce.com.br", ["", "nextlevelcommerce.com.br"])).toBe("vestiario-das-lendas");
+    for (const sub of ["www", "painel", "master", "api"]) expect(slugFromHost(`${sub}.nextlevelcommerce.com.br`, ["superdrop.com.br", "nextlevelcommerce.com.br"])).toBeNull();
+    expect(enderecoDeTeste("vestiario-das-lendas", "nextlevelcommerce.com.br")).toBe("https://vestiario-das-lendas.nextlevelcommerce.com.br");
+    expect(enderecoDeTeste("x", "")).toBeNull();
     expect(slugFromHost("mantos.localhost", "")).toBeNull();
   });
   it("cai no caminho /store/[slug] sem domínio raiz configurado", () => {

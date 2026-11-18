@@ -81,15 +81,20 @@ export async function verificarDominio(db: Database, storeId: string, sondas: So
   const dnsOk = cname.some((c) => c.toLowerCase().replace(/\.$/, "") === ALVO_CNAME()) || a.includes(ALVO_A());
   const responde = dnsOk ? (await sondas.ping(d)) === s.slug : false;
   // DNS certo e ainda sem HTTPS: (re)cadastra na hospedagem; repetir não faz mal (a hospedagem ignora o que já existe).
-  if (dnsOk && !responde && sondas === SONDAS) await cadastrarNaHospedagem(d);
+  const hospedagem = dnsOk && !responde && sondas === SONDAS ? await cadastrarNaHospedagem(d) : hospedagemAutomatica() ? "automatica" : "equipe";
   const conectado = dnsOk && responde;
   const status = conectado ? "CONNECTED" as const : "PENDING" as const;
   if (status !== s.domainStatus) { await db.update(stores).set({ domainStatus: status, updatedAt: new Date().toISOString() }).where(eq(stores.id, storeId)); limparCache(); }
   const detalhe = conectado ? "Domínio conectado: a sua loja já abre nele, com HTTPS."
     : !dnsOk ? "O DNS ainda não aponta para a plataforma. Confira os registros acima; a mudança pode levar até 24 horas para valer."
-    : "O DNS já aponta para a plataforma. Falta o certificado de segurança (HTTPS), que sai sozinho em alguns minutos. Verifique de novo em seguida.";
+    : hospedagem === "automatica" ? "O DNS já aponta para a plataforma. Falta o certificado de segurança (HTTPS), que sai sozinho em alguns minutos. Verifique de novo em seguida."
+    // Sem a chave da hospedagem o certificado nunca sai sozinho: dizer a verdade e avisar a equipe (aparece no Master).
+    : "O DNS já está certo. Falta a equipe NextLevel ativar o domínio na hospedagem (o aviso já foi para a equipe). Depois disso, o HTTPS sai em poucos minutos.";
   return { dns: dnsOk, responde, conectado, detalhe };
 }
+
+/** A hospedagem cadastra domínios sozinha (chave do Render no ambiente)? */
+export const hospedagemAutomatica = () => !!(process.env.RENDER_API_KEY && process.env.RENDER_SERVICE_ID);
 
 /** Cadastra o domínio na hospedagem (Render) quando a chave existe. Sem chave: a equipe NextLevel ativa pela fila do Master. */
 async function cadastrarNaHospedagem(d: string): Promise<"automatica" | "equipe"> {

@@ -51,6 +51,10 @@ describe("domínio próprio: cadastro, verificação e host", () => {
     await expect(salvarDominio(ctx.db, b!.id, "minhaloja.com.br")).rejects.toThrow(/outra loja/);
     const semDns = await verificarDominio(ctx.db, a!.id, { cname: async () => [], a: async () => [], ping: async () => null });
     expect(semDns).toMatchObject({ dns: false, conectado: false });
+    // DNS certo, HTTPS ainda não: sem a chave do Render, a tela não promete que "sai sozinho" (a equipe precisa ativar).
+    const semHttps = await verificarDominio(ctx.db, a!.id, { cname: async () => [], a: async () => [ALVO_A()], ping: async () => null });
+    expect(semHttps).toMatchObject({ dns: true, conectado: false });
+    expect(semHttps.detalhe).toMatch(/equipe NextLevel ativar/);
     const ok = await verificarDominio(ctx.db, a!.id, { cname: async () => [], a: async () => [ALVO_A()], ping: async () => a!.slug });
     expect(ok.conectado).toBe(true);
     expect((await ctx.db.query.stores.findFirst({ where: eq(stores.id, a!.id) }))!.domainStatus).toBe("CONNECTED");

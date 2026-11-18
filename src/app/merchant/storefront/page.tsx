@@ -15,6 +15,7 @@ import { lojaVirtualAgora } from "@/lib/domain/loja-agora";
 import { PrecisaDeVoce } from "@/components/app/precisa-de-voce";
 import { DominioProprio } from "@/components/app/dominio-proprio";
 import { registrosDns } from "@/lib/domain/dominio-proprio";
+import { enderecoDeTeste } from "@/lib/store-url";
 import { dominioDoEmail } from "@/lib/domain/email-marca";
 import { EmailDaMarca } from "@/components/app/email-da-marca";
 
@@ -32,6 +33,7 @@ export default async function StorefrontPage() {
   const { current } = await getStoreTheme(store.id);
   const onboarding = computeOnboarding(store);
   const url = `/store/${store.slug}`;
+  const teste = commerce ? enderecoDeTeste(store.slug) : null;
   // D212: o que falta para vender (vermelho) e o que dá confiança ao cliente (amarelo), com o atalho para resolver.
   const agoraLoja = commerce ? lojaVirtualAgora((await getStoreReadiness(await getDb(), store.id)).items) : [];
   return (
@@ -51,8 +53,14 @@ export default async function StorefrontPage() {
           <Card id="dominio">
             <CardHeader><div><CardTitle>Endereço e domínio próprio</CardTitle><CardDescription>{podeDominio ? "Use o domínio da sua marca, em qualquer plano." : "Domínio próprio disponível nos planos superiores."}</CardDescription></div></CardHeader>
             <CardContent className="space-y-3 text-sm">
-              <div className="flex items-center justify-between gap-2"><span className="flex min-w-0 items-center gap-2 text-muted-foreground"><Globe className="size-4 shrink-0" /> <span className="truncate">{url}</span></span><Badge tone="success">Ativo</Badge></div>
-              {podeDominio ? <DominioProprio dominio={store.customDomain} status={store.domainStatus} registros={store.customDomain ? registrosDns(store.customDomain) : []} enderecoAtual={url} /> : <div className="flex items-center justify-between gap-2"><span className="text-muted-foreground">{store.customDomain ?? "Domínio próprio"}</span><StatusBadge value={store.domainStatus} /></div>}
+              {/* Endereço oficial (domínio próprio conectado) e endereço de teste (sempre ativo), como nas grandes plataformas. */}
+              {store.customDomain && store.domainStatus === "CONNECTED" ? (
+                <div className="grid gap-0.5"><span className="text-xs font-medium text-muted-foreground">Endereço oficial</span><a href={`https://${store.customDomain}`} target="_blank" rel="noreferrer" className="flex min-w-0 items-center gap-2 font-medium hover:underline"><Globe className="size-4 shrink-0" /> <span className="truncate">https://{store.customDomain}</span></a></div>
+              ) : null}
+              {teste ? (
+                <div className="grid gap-0.5"><span className="text-xs font-medium text-muted-foreground">Endereço para testes (sempre ativo)</span><span className="flex items-center justify-between gap-2"><a href={teste} target="_blank" rel="noreferrer" className="flex min-w-0 items-center gap-2 hover:underline"><Globe className="size-4 shrink-0" /> <span className="truncate">{teste.replace("https://", "")}</span></a><Badge tone="success">Ativo</Badge></span></div>
+              ) : <div className="flex items-center justify-between gap-2"><span className="flex min-w-0 items-center gap-2 text-muted-foreground"><Globe className="size-4 shrink-0" /> <span className="truncate">{url}</span></span><Badge tone="success">Ativo</Badge></div>}
+              {podeDominio ? <DominioProprio dominio={store.customDomain} status={store.domainStatus} registros={store.customDomain ? registrosDns(store.customDomain) : []} enderecoAtual={teste ? teste.replace("https://", "") : url} /> : <div className="flex items-center justify-between gap-2"><span className="text-muted-foreground">{store.customDomain ?? "Domínio próprio"}</span><StatusBadge value={store.domainStatus} /></div>}
             </CardContent>
           </Card>
           {podeDominio && store.customDomain ? (

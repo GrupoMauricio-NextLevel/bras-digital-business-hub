@@ -6,6 +6,7 @@ import { PageHeader } from "@/components/app/page-header";
 import { DataTable } from "@/components/app/data-table";
 import { EmptyState } from "@/components/app/empty-state";
 import { lojistasAgora } from "@/lib/domain/master-agora";
+import { hospedagemAutomatica } from "@/lib/domain/dominio-proprio";
 import { PrecisaDeVoce } from "@/components/app/precisa-de-voce";
 
 export const dynamic = "force-dynamic";
@@ -16,7 +17,7 @@ export default async function CommerceStoresPage() {
   return (
     <>
       <PageHeader eyebrow="NextLevel Commerce" title="Lojistas" description="Cada loja da Commerce com a situação de pagamento (a mesma regra em todo o Master), o plano e o atalho para ver como o lojista vê." />
-      <PrecisaDeVoce itens={lojistasAgora(data.stores.map(({ store, situacao }) => ({ id: store.id, nome: store.name, publicada: !!store.publishedAt, criadaEm: store.createdAt, pagamentoLoja: store.paymentStatus, s: situacao })))} vazio="Todas as lojas andando: nenhuma parada, sem Mercado Pago ou vencida." descricao="Lojas que travaram: vencidas, criadas e não publicadas, ou publicadas sem receber pagamento." />
+      <PrecisaDeVoce itens={lojistasAgora(data.stores.map(({ store, situacao }) => ({ id: store.id, nome: store.name, publicada: !!store.publishedAt, criadaEm: store.createdAt, pagamentoLoja: store.paymentStatus, s: situacao, dominio: store.customDomain, dominioStatus: store.domainStatus })), new Date(), hospedagemAutomatica())} vazio="Todas as lojas andando: nenhuma parada, sem Mercado Pago ou vencida." descricao="Lojas que travaram: vencidas, criadas e não publicadas, ou publicadas sem receber pagamento." />
       <DataTable rows={data.stores} rowKey={({ store }) => store.id}
         empty={<EmptyState title="Nenhuma loja Commerce encontrada" description="As lojas aparecem aqui assim que forem criadas." />}
         columns={[

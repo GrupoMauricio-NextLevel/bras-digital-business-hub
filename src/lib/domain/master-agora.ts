@@ -21,13 +21,15 @@ export function receitaAgora(lojas: { id: string; nome: string; s: SituacaoComer
   return ordenar(l);
 }
 
-export function lojistasAgora(lojas: { id: string; nome: string; publicada: boolean; criadaEm: string; pagamentoLoja: string; s: SituacaoComercial }[], agora = new Date()): ItemAgora[] {
+export function lojistasAgora(lojas: { id: string; nome: string; publicada: boolean; criadaEm: string; pagamentoLoja: string; s: SituacaoComercial; dominio?: string | null; dominioStatus?: string | null }[], agora = new Date(), hospedagemAutomatica = false): ItemAgora[] {
   const l: ItemAgora[] = [];
   for (const x of lojas) {
     if (x.s.pagamento === "vencido") { l.push({ id: x.id, titulo: `${x.nome}: acesso vencido`, detalhe: "A loja pode estar bloqueada para vender.", tom: "danger", href: ficha(x.id), acao: "Resolver" }); continue; }
     const dias = Math.floor((agora.getTime() - new Date(x.criadaEm).getTime()) / DIA);
     if (!x.publicada && dias >= 3) l.push({ id: x.id, titulo: `${x.nome}: criada há ${dias} dias e ainda não publicada`, detalhe: "Ofereça ajuda para montar e publicar (ou a Loja Pronta).", tom: "warning", href: ficha(x.id), acao: "Ajudar" });
     else if (x.publicada && x.pagamentoLoja !== "CONNECTED") l.push({ id: x.id, titulo: `${x.nome}: publicada sem Mercado Pago`, detalhe: "Os clientes veem a loja, mas a loja não recebe pagamento real.", tom: "warning", href: ficha(x.id), acao: "Ajudar" });
+    // Domínio próprio esperando (D234): sem a chave do Render, alguém da equipe cadastra o domínio na hospedagem.
+    if (x.dominio && x.dominioStatus === "PENDING") l.push({ id: `${x.id}-dominio`, titulo: `${x.nome}: domínio ${x.dominio} aguardando ativação`, detalhe: hospedagemAutomatica ? "Cadastrado na hospedagem; falta o DNS do cliente apontar ou o HTTPS sair." : "Cadastre no Render (serviço superdrop → Settings → Custom Domains) o domínio e o www, ou coloque a RENDER_API_KEY para ser automático.", tom: "warning", href: ficha(x.id), acao: "Ver" });
   }
   return ordenar(l);
 }
