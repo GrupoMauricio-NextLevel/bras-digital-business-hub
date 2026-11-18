@@ -1,5 +1,12 @@
 [
  {
+  "numero": 346,
+  "frente": "E-commerce",
+  "titulo": "Domínio próprio sem promessa falsa, aviso no Master e endereço de teste de toda loja (slug.nextlevelcommerce.com.br)",
+  "data": "2026-11-18",
+  "resumo": "Pedido do dono (entrega do Site Express do Vestiário das Lendas, com prints da wBuy): \"em outra plataforma fica sempre uma URL para teste, como um subdomínio nosso, e a URL oficial; precisamos disso\"; \"domínio próprio parece lento ou com…"
+ },
+ {
   "numero": 345,
   "frente": "E-commerce",
   "titulo": "Precificação tudo em um aprovada: quatro planos, zero taxa sobre as vendas e implantação em todo plano",
@@ -271,12 +278,5 @@
   "titulo": "NextLevel Business, fase NB2: páginas do site, serviços da empresa e modelos prontos (Institucional e Academia)",
   "data": "2026-11-16",
   "resumo": "Pedido do dono: \"vamos desenvolver\" (depois da junção com as outras conversas, D304 a D306). Plano: docs/prompts/nextlevel-business-coracao-do-negocio.md, NB2."
- },
- {
-  "numero": 306,
-  "frente": "E-commerce",
-  "titulo": "NextLevel Business, fase NB1: dois caminhos na entrada, menu do gerenciador do negócio e vitrine do caminho Site",
-  "data": "2026-11-14",
-  "resumo": "Pedido do dono: \"prossiga\" (NB1 do plano docs/prompts/nextlevel-business-coracao-do-negocio.md, depois da NB0, D305)."
  }
 ]

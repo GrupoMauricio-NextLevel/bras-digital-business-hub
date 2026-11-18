@@ -53,6 +53,13 @@ describe("Precisa de você do Master (D215)", () => {
     ], agora);
     expect(r.map((x) => x.id)).toEqual(["a", "b"]);
   });
+  it("lojistas: domínio próprio aguardando ativação aparece para a equipe, com o caminho certo", () => {
+    const base = { publicada: true, criadaEm: em(-10), pagamentoLoja: "CONNECTED", s: sit("pagante", 20) };
+    const r = lojistasAgora([{ id: "v", nome: "Vestiário", ...base, dominio: "vestiariodaslendas.com.br", dominioStatus: "PENDING" }, { id: "w", nome: "W", ...base, dominio: "w.com.br", dominioStatus: "CONNECTED" }], agora);
+    expect(r.map((x) => x.id)).toEqual(["v-dominio"]);
+    expect(r[0]!.detalhe).toMatch(/Custom Domains/);
+    expect(lojistasAgora([{ id: "v", nome: "V", ...base, dominio: "v.com.br", dominioStatus: "PENDING" }], agora, true)[0]!.detalhe).toMatch(/Cadastrado na hospedagem/);
+  });
   it("crescimento: Mercado Pago primeiro, depois e-mail e IA", () => {
     expect(crescimentoAgora({ mp: { connected: false }, emailLigado: false, iaComChave: false, iaUsoReal: false }).map((x) => x.id)).toEqual(["mp", "email", "ia"]);
     expect(crescimentoAgora({ mp: { connected: true }, emailLigado: true, iaComChave: true, iaUsoReal: true })).toEqual([]);

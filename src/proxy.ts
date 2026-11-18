@@ -1,5 +1,5 @@
 import { NextResponse, type NextFetchEvent, type NextRequest } from "next/server";
-import { slugFromHost } from "@/lib/store-url";
+import { slugFromHost, TESTE_DOMAIN } from "@/lib/store-url";
 import { PANEL_PREFIXES, routeHost } from "@/lib/host-routing";
 import { contarRobo, roboDe } from "@/lib/trafego/robos";
 import { brandOfHostStrict, brandPreviewAllowed } from "@/lib/brand";
@@ -134,8 +134,17 @@ function route(req: NextRequest) {
     else res.cookies.set("nl-brand", "NEXTLEVEL_COMMERCE", { path: "/", sameSite: "lax", secure: proto === "https", maxAge: 60 * 60 * 24 * 30 });
     return res;
   }
-  // Endereço público × endereço dos painéis de cada marca (ver src/lib/host-routing.ts).
+  // Endereço de teste da loja (slug.<LOJA_TESTE_DOMINIO>): vem antes das regras da marca, que trataria o subdomínio como
+  // página pública da Commerce.
   const hostHeader = req.headers.get("x-forwarded-host") ?? req.headers.get("host");
+  const slugTeste = TESTE_DOMAIN ? slugFromHost(hostHeader, TESTE_DOMAIN) : null;
+  if (slugTeste) {
+    const url = req.nextUrl.clone();
+    if (url.pathname.startsWith("/store/") || url.pathname.startsWith("/api/") || url.pathname.startsWith("/assets/") || url.pathname.startsWith("/_next/")) return NextResponse.next(withPath(req));
+    url.pathname = `/store/${slugTeste}${url.pathname === "/" ? "" : url.pathname}`;
+    return NextResponse.rewrite(url, withPath(req));
+  }
+  // Endereço público × endereço dos painéis de cada marca (ver src/lib/host-routing.ts).
   const route = routeHost({ host: hostHeader, pathname: path, search: req.nextUrl.search, method: req.method });
   if (route.kind === "redirect") {
     // Destino no mesmo endereço: monta o endereço completo com o host recebido (o Next não aceita Location relativa).
