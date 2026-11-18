@@ -8,6 +8,7 @@ import { buyTheme } from "@/lib/themes/install";
 import { editingContextFor } from "@/lib/themes/license";
 import { liberarTemaPelaEquipe, temasParaLiberar } from "@/lib/themes/liberar-equipe";
 import { structureRights } from "@/lib/themes/policy";
+import { resolveTemplate, saveTemplateDraft, publishAllDrafts } from "@/lib/themes/store";
 import { freshDb } from "./setup";
 
 let ctx: Awaited<ReturnType<typeof freshDb>>;
@@ -17,7 +18,7 @@ beforeAll(async () => { ctx = await freshDb(); }, 120_000);
 let n = 0;
 async function novaLoja() {
   n++;
-  const r = await signupMember(ctx.db, { storeName: `Loja Equipe ${n}`, ownerName: "Ana", email: `equipe${n}@exemplo.com`, password: "senha-forte-123", taxId: ["111.444.777-35", "529.982.247-25", "390.533.447-05", "168.995.350-09", "935.411.347-80", "123.456.789-09"][n - 1]!, offer: "STORE_SUBDOMAIN", independent: true, brand: "NEXTLEVEL_COMMERCE" });
+  const r = await signupMember(ctx.db, { storeName: `Loja Equipe ${n}`, ownerName: "Ana", email: `equipe${n}@exemplo.com`, password: "senha-forte-123", taxId: ["111.444.777-35", "529.982.247-25", "390.533.447-05", "168.995.350-09", "935.411.347-80", "123.456.789-09", "714.602.380-01", "248.438.034-80"][n - 1]!, offer: "STORE_SUBDOMAIN", independent: true, brand: "NEXTLEVEL_COMMERCE" });
   for (const inv of await ctx.db.select().from(financeInvoices).where(eq(financeInvoices.storeId, r.storeId))) await markInvoicePaid(ctx.db, inv.id);
   return { storeId: r.storeId, owner: actorFromUser((await ctx.db.query.users.findFirst({ where: eq(users.id, r.userId) }))!) };
 }
@@ -69,6 +70,28 @@ describe("liberação de tema pela equipe (D329)", () => {
     const c = await editingContextFor(ctx.db, store);
     expect(c.level).toBe(4); expect(structureRights(c).add).toBe("any"); expect(structureRights(c).reorder).toBe(true);
     expect((await temasParaLiberar(ctx.db, storeId)).editorCompleto).toBe(true);
+  });
+
+  it("Manto Premium (exclusivo da equipe): libera, instala, mantém os banners da loja e abre a edição N4", async () => {
+    const { storeId, owner } = await novaLoja();
+    const store = (await ctx.db.query.stores.findFirst({ where: (t, { eq: e }) => e(t.id, storeId) }))!;
+    expect((await temasParaLiberar(ctx.db, storeId)).temas.find((t) => t.key === "manto")).toMatchObject({ release: "draft", owned: false });
+    // A loja tinha um banner próprio no destaque.
+    const home = (await resolveTemplate(ctx.db, store, "home")).template;
+    const heroId = home.order.find((id) => home.sections[id]!.type === "hero-banner");
+    expect(heroId).toBeTruthy();
+    const h = home.sections[heroId!]!; const b0 = h.blockOrder[0]!;
+    h.blocks[b0]!.settings = { ...h.blocks[b0]!.settings, image: "/demos/x/banner1.webp", imageMobile: "/demos/x/banner1m.webp" };
+    await saveTemplateDraft(ctx.db, owner, storeId, "home", home, { skipPolicy: true });
+    await publishAllDrafts(ctx.db, owner, storeId, "teste");
+    await liberarTemaPelaEquipe(ctx.db, { storeId, ...operador(), item: "manto", modo: "CORTESIA", instalar: true }, AGORA);
+    expect(await ativo(storeId)).toBe("manto");
+    const novo = (await resolveTemplate(ctx.db, store, "home")).template;
+    expect(novo.order.map((id) => novo.sections[id]!.type)).toContain("image-tiles");
+    const hero = Object.values(novo.sections).find((x) => x.type === "hero-banner")!;
+    expect(hero.blocks[hero.blockOrder[0]!]!.settings).toMatchObject({ image: "/demos/x/banner1.webp", imageMobile: "/demos/x/banner1m.webp" });
+    const c = await editingContextFor(ctx.db, store);
+    expect(c.level).toBe(4); expect(structureRights(c).add).toBe("any");
   });
 
   it("tema grátis não precisa de liberação", async () => {

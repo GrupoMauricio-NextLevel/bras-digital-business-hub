@@ -87,6 +87,8 @@ export async function presetContextFor(db: Database, store: typeof stores.$infer
   const ctx: PresetContext = {
     storeName: store.name, tagline: store.tagline, primary: current.globals.style.primary, accent: current.globals.style.accent,
     announcement: String(oldAnn?.settings.text ?? ""), footerText: String(oldFoot?.settings.text ?? ""),
+    // Slides com imagem do "Destaque com banners" atual: temas que preservam os banners do cliente (Manto Premium, D348) usam.
+    heroSlides: (() => { const h = Object.values(current.home.sections).find((x) => x.type === "hero-banner" && !x.hidden); return h ? h.blockOrder.map((b) => h.blocks[b]!).filter((b) => b.type === "slide" && !b.hidden && b.settings.image).map((b) => ({ ...b.settings })) : undefined; })(),
     hero: oldHero && oldTitle && oldTitle !== DEFAULT_HERO_TITLE && oldTitle !== `Bem-vindo à ${store.name}` ? { title: oldTitle, subtitle: String(oldHero.settings.subtitle ?? ""), ctaLabel: String(oldHero.settings.ctaLabel ?? "Ver catálogo") } : undefined,
     now,
   };

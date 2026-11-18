@@ -178,6 +178,38 @@ export function NavCards({ settings, blocks, ctx }: SectionProps) {
   );
 }
 
+const RATIO: Record<string, string> = { portrait: "aspect-[4/5]", square: "aspect-square", landscape: "aspect-[4/3]" };
+const COLS: Record<string, string> = { "3": "md:grid-cols-3", "4": "md:grid-cols-4", "5": "md:grid-cols-5", "6": "md:grid-cols-6" };
+
+/** Grade de imagens com link (D348): a arte já traz o texto; no celular, carrossel deslizante com encaixe. */
+export function ImageTiles({ settings, blocks, ctx }: SectionProps) {
+  const tiles = blocks.filter((b) => ctx.editing || str(b.settings.image)).slice(0, 12);
+  if (!tiles.length) return null;
+  const ratio = RATIO[str(settings.ratio)] ?? RATIO.portrait!;
+  const carrossel = settings.mobileCarousel !== false;
+  const heading = str(settings.heading);
+  return (
+    <section aria-label={heading || "Navegue pela loja"} className="mt-10" data-banner-position="image-tiles">
+      {heading ? <h2 className="text-xl font-semibold tracking-tight sm:text-2xl"><Emph text={heading} /></h2> : null}
+      {str(settings.subtitle) ? <p className="mt-1 text-sm opacity-75">{str(settings.subtitle)}</p> : null}
+      <ul className={cn(heading || str(settings.subtitle) ? "mt-4" : "", carrossel
+        ? "-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none] md:mx-0 md:grid md:overflow-visible md:px-0 md:pb-0"
+        : "grid grid-cols-2", "md:gap-4", COLS[str(settings.columns)] ?? COLS["5"])}>
+        {tiles.map((b) => {
+          const s = b.settings;
+          return (
+            <li key={b.id} className={cn(carrossel && "w-[62%] shrink-0 snap-start sm:w-[40%] md:w-auto")}>
+              <Link href={resolveLink(ctx.base, str(s.link))} prefetch={false} className={cn("group relative block overflow-hidden rounded-[var(--sf-radius,16px)] focus-visible:outline-2 focus-visible:outline-offset-2", ratio)} data-image-tile>
+                <BannerImage s={{ image: str(s.image), imageMobile: str(s.imageMobile), alt: str(s.alt), decorative: !str(s.alt) }} sizes="(min-width: 768px) 20vw, 62vw" priority={false} className="transition duration-500 group-hover:scale-[1.03] motion-reduce:transition-none" />
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  );
+}
+
 /** Banner do topo da categoria: o da categoria aberta; sem categoria, o banner "geral" (categoria vazia). */
 export function CategoryBanner({ blocks, ctx }: SectionProps) {
   // A categoria do banner pode ser o id (escolhida no editor) ou o endereço (temas instalados com o catálogo de exemplo).

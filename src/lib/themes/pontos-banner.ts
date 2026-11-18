@@ -11,6 +11,7 @@ export const TIPOS_BANNER: Record<string, { nome: string; onde: string; pagina: 
   slideshow: { nome: "Apresentação de slides", onde: "Página inicial", pagina: "home", bloco: "slide" },
   "banner-duo": { nome: "Dupla de banners", onde: "Página inicial, entre as vitrines", pagina: "home", bloco: "banner" },
   "nav-cards": { nome: "Cartões de navegação", onde: "Página inicial: levam a Novidades, Ofertas e categorias", pagina: "home", bloco: "card" },
+  "image-tiles": { nome: "Grade de imagens com link", onde: "Página inicial: categorias e faixas de preço em imagem", pagina: "home", bloco: "tile" },
   "banner-mosaic": { nome: "Mosaico de banners", onde: "Página inicial, campanhas e categorias", pagina: "home", bloco: "banner" },
   "banner-strip": { nome: "Faixa de campanha", onde: "Página inicial, imagem larga com botão", pagina: "home", bloco: "banner" },
   "category-banner": { nome: "Banner de cada categoria", onde: "Topo das páginas de categoria", pagina: "collection", bloco: "banner" },

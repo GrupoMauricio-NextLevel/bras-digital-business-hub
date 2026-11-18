@@ -46,7 +46,7 @@ export function LiberarTema({ via, storeId, temas, editorCompleto, inicial }: { 
       <div>
         <Label htmlFor="lt-item">O que liberar</Label>
         <Select id="lt-item" value={item} onChange={(e) => { setItem(e.target.value); const t = temas.find((x) => x.key === e.target.value); if (t) setValor(t.priceCents); }}>
-          {temas.map((t) => <option key={t.key} value={t.key}>{t.name} · {NIVEL[t.level]} · {formatBRL(t.priceCents)}{t.owned ? " · já liberado" : ""}{t.active ? " · ativo" : ""}{t.release !== "released" ? " · em revisão" : ""}</option>)}
+          {temas.map((t) => <option key={t.key} value={t.key}>{t.name} · {NIVEL[t.level]} · {formatBRL(t.priceCents)}{t.owned ? " · já liberado" : ""}{t.active ? " · ativo" : ""}{t.release === "draft" ? " · exclusivo da equipe" : t.release !== "released" ? " · em revisão" : ""}</option>)}
           <option value="editor-completo">Edição completa do editor (todas as funções, em qualquer tema){editorCompleto ? " · já liberada" : ""}</option>
         </Select>
         {editor ? <p className="mt-1 text-xs text-muted-foreground">Libera adicionar, mover e duplicar seções, todos os ajustes de estilo e os limites de banners do nível mais alto, no tema que estiver ativo. Bom para os sites montados pela equipe.</p> : null}

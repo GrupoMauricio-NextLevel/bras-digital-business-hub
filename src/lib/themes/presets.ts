@@ -1,3 +1,4 @@
+import { slugify } from "@/lib/ids";
 import { sectionSchema } from "./sections";
 import { buildTemplate, normalizeStyle, type SectionSpec } from "./template";
 import { ATACADO, BEAUTY, CASA, CONECTA, MODA, SPORT, withPackage } from "./familias-specs";
@@ -12,6 +13,8 @@ export type PresetContext = { storeName: string; tagline: string | null; primary
   categories?: { name: string; slug: string }[];
   /** Imagem própria de cada categoria (nome → imagem), quando a loja tem (lojas de demonstração: pacote visual). */
   categoryImages?: Record<string, string>;
+  /** Slides do destaque que a loja já tinha (imagem, celular e textos): temas que preservam os banners do cliente ao instalar. */
+  heroSlides?: Record<string, SettingValue>[];
   /** Código do cupom de boas-vindas (lojas de demonstração); clientes escolhem um cupom ativo no editor. */
   welcomeCode?: string;
   now: Date };
@@ -105,6 +108,43 @@ function signature(c: PresetContext): ThemePreset {
   };
 }
 
+/** Manto Premium (D348): camisas de time em preto e dourado; imagens em /public/temas/manto-premium (sem logo de terceiros). */
+const MANTO = "/temas/manto-premium";
+const MANTO_CATEGORIAS: [string, string, string][] = [
+  ["torcedor", "Torcedor", "Camisas versão torcedor"], ["jogador", "Jogador", "Camisas versão jogador"], ["retro", "Retrô", "Camisas retrô, clássicos do futebol"],
+  ["selecoes", "Seleções", "Camisas de seleções"], ["nacional", "Linha Nacional", "Times do Brasil"], ["feminino", "Feminino", "Camisas femininas"],
+  ["infantil", "Infantil", "Conjuntos infantis"], ["adulto", "Conjuntos Adulto", "Conjuntos adulto, kits completos"], ["nba", "NBA", "Regatas de basquete"], ["grade12", "Grade com 12 peças", "Grade com 12 peças, para revenda"],
+];
+function manto(c: PresetContext): ThemePreset {
+  const style = normalizeStyle({ primary: "#0b0b0b", accent: "#d4af4a", headingFont: "condensada", bodyFont: "moderna", radius: 14, buttons: "solid", quickView: true, animations: true });
+  const slides = c.heroSlides?.length ? c.heroSlides.slice(0, 6).map((settings) => ({ type: "slide", settings })) : [{ type: "slide", settings: { title: c.hero?.title ?? "Vista o manto. Viva o jogo.", subtitle: c.hero?.subtitle ?? `Camisas de time, retrô e seleções na ${c.storeName}.`, ctaLabel: c.hero?.ctaLabel ?? "Ver camisas", link: "/catalog" } }];
+  const wa = (): Item => ["cta", { type: "cta-banner", settings: { heading: "Dúvida no tamanho? Chame a gente", text: "Atendimento pelo WhatsApp para escolher o tamanho certo e acompanhar o pedido.", buttonLabel: "Chamar no WhatsApp", tone: "neutral" } }];
+  return {
+    style,
+    globals: globals(style, [announcement(c, "Enviamos para todo o Brasil", "primary"), ["header", { type: "header", settings: { tone: "dark", sticky: true } }]], [["footer", { type: "footer", settings: { text: c.footerText, tone: "dark" } }]]),
+    pages: pages(
+      [
+        ["hero", { type: "hero-banner", settings: { height: "lg", fullWidth: true, autoplay: true, interval: 6 }, blocks: slides }],
+        ["trust", { type: "trust-bar", blocks: blocksOf("trust-bar") }],
+        ["cats", { type: "image-tiles", settings: { heading: "Escolha o seu *manto*", subtitle: "Navegue pelo tipo de camisa", ratio: "portrait", columns: "5", mobileCarousel: true }, blocks: MANTO_CATEGORIAS.map(([arq, nome, alt]) => ({ type: "tile", settings: { image: `${MANTO}/categoria-${arq}.webp`, alt, link: `/catalog?category=${slugify(nome)}` } })) }],
+        ["best", { type: "product-showcase", settings: { title: "Mais vendidos", subtitle: "Os favoritos da torcida", count: 8, source: "featured" } }],
+        ["precos", { type: "image-tiles", settings: { heading: "Compre por faixa de preço", ratio: "square", columns: "3", mobileCarousel: true }, blocks: [
+          { type: "tile", settings: { image: `${MANTO}/preco-ate-60.webp`, alt: "Camisas até 60 reais", link: "/catalog?ate=60&sort=price-asc" } },
+          { type: "tile", settings: { image: `${MANTO}/preco-ate-80.webp`, alt: "Camisas até 80 reais", link: "/catalog?ate=80&sort=price-asc" } },
+          { type: "tile", settings: { image: `${MANTO}/preco-acima-100.webp`, alt: "Camisas acima de 100 reais", link: "/catalog?acima=100&sort=price-asc" } },
+        ] }],
+        ["latest", { type: "product-showcase", settings: { title: "Lançamentos", subtitle: "Recém-chegados", source: "latest", count: 8 } }],
+        ["faq", { type: "faq", blocks: blocksOf("faq") }],
+        wa(),
+        ["grid", { type: "product-grid" }],
+      ],
+      [["product", { type: "product-main", settings: { gallery: "thumbs", stickyBuyBar: true } }], ["tabs", { type: "product-tabs", blocks: blocksOf("product-tabs") }], ["trust", { type: "trust-bar", blocks: blocksOf("trust-bar") }], ["related", { type: "product-related" }]],
+      [["header", { type: "collection-header", settings: { showSort: true } }], ["grid", { type: "collection-grid" }], wa()],
+      [["cart", { type: "cart-main" }], ["trust", { type: "trust-bar", blocks: blocksOf("trust-bar") }], ["more", { type: "product-showcase", settings: { title: "Aproveite e leve também", subtitle: "", source: "latest", count: 4 } }]],
+    ),
+  };
+}
+
 // Famílias (composição por nível em presets-familia.ts; identidade em familias-specs.ts). Arena (N3 Sport) mantém a
 // composição com que já é vendido; os demais temas das famílias usam o construtor do nível.
 const [trama, lume, editorial, atelier] = familyBuilders(withPackage(MODA, "moda"));
@@ -113,6 +153,6 @@ const [lance, torcida, , podio] = familyBuilders(withPackage(SPORT, "sport"));
 const [petala, brilho, aura, musa] = familyBuilders(withPackage(BEAUTY, "beauty"));
 const [sinal, pulso, circuito, orbita] = familyBuilders(withPackage(CONECTA, "conecta"));
 const [fardo, lote, galpao, porto] = familyBuilders(withPackage(ATACADO, "atacado"));
-const BUILDERS: Record<string, (c: PresetContext) => ThemePreset> = { starter, signature, trama, lume, editorial, atelier, lar, ninho, varanda, morada, lance, torcida, arena, podio, petala, brilho, aura, musa, sinal, pulso, circuito, orbita, fardo, lote, galpao, porto };
+const BUILDERS: Record<string, (c: PresetContext) => ThemePreset> = { starter, signature, trama, lume, editorial, atelier, lar, ninho, varanda, morada, lance, torcida, arena, podio, manto, petala, brilho, aura, musa, sinal, pulso, circuito, orbita, fardo, lote, galpao, porto };
 export const presetKeys = Object.keys(BUILDERS);
 export function buildPreset(key: string, ctx: PresetContext): ThemePreset | null { return BUILDERS[key]?.(ctx) ?? null; }

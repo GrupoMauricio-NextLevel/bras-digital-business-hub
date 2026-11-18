@@ -228,6 +228,25 @@ export const SECTION_SCHEMAS: SectionSchema[] = [
     presets: [{ name: "Cartões de navegação", blocks: [{ type: "card", settings: { title: "Novidades", ctaLabel: "Ver o que chegou", link: "/catalog?sort=newest" } }, { type: "card", settings: { title: "Ofertas", ctaLabel: "Ver ofertas", link: "/catalog" } }] }],
   },
   {
+    // Grade de imagens com link (D348): para cartões com o texto já desenhado na imagem (categorias, faixas de preço).
+    // Nada por cima da imagem; no celular vira carrossel deslizante. Imagem própria de celular opcional.
+    type: "image-tiles", name: "Grade de imagens com link", description: "Até 12 imagens lado a lado, cada uma com link, sem texto por cima (para cartões que já trazem o texto na arte, como categorias e faixas de preço). No celular, vira carrossel.", category: "Destaque", region: "content", pages: ["home", "collection"], requires: "navigation.cards", maxBlocks: 12,
+    settings: [
+      { id: "heading", type: "text", label: "Título (opcional)", default: "", maxLength: 80 },
+      { id: "subtitle", type: "text", label: "Texto abaixo do título (opcional)", default: "", maxLength: 140 },
+      { id: "ratio", type: "select", label: "Formato das imagens", options: [{ value: "portrait", label: "Retrato 4:5" }, { value: "square", label: "Quadrado" }, { value: "landscape", label: "Paisagem 4:3" }], default: "portrait" },
+      { id: "columns", type: "select", label: "Imagens por linha no computador", options: [{ value: "3", label: "3" }, { value: "4", label: "4" }, { value: "5", label: "5" }, { value: "6", label: "6" }], default: "5" },
+      { id: "mobileCarousel", type: "checkbox", label: "No celular, deslizar para o lado", default: true },
+    ],
+    blocks: [{ type: "tile", name: "Imagem", limit: 12, settings: [
+      { id: "image", type: "image", label: "Imagem do computador", default: "", group: "Imagem" },
+      { id: "imageMobile", type: "image", label: "Imagem do celular (opcional)", default: "", group: "Imagem" },
+      { id: "alt", type: "text", label: "Descrição da imagem", default: "", maxLength: 140, group: "Imagem", info: "Lida por leitores de tela e pelo Google. Escreva o que a imagem diz, ex.: Camisas retrô." },
+      { id: "link", type: "url", label: "Link", default: "/catalog", group: "Texto" },
+    ] }],
+    presets: [{ name: "Grade de imagens com link", blocks: [{ type: "tile", settings: { alt: "Categoria 1" } }, { type: "tile", settings: { alt: "Categoria 2" } }, { type: "tile", settings: { alt: "Categoria 3" } }] }],
+  },
+  {
     type: "category-banner", name: "Banner da categoria", description: "Faixa com imagem e texto no topo da página de cada categoria. Cada banner vale para uma categoria; um sem categoria aparece em “Todos os produtos”.", category: "Destaque", region: "content", pages: ["collection"], requires: "navigation.categoryBanner", maxBlocks: 12, singleton: true,
     settings: [],
     blocks: [{ type: "banner", name: "Banner de categoria", limit: 12, maxByLevel: [4, 8, 12, 12], settings: [

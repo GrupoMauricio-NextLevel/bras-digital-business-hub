@@ -23,7 +23,7 @@ const demoStore = async (key: string) => (await ctx.db.query.stores.findFirst({ 
 
 describe("lojas de demonstração dos temas", () => {
   it("existe uma por tema, com os produtos de exemplo do segmento, o tema instalado e sem dono com acesso", async () => {
-    for (const t of THEME_CATALOG) {
+    for (const t of THEME_CATALOG.filter((x) => x.release !== "draft")) {
       const s = await demoStore(t.key);
       expect(s.showcaseTheme, t.key).toBe(t.key);
       expect(s.status).toBe("CLOSED");

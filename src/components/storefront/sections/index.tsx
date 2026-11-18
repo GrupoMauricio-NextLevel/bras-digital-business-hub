@@ -5,7 +5,7 @@ import { ArenaHero, CategoryGrid, CountdownSection, CtaBanner, Faq, HeaderPlus, 
 import { SecuritySeals, StoreAbout, WhatsappFloat } from "./trust";
 import { ContactInfo, LeadForm, ServicesGrid, WorkGallery } from "./negocio";
 import { BannerDuo, BannerMosaic, BannerStrip, HeroBanner } from "./banners";
-import { CategoryBanner, HeroImmersive, HeroLayers, NavCards, WelcomeCoupon } from "./navigation";
+import { CategoryBanner, HeroImmersive, HeroLayers, ImageTiles, NavCards, WelcomeCoupon } from "./navigation";
 import { Reveal } from "@/components/portal/reveal";
 import { sectionSchema } from "@/lib/themes/sections";
 import { PLATFORM_MODULES } from "@/lib/themes/levels";
@@ -20,7 +20,7 @@ export const SECTION_COMPONENTS: Record<string, (props: SectionProps) => React.R
   "product-main": ProductMain, "product-related": ProductRelated, "collection-header": CollectionHeader, "collection-grid": CollectionGrid, "cart-main": CartMain,
   "arena-hero": ArenaHero, "image-hero": ImageHero, slideshow: SlideshowSection, "video-hero": VideoHero, "category-grid": CategoryGrid, "image-with-text": ImageWithText, testimonials: Testimonials, faq: Faq, lookbook: Lookbook, countdown: CountdownSection, "cta-banner": CtaBanner, "product-tabs": ProductTabs, "header-plus": HeaderPlus,
   "hero-banner": HeroBanner, "banner-duo": BannerDuo, "banner-strip": BannerStrip, "banner-mosaic": BannerMosaic,
-  "hero-layers": HeroLayers, "hero-immersive": HeroImmersive, "nav-cards": NavCards, "category-banner": CategoryBanner, "welcome-coupon": WelcomeCoupon,
+  "hero-layers": HeroLayers, "hero-immersive": HeroImmersive, "nav-cards": NavCards, "image-tiles": ImageTiles, "category-banner": CategoryBanner, "welcome-coupon": WelcomeCoupon,
 };
 
 /**

@@ -1,5 +1,12 @@
 [
  {
+  "numero": 348,
+  "frente": "E-commerce",
+  "titulo": "Tema Manto Premium (preto e dourado, camisas de time), exclusivo da equipe, a partir do tema wBuy da Mantos Shop",
+  "data": "2026-11-18",
+  "resumo": "Pedido do dono: instalar no Vestiário das Lendas o tema premium-v3-mauricio.zip (tema da wBuy feito pela NextLevel para a Mantos Shop) \"de forma eficiente por aqui\"; \"pode criar agora e instalar\"."
+ },
+ {
   "numero": 347,
   "frente": "E-commerce",
   "titulo": "Domínio próprio sem promessa falsa, aviso no Master e endereço de teste de toda loja (slug.nextlevelcommerce.com.br)",
@@ -271,12 +278,5 @@
   "titulo": "NextLevel Business, fase NB3: formulário de orçamento no site e Contatos e orçamentos no painel",
   "data": "2026-11-16",
   "resumo": "Pedido do dono: seguir para a NB3 e andar rápido, com testes só no necessário (D308)."
- },
- {
-  "numero": 308,
-  "frente": "E-commerce",
-  "titulo": "Três produtos sobre a mesma conta: NextLevel Business (base), Site e Loja virtual, vendidos em pacotes",
-  "data": "2026-11-16",
-  "resumo": "Decisão do dono (16/11/2026): aprovada a proposta da Parte 0.2 do plano (docs/prompts/nextlevel-business-coracao-do-negocio.md). Também autorizou publicar e seguir para a NB3, com testes só no necessário para andar rápido."
  }
 ]

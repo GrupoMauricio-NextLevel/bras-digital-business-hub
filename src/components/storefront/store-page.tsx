@@ -1,3 +1,4 @@
+import { filtrarPorPreco } from "@/lib/filtro-preco";
 import { notFound } from "next/navigation";
 import { lojaFechadaNaVitrine } from "@/lib/business/vitrine";
 import { menuDoSite, paginaPublica } from "@/lib/business/paginas";
@@ -21,7 +22,7 @@ const WRAP: Record<PageKind, string> = { home: "mx-auto max-w-6xl px-4 pb-16 sm:
  * Monta uma página da loja a partir do modelo (publicado, ou o rascunho na prévia do dono),
  * com os produtos já repartidos entre as seções.
  */
-export async function StorePage({ slug, page, productSlug, query, pagina }: { slug: string; page: PageKind; productSlug?: string; query?: { category?: string; q?: string; sort?: string; produtos?: string }; /** Página livre do site (NB2, D307): endereço `/<slug>`; desenhada como página inicial. */ pagina?: string }) {
+export async function StorePage({ slug, page, productSlug, query, pagina }: { slug: string; page: PageKind; productSlug?: string; query?: { category?: string; q?: string; sort?: string; produtos?: string; ate?: string; acima?: string }; /** Página livre do site (NB2, D307): endereço `/<slug>`; desenhada como página inicial. */ pagina?: string }) {
   const sf = await getStorefront(slug);
   if (!sf) notFound();
   // NB1 (D306): negócio no caminho Site, sem o módulo Loja, não tem catálogo, produto nem carrinho na vitrine.
@@ -54,6 +55,7 @@ export async function StorePage({ slug, page, productSlug, query, pagina }: { sl
   if (page === "collection") {
     const cat = sf.categories.find((c) => c.slug === query?.category); categoryId = cat?.id ?? null;
     products = all.filter((p) => (!cat || p.categoryId === cat.id) && (!query?.q || p.name.toLowerCase().includes(query.q.toLowerCase())));
+    products = filtrarPorPreco(products, query);
     const picked = idsBySkus(catalog, query?.produtos);
     if (picked) products = picked.map((id) => products.find((p) => p.id === id)).filter((p): p is (typeof products)[number] => !!p);
     const sort = query?.sort;

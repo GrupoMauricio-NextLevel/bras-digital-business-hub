@@ -48,7 +48,7 @@ export async function temasParaLiberar(db: Database, storeId: string, now = new 
     temEditorCompleto(db, storeId, now),
   ]);
   const temas: TemaParaLiberar[] = Object.values(THEME_BY_KEY)
-    .filter((t) => t.priceCents > 0 && t.release !== "draft")
+    .filter((t) => t.priceCents > 0)
     .map((t) => ({ key: t.key, name: t.name, level: t.level, priceCents: t.priceCents, owned: owned.has(t.key), active: ativo[0]?.key === t.key, release: t.release }))
     .sort((a, b) => a.level - b.level || a.name.localeCompare(b.name));
   return { temas, editorCompleto: editor, ativo: ativo[0]?.key ?? "starter" };
@@ -66,7 +66,8 @@ export async function liberarTemaPelaEquipe(db: Database, input: { storeId: stri
   if (!hasStorefront(store)) throw new DomainError("NO_STOREFRONT", "Esta loja não tem loja virtual: temas não se aplicam.");
   const editor = p.item === "editor-completo";
   const info = editor ? null : THEME_BY_KEY[p.item];
-  if (!editor && (!info || info.release === "draft")) throw new NotFoundError("Tema não encontrado.");
+  // Tema em rascunho (exclusivo da equipe, ex.: Manto Premium, D348) também pode ser liberado: só a equipe chega aqui.
+  if (!editor && !info) throw new NotFoundError("Tema não encontrado.");
   if (info && info.priceCents === 0) throw new DomainError("FREE_THEME", "Este tema já é grátis: é só instalar.");
   if (editor && p.instalar) throw new DomainError("INVALID", "A Edição completa não se instala: ela vale para o tema que estiver ativo.");
   const ent = editor ? EDITOR_COMPLETO : themeEntitlementKey(p.item);
