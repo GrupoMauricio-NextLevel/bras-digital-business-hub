@@ -19,6 +19,8 @@ const partes = [
   `> **Seu papel:** só o visual, na branch \`abacus/visual\`, no computador do dono. Nunca peça nem use senhas de produção (Neon, Render, Mercado Pago, Resend). Regras completas na parte 2.`,
   `---\n# Parte 1. Regras do projeto (CLAUDE.md)\n\n${ler("CLAUDE.md").replace(/^@AGENTS\.md\s*/, "")}`,
   `---\n# Parte 2. Regras para agentes (AGENTS.md) e guia do Abacus\n\n${ler("AGENTS.md")}\n\n${ler("docs/abacus/COMECE-AQUI.md")}`,
+  `---\n# Parte 2A. Estado de hoje e regras em vigor (leia antes de tudo)\n\n${ler("docs/ESTADO.md")}\n\n${ler("docs/design/DECISOES-VIGENTES.md")}`,
+  `---\n# Parte 2B. Prioridade atual: racional comercial e páginas de venda (D345)\n\n${ler("docs/vendas/RACIONAL-COMERCIAL-E-PAGINAS.md")}`,
   `---\n# Parte 3. Observações do dono sobre as telas\n\n${ler("docs/melhorias/telas-observacoes-do-dono.md")}`,
   `---\n# Parte 4. Base de conhecimento (como a plataforma funciona hoje)\n\n${ler("docs/conhecimento/BC0-INVENTARIO.md")}`,
   `---\n# Parte 5. Decisões recentes (D300 até ${ultima})\n\n${recentes}`,

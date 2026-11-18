@@ -45,3 +45,27 @@ Peça uma mudança pequena (um texto numa tela) e confira: print da tela, tipos 
 ## Sempre
 - Senhas só em conector ou no painel do Render.
 - **GitHub Actions** continua conferindo tudo depois de cada envio; X vermelho no GitHub = corrigir antes de seguir.
+
+## 6. Prioridade atual: páginas de venda (dono, 18/11/2026)
+O pacote de contexto já traz o racional completo (`docs/vendas/RACIONAL-COMERCIAL-E-PAGINAS.md`) na Parte 2B. Comando para colar no modo **Código**, numa conversa nova:
+```
+Prioridade: as páginas de venda da NextLevel. A fonte de tudo é docs/vendas/RACIONAL-COMERCIAL-E-PAGINAS.md
+(preços na Parte 1, implantação na Parte 2, gestor na Parte 3, serviços e agências na Parte 4, combos na Parte 5,
+pontos cegos na Parte 6, mapa, molde e copy de cada página na Parte 7). Leia também AGENTS.md, CLAUDE.md, docs/ESTADO.md
+e docs/design/DECISOES-VIGENTES.md.
+
+Antes de escrever código, me mostre o plano: quais componentes que já existem você vai reaproveitar
+(PaginaDeFrente, CabecalhoTech, ec-cartao e os de src/components/portal/frentes) e como fica UM componente
+de "página de plano" alimentado por dados, em vez de uma página escrita à mão para cada plano.
+
+Depois, uma página por vez, na ordem da Parte 7, seção 7.4: /planos e /implantacao primeiro.
+Regras:
+- copy exatamente como no racional, em português claro, sem promessa de ganho e sem citar concorrentes;
+- preços lidos da tabela do Master (getPriceBook e catálogo), nunca fixos no código; se o valor ainda não existir lá, pare e me avise;
+- prints reais do sistema de docs/vendas/prints (convertidos para WebP com scripts/imagens/converter-webp.mjs),
+  dentro de moldura de computador ou celular, com a legenda "imagem real do sistema, dados de demonstração";
+- nada de print com preço antigo ou com a Black (lista no Apêndice do racional);
+- acessibilidade AA e nada de rolagem horizontal em 360 px;
+- antes de cada commit: npx tsc --noEmit e npx eslint src e2e tests;
+- ao terminar cada página, me mostre um print em 1440 px e em 360 px e espere a minha aprovação antes da próxima.
+```
