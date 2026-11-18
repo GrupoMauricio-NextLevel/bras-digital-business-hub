@@ -13,7 +13,7 @@ import { pdfDoContratoDaAgencia } from "./contratos";
 import { urlDoPortal } from "./portal";
 
 /**
- * Trazer contratos de serviço do Master para o Painel da Agência interna (D331). O contrato aceito NÃO é reescrito nem
+ * Trazer contratos de serviço do Master para o Painel da Agência interna (D335). O contrato aceito NÃO é reescrito nem
  * assinado de novo: texto congelado, impressão digital e prova do aceite são copiados como estão, com a origem marcada.
  * O original fica no Master, marcado "transferido" e fora das pendências e lembretes de lá. Parcelas pagas entram como
  * "pago, registrado no caixa do Master" (não somam de novo na receita da agência). Só o administrador da agência interna.

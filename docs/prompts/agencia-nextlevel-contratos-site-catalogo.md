@@ -9,7 +9,7 @@
 > "Haja como dono": este documento traz o racional (Parte A), as decisões que eu tomaria (Parte B), o plano por etapas
 > (Parte C) e o prompt técnico para desenvolver (Parte D). Nada foi programado ainda.
 >
-> Frente: `[E-commerce]` (Painel da Agência, D313 em diante). Próxima decisão livre: **D331**.
+> Frente: `[E-commerce]` (Painel da Agência, D313 em diante). Próxima decisão livre: **D335**.
 
 ---
 
@@ -182,7 +182,7 @@ Tailwind v4, Vitest, Playwright), as etapas AGC1 e AGS1 (depois AGC2, AGS2) desc
 docs/prompts/agencia-nextlevel-contratos-site-catalogo.md. Leia antes: CLAUDE.md, AGENTS.md (o Next.js deste projeto
 tem mudanças: consulte node_modules/next/dist/docs/ antes de escrever rota ou página), a Parte A e a Parte B daquele
 documento, e as decisões D276, D277, D296, D306–D309, D313, D318, D320–D323, D326, D329 em docs/design/DECISIONS.md.
-Fale com o dono em português, sem jargão. Próxima decisão: D331 (registre AGC1 como D331, AGS1 como D332...). Depois de
+Fale com o dono em português, sem jargão. Próxima decisão: D335 (registre AGC1 como D335, AGS1 como D336...). Depois de
 registrar, rode `node scripts/gerar-novidades.mjs` e cite a decisão em docs/conhecimento/BC0-INVENTARIO.md (senão
 tests/base-conhecimento.test.ts falha). Testes enxutos durante o trabalho (tipos, lint, testes dos arquivos mexidos);
 bateria completa e `npm run build` só no fim de cada etapa, antes da publicação. Uma publicação por etapa. A cada etapa,
@@ -359,7 +359,7 @@ ETAPA AGC1: CONTRATOS DA AGÊNCIA A 100%
   enviar → aceitar no portal → e-mail registrado → tela Contratos com "pago 50%"; trazer do Master; prints para o dono.
 
 10) DOCUMENTOS
-- D331 em DECISIONS.md ("[E-commerce] Contratos da agência a 100%: modelos de projeto, parcelas, tela Contratos,
+- D335 em DECISIONS.md ("[E-commerce] Contratos da agência a 100%: modelos de projeto, parcelas, tela Contratos,
   aditivo, e-mail e migração do Master"), base de conhecimento, `node scripts/gerar-novidades.mjs`, e as tarefas do
   dono no fim: marcar a NextLevel Marketing como agência interna; trazer o contrato do Vestiário; preencher contatos
   da Império e gerar; preencher dados do Bazar e gerar.
@@ -439,7 +439,7 @@ fixa nova no código: o que for bonito vira SEÇÃO reutilizável (vale para os 
 - e2e/agencia-site.mjs: home no host do grupo (360/768/1440, axe, sem rolagem lateral), catálogo com preço do Master,
   "Quero este" → formulário → aparece no Comercial da agência, /entrar com as três portas, editar um título no editor e
   ver publicado. Prints para o dono (skill qa-visual).
-- D332 em DECISIONS.md e base de conhecimento.
+- D336 em DECISIONS.md e base de conhecimento.
 
 ==========================================================================================================
 ETAPA AGC2 (curta): AGÊNCIA INTERNA COM CAIXA ÚNICO E CAIXA DE E-MAIL

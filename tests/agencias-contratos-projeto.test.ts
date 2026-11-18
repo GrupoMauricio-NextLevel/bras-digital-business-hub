@@ -16,7 +16,7 @@ import { contratosDoMasterParaTrazer, trazerContratoDoMaster } from "@/lib/agenc
 import { conferirProjeto, pendenciasDoProjeto, secoesDoProjeto, situacaoDoPagamento, type DadosContratoProjeto } from "@/lib/contratos/projeto";
 import { impressaoDigital } from "@/lib/contratos/loja-pronta-express";
 
-/** Contratos de projeto da agência, tela Contratos e migração do Master (D331). */
+/** Contratos de projeto da agência, tela Contratos e migração do Master (D335). */
 let ctx: Awaited<ReturnType<typeof freshDb>>;
 const antes = process.env.AGENCIAS_V1;
 beforeAll(() => { process.env.AGENCIAS_V1 = "true"; });
@@ -64,7 +64,7 @@ describe("modelo de contrato de projeto (puro)", () => {
   });
 });
 
-describe("contratos de projeto e migração do Master (D331)", () => {
+describe("contratos de projeto e migração do Master (D335)", () => {
   beforeEach(async () => { ctx = await freshDb(); });
 
   async function agencia(nome = "NextLevel Soluções", email = "adm@nl.teste") {

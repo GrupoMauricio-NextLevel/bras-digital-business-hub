@@ -71,7 +71,7 @@ export async function mudarSituacaoDaAgencia(db: Database, actor: Actor, agencia
 }
 
 /**
- * Só o Master: marca a agência interna (D331), a própria NextLevel Marketing Ltda. Ela usa os dados da empresa e o Pix do
+ * Só o Master: marca a agência interna (D335), a própria NextLevel Marketing Ltda. Ela usa os dados da empresa e o Pix do
  * Itaú nos contratos e pode trazer contratos de serviço do Master. No máximo uma: marcar outra desmarca a anterior.
  */
 export async function marcarAgenciaInterna(db: Database, actor: Actor, agenciaId: string, interna: boolean) {

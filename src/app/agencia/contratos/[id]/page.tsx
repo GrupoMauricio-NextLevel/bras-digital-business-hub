@@ -18,7 +18,7 @@ export const metadata = { title: "Contrato" };
 const dm = (iso: string) => iso.slice(0, 10).split("-").reverse().join("/");
 const dataHora = (iso: string) => new Date(iso).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo", dateStyle: "short", timeStyle: "short" });
 
-/** Um contrato da agência (D331): situação, parcelas com "Recebi por fora", prova do aceite, texto congelado e ações. */
+/** Um contrato da agência (D335): situação, parcelas com "Recebi por fora", prova do aceite, texto congelado e ações. */
 export default async function ContratoPage({ params }: { params: Promise<{ id: string }> }) {
   const session = await requireRole("AGENCY");
   const db = await getDb();

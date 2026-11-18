@@ -174,7 +174,7 @@ export async function previaContratoAction(clienteId: string, opcoes: OpcoesCont
 export async function enviarContratoAction(clienteId: string, opcoes: OpcoesContrato) {
   return runAction(async () => { const { actor, db } = await ctx(); const r = await enviarContrato(db, actor, idCliente.parse(clienteId), opcoes); revalidatePath("/agencia", "layout"); return r; });
 }
-/** D331: encerrar contrato aceito, reenviar por e-mail e trazer do Master. */
+/** D335: encerrar contrato aceito, reenviar por e-mail e trazer do Master. */
 export async function encerrarContratoAgenciaAction(id: string, motivo: string) {
   return runAction(async () => { const { actor, db } = await ctx(); await encerrarContratoDaAgencia(db, actor, idContrato.parse(id), motivo); refresh(); return undefined; });
 }

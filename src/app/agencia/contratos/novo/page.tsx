@@ -12,7 +12,7 @@ import { NovoContrato } from "../contratos-cliente";
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Novo contrato" };
 
-/** Novo contrato da agência (D331): Loja Virtual Pronta Express, migração ou mensalidade, com prévia do texto exato. */
+/** Novo contrato da agência (D335): Loja Virtual Pronta Express, migração ou mensalidade, com prévia do texto exato. */
 export default async function NovoContratoPage({ searchParams }: { searchParams: Promise<{ cliente?: string }> }) {
   const session = await requireRole("AGENCY");
   const db = await getDb();
