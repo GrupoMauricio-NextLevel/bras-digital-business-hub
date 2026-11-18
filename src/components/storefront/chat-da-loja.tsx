@@ -1,4 +1,5 @@
 "use client";
+import { podeConsultar } from "@/lib/atividade-cliente";
 import * as React from "react";
 import { createPortal } from "react-dom";
 import { ArrowUpRight, ChevronDown, ChevronRight, MessageCircle, Send, X } from "lucide-react";
@@ -40,7 +41,7 @@ export function ChatDaLoja({ slug, loja }: { slug: string; loja: string }) {
     let vivo = true;
     const buscar = async () => { const r = await mensagensDaLojaAction({ ...conversa, depoisDe: ultima.current }); if (!vivo) return; if (r.ok) juntar(r.data.mensagens as MsgServidor[]); else { try { localStorage.removeItem(chave); } catch { /* ok */ } setConversa(null); } };
     void buscar();
-    const t = setInterval(buscar, 5000);
+    const t = setInterval(() => { if (podeConsultar()) void buscar(); }, 5000);
     return () => { vivo = false; clearInterval(t); };
   }, [aberto, conversa, juntar, chave]);
   // D239: com o chat fechado, confere a cada 30 s se a loja respondeu e acende o aviso no botão.
@@ -56,7 +57,7 @@ export function ChatDaLoja({ slug, loja }: { slug: string; loja: string }) {
       juntar(ms);
     };
     void ver();
-    const t = setInterval(ver, 30_000);
+    const t = setInterval(() => { if (podeConsultar()) void ver(); }, 60_000);
     return () => { vivo = false; clearInterval(t); };
   }, [aberto, conversa, juntar]);
   React.useEffect(() => { fim.current?.scrollIntoView({ block: "end" }); }, [linhas.length, form]);

@@ -28,6 +28,7 @@ import { CommerceHome } from "@/components/commerce/commerce-home";
 import { modulosDoNegocio, temLoja } from "@/lib/business/modulos";
 import { resumoDosContatos } from "@/lib/business/contatos";
 import { NOME_GERENCIADOR } from "@/lib/marcas/nextlevel-ecommerce";
+import { CartaoEcossistema } from "@/components/business/cartao-ecossistema";
 import { pendingSurvey } from "@/lib/domain/precos/questionario";
 import { benefitsPanel } from "@/lib/domain/beneficios/painel";
 import { PainelBeneficios } from "@/components/beneficios/painel-beneficios";
@@ -102,7 +103,7 @@ export default async function MerchantHome({ searchParams }: { searchParams: Pro
   // Painéis com vida (D331): uma faixa por vez no topo; a novidade vai para o pé da tela; visitas para a conversão.
   const visitas30 = commerce ? (await resumoDeVisitas(db, store.id, 30)).total : null;
   const rodapeNovidade = novidade ? <p className="text-sm text-muted-foreground"><span className="font-semibold text-foreground">Novidade:</span> {novidade.titulo}. <Link href="/merchant/novidades" className="font-medium underline underline-offset-2">Ver o que mudou</Link></p> : null;
-  if (commerce) return <>{faixaContrato}{faixaPix}{boasVindas}<CommerceHome periodo={periodo} visitas30={visitas30} rodape={rodapeNovidade} negocio={negocio?.business ? { nome: NOME_GERENCIADOR.nome, site: ehSite } : undefined} firstName={session.user.name.split(" ")[0]!} greeting={greeting()} store={store} o={o} readiness={ehSite ? null : readiness} attention={filaFinal} pulso={<PulsoLoja pulso={pulso} semVendas className="mt-3" />} /><div className="sr-only"><AoVivo segundos={30} /></div>{benefits || survey ? <div className="mx-auto mt-6 max-w-[1240px]">{benefits ? <PainelBeneficios data={benefits} /> : null}{survey ? <QuestionarioPreco product={survey.product} /> : null}</div> : null}</>;
+  if (commerce) return <>{faixaContrato}{faixaPix}{boasVindas}<CommerceHome periodo={periodo} visitas30={visitas30} rodape={rodapeNovidade} negocio={negocio?.business ? { nome: NOME_GERENCIADOR.nome, site: ehSite } : undefined} firstName={session.user.name.split(" ")[0]!} greeting={greeting()} store={store} o={o} readiness={ehSite ? null : readiness} attention={filaFinal} pulso={<PulsoLoja pulso={pulso} semVendas className="mt-3" />} /><div className="sr-only"><AoVivo segundos={30} /></div>{negocio?.business ? <div className="mx-auto mt-6 max-w-[1240px]"><CartaoEcossistema temSite={negocio.ativos.has("site")} temLoja={negocio.ativos.has("loja")} temBusiness={negocio.ativos.has("business")} formato={negocio.formato} /></div> : null}{benefits || survey ? <div className="mx-auto mt-6 max-w-[1240px]">{benefits ? <PainelBeneficios data={benefits} /> : null}{survey ? <QuestionarioPreco product={survey.product} /> : null}</div> : null}</>;
 
   const first = session.user.name.split(" ")[0]!;
   const actions = <><a href={"/store/" + store.slug} target="_blank" rel="noreferrer" className={buttonVariants({ variant: "secondary" })}><ExternalLink />Ver loja</a><Link href="/merchant/orders/new" className={buttonVariants()}><Plus />Novo pedido</Link></>;

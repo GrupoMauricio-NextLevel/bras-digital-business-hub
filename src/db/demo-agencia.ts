@@ -26,7 +26,7 @@ const EQUIPE: { chave: string; nome: string; email: string; funcao: AgenciaFunca
 type C = { nome: string; segmento: string; pacote: string; incluso: AgenciaIncluso; valor: number; dia: number; resp: string; equipe: string[]; whatsapp?: string; situacao?: "ATIVO" | "PAUSADO" };
 const CLIENTES: C[] = [
   { nome: "Clínica Sorriso Leve", segmento: "Odontologia", pacote: "Mensal 8 vídeos", incluso: { videos: 8, fotos: 12, gravacoes: 2 }, valor: 2_500, dia: 10, resp: "soc1", equipe: ["ed1", "tra"], whatsapp: "11900000101" },
-  { nome: "Academia Movimento", segmento: "Academia", pacote: "Mensal 12 vídeos", incluso: { videos: 12, posts: 8, gravacoes: 2 }, valor: 3_200, dia: 5, resp: "soc1", equipe: ["ed1"], whatsapp: "11900000102" },
+  { nome: "Clínica Movimento", segmento: "Clínica", pacote: "Mensal 12 vídeos", incluso: { videos: 12, posts: 8, gravacoes: 2 }, valor: 3_200, dia: 5, resp: "soc1", equipe: ["ed1"], whatsapp: "11900000102" },
   { nome: "Padaria Trigo de Ouro", segmento: "Alimentação", pacote: "Mensal 4 vídeos", incluso: { videos: 4, fotos: 8, gravacoes: 1 }, valor: 1_400, dia: 15, resp: "soc2", equipe: ["ed2"], whatsapp: "11900000103" },
   { nome: "Studio Bella Pele", segmento: "Estética", pacote: "Mensal 8 vídeos", incluso: { videos: 8, criativos: 4, gravacoes: 2 }, valor: 2_800, dia: 20, resp: "soc2", equipe: ["ed2", "tra"], whatsapp: "11900000104" },
   { nome: "Imobiliária Casa Certa", segmento: "Imóveis", pacote: "Mensal 6 vídeos + tráfego", incluso: { videos: 6, criativos: 6, gravacoes: 2 }, valor: 4_500, dia: 18, resp: "tra", equipe: ["ed1", "soc1"], whatsapp: "11900000105" },
@@ -138,7 +138,7 @@ async function extrasDemo(db: Database, agenciaId: string, ids: Map<string, stri
     await db.insert(agenciaCampanhas).values({ id: newId("agcp"), agenciaId, clienteId, nome: k.nome, plataforma: "META", objetivo: "Mensagens no WhatsApp", situacao: k.situacao, verbaMensalCents: k.verba, investidoCents: k.inv, resultados: k.res, rotuloResultado: k.rot, responsavelId: ids.get("tra") ?? null, atualizadoNumerosEm: k.inv ? atras(30) : null });
   }
   const conversas = [
-    { cliente: "Academia Movimento", tipo: "PEDIDO" as const, texto: "Dá para gravar a aula de spinning na sexta?", situacao: "ABERTA" as const, h: 2 },
+    { cliente: "Clínica Movimento", tipo: "PEDIDO" as const, texto: "Dá para gravar o vídeo da recepção na sexta?", situacao: "ABERTA" as const, h: 2 },
     { cliente: "Padaria Trigo de Ouro", tipo: "IDEIA" as const, texto: "Vídeo do pão de queijo saindo do forno às 7h", situacao: "EM_ANDAMENTO" as const, h: 20, resposta: "Ótima ideia! Encaixamos na gravação da semana que vem." },
     { cliente: "Pet Shop Patas Felizes", tipo: "DUVIDA" as const, texto: "Quando sai o vídeo do banho e tosa?", situacao: "RESPONDIDA" as const, h: 50, resposta: "Sai na quinta, já está na edição." },
   ];

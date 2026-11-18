@@ -1,9 +1,10 @@
-import { eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import type { Database } from "@/db/client";
-import { organizations, stores } from "@/db/schema";
+import { nlSubscriptions, organizations, stores } from "@/db/schema";
 import { activeEntitlementKeys } from "@/lib/domain/entitlements";
 import { ForbiddenError, NotFoundError } from "@/lib/domain/errors";
 import type { Actor } from "@/lib/domain/access";
+import { scaleTrazBusiness } from "./precos-frentes";
 
 /**
  * Módulos do negócio (NextLevel Business, NB1, D306/D306): fonte única para menu, telas e ações.
@@ -12,13 +13,13 @@ import type { Actor } from "@/lib/domain/access";
  * - O formato (LOJA ou SITE) decide a vitrine; módulos extras vêm de direitos (`entitlements`, chave `modulo:<nome>`),
  *   concedidos por plano, adicional ou cortesia (NB8). `portal` existe desde já, desligado (academia, NB10).
  */
-export const MODULOS = ["painel", "contatos", "site", "loja", "captacao", "caixa", "meta", "portal"] as const;
+export const MODULOS = ["painel", "contatos", "site", "loja", "captacao", "caixa", "meta", "portal", "business"] as const;
 export type Modulo = (typeof MODULOS)[number];
 export type Formato = "LOJA" | "SITE";
 
 export const MODULO_LABEL: Record<Modulo, string> = {
   painel: "Visão geral do negócio", contatos: "Contatos e orçamentos", site: "Site", loja: "Loja virtual",
-  captacao: "Captação", caixa: "Caixa", meta: "Resultados da Meta", portal: "Portal do cliente",
+  captacao: "Captação", caixa: "Caixa", meta: "Resultados da Meta", portal: "Portal do cliente", business: "NextLevel Business",
 };
 
 /** Chave do direito que liga um módulo extra (a mesma do adicional da tabela de preços: MODULO_SITE, MODULO_LOJA…). */
@@ -27,7 +28,7 @@ export const chaveDoModulo = (m: Modulo) => `MODULO_${m.toUpperCase()}`;
 /** A chave geral do NextLevel Business. Sem ela, nada muda para ninguém. */
 export const businessLigado = (env: Record<string, string | undefined> = process.env) => ["true", "1"].includes((env.BUSINESS_V1 ?? "").trim().toLowerCase());
 
-export type EntradaModulos = { marca: string; formato: Formato; direitos: ReadonlySet<string>; ligado: boolean };
+export type EntradaModulos = { marca: string; formato: Formato; direitos: ReadonlySet<string>; ligado: boolean; /** Plano da assinatura (COMMERCE_SCALE traz o Business Essencial, D336). */ plano?: string | null };
 export type ModulosDoNegocio = { business: boolean; formato: Formato; ativos: ReadonlySet<Modulo> };
 
 /** Regra pura (testada): quais módulos o negócio usa agora. */
@@ -39,7 +40,9 @@ export function modulosDe(e: EntradaModulos): ModulosDoNegocio {
   const ativos = new Set<Modulo>(["painel", "contatos"]);
   if (e.formato === "SITE" || e.direitos.has(chaveDoModulo("site"))) ativos.add("site");
   if (e.formato === "LOJA" || e.direitos.has(chaveDoModulo("loja"))) ativos.add("loja");
-  for (const m of ["captacao", "caixa", "meta", "portal"] as const) if (e.direitos.has(chaveDoModulo(m))) ativos.add(m);
+  for (const m of ["captacao", "caixa", "meta", "portal", "business"] as const) if (e.direitos.has(chaveDoModulo(m))) ativos.add(m);
+  // D336: o plano Scale (de loja ou de site) traz o NextLevel Business Essencial.
+  if (scaleTrazBusiness(e.plano)) ativos.add("business");
   return { business: true, formato: e.formato, ativos };
 }
 
@@ -51,8 +54,15 @@ export async function modulosDoNegocio(db: Database, storeId: string, agora = ne
     .innerJoin(organizations, eq(organizations.id, stores.organizationId)).where(eq(stores.id, storeId)).limit(1))[0];
   if (!row) throw new NotFoundError("Negócio não encontrado.");
   const ligado = businessLigado(env);
-  const direitos = ligado ? await activeEntitlementKeys(db, { type: "STORE", storeId }, agora) : new Set<string>();
-  return modulosDe({ marca: row.marca, formato: row.formato, direitos, ligado });
+  const [direitos, plano] = ligado ? await Promise.all([activeEntitlementKeys(db, { type: "STORE", storeId }, agora), planoDaLoja(db, storeId)]) : [new Set<string>(), null];
+  return modulosDe({ marca: row.marca, formato: row.formato, direitos, ligado, plano });
+}
+
+/** Plano da assinatura em vigor da loja (a mais recente que não foi cancelada nem expirou), ou null. */
+export async function planoDaLoja(db: Database, storeId: string): Promise<string | null> {
+  const subs = await db.select({ productKey: nlSubscriptions.productKey, status: nlSubscriptions.status }).from(nlSubscriptions)
+    .where(eq(nlSubscriptions.storeId, storeId)).orderBy(desc(nlSubscriptions.createdAt));
+  return subs.find((x) => x.status !== "cancelled" && x.status !== "expired")?.productKey ?? null;
 }
 
 /** Barreira no servidor: a ação só roda se o negócio do ator usa o módulo. */

@@ -31,6 +31,13 @@ const cents = z.number().int().nonnegative();
 const bps = z.number().int().min(0).max(10000);
 const days = z.number().int().min(0).max(365);
 
+export const DEFAULT_FRENTES = {
+  segundoProdutoBps: 5000,
+  sitesStartCents: 7_900,
+  businessClienteBps: 3000,
+  business: { essencialCents: 19_900, profissionalCents: 49_900, avancadoCents: 99_900, essencialPessoas: 5, profissionalPessoas: 20, avancadoPessoas: 50 },
+};
+
 export const priceBookSchema = z.object({
   supplierTiers: z.record(z.enum(TIER_KEYS), z.object({ name: z.string(), monthlyCents: cents, maxSkus: z.number().int().nullable(), maxOrders: z.number().int().nullable() })),
   superdrop: z.object({ setupCents: cents, volumeFeeBps: bps, minMonthlyFeeCents: cents }),
@@ -44,6 +51,19 @@ export const priceBookSchema = z.object({
   billing: z.object({ dueDay: z.number().int().min(1).max(28), waiverDays: days, priceLockMonths: z.number().int().min(0).max(60), /** Desconto para pagar por Pix (em centésimos de %) sobre o preço de lista, que é o valor cheio no cartão em até 6x. */ pixDiscountBps: z.number().int().min(0).max(5000).default(1000) }),
   dunning: z.object({ warningDays: days, partialBlockDays: days, suspendedDays: days, closedDays: days }),
   costs: z.object({ collectionFeeBps: bps, infraPerStoreCents: cents, supportPerSupplierCents: cents }),
+  /**
+   * Frentes da NextLevel Commerce (ecossistema tudo em um, D336): Sites, regra do segundo produto e níveis de referência do
+   * NextLevel Business. Tudo editável no Master; tabela salva antes desta seção ganha os valores padrão.
+   */
+  frentes: z.object({
+    /** Desconto no segundo produto (Site para quem tem loja, loja para quem tem site), em centésimos de %. */
+    segundoProdutoBps: bps,
+    /** Mensalidade do Sites Start (os níveis Pro e Scale do Sites têm o mesmo preço dos planos da loja). */
+    sitesStartCents: cents,
+    /** Desconto do NextLevel Business para quem já tem Sites ou Loja virtual, em centésimos de %. */
+    businessClienteBps: bps,
+    business: z.object({ essencialCents: cents, profissionalCents: cents, avancadoCents: cents, essencialPessoas: z.number().int().min(1), profissionalPessoas: z.number().int().min(1), avancadoPessoas: z.number().int().min(1) }),
+  }).default(() => structuredClone(DEFAULT_FRENTES)),
   /** Add-ons mensais/anuais liberados por entitlement. audience: quem pode comprar. */
   addons: z.record(z.string(), z.object({ name: z.string(), description: z.string(), audience: z.enum(["STORE", "SUPPLIER", "BOTH"]), monthlyCents: cents, annualCents: cents })).default(() => structuredClone(DEFAULT_ADDONS))
     // Tabela salva antes ou depois de um adicional mudar continua válida (D310/D311): o que faltar entra com o valor padrão
@@ -74,6 +94,7 @@ export const DEFAULT_PRICE_BOOK: PriceBook = {
   // Prazos flexíveis: aviso 3 dias após o vencimento, bloqueio parcial em 15, suspensão em 25 e encerramento em 90.
   dunning: { warningDays: 3, partialBlockDays: 15, suspendedDays: 25, closedDays: 90 },
   costs: { collectionFeeBps: 200, infraPerStoreCents: 800, supportPerSupplierCents: 50_000 },
+  frentes: structuredClone(DEFAULT_FRENTES),
   addons: structuredClone(DEFAULT_ADDONS),
 };
 

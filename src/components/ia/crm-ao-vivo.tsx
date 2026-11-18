@@ -1,4 +1,5 @@
 "use client";
+import { podeConsultar } from "@/lib/atividade-cliente";
 import * as React from "react";
 import { toast } from "sonner";
 import { Bot, CheckCircle2, MessageCircle, Send, Sparkles, UserRound, XCircle } from "lucide-react";
@@ -35,8 +36,8 @@ export function CrmAoVivo({ inicial, abrir }: { inicial: Lista; abrir?: string }
     const r = await abrirConversaAction(id);
     if (r.ok) { setAberta(r.data); if (primeira) setNotas(r.data.conversa.notas ?? ""); }
   }, []);
-  React.useEffect(() => { void carregarLista(); const t = setInterval(carregarLista, 5000); return () => clearInterval(t); }, [carregarLista]); // eslint-disable-line react-hooks/set-state-in-effect -- busca assíncrona, o estado muda depois da resposta
-  React.useEffect(() => { if (!sel) return; void carregarAberta(sel, true); const t = setInterval(() => carregarAberta(sel), 3000); return () => clearInterval(t); }, [sel, carregarAberta]); // eslint-disable-line react-hooks/set-state-in-effect -- idem
+  React.useEffect(() => { void carregarLista(); const t = setInterval(() => { if (podeConsultar()) void carregarLista(); }, 5000); return () => clearInterval(t); }, [carregarLista]); // eslint-disable-line react-hooks/set-state-in-effect -- busca assíncrona, o estado muda depois da resposta
+  React.useEffect(() => { if (!sel) return; void carregarAberta(sel, true); const t = setInterval(() => { if (podeConsultar()) void carregarAberta(sel); }, 3000); return () => clearInterval(t); }, [sel, carregarAberta]); // eslint-disable-line react-hooks/set-state-in-effect -- idem
   React.useEffect(() => { fim.current?.scrollIntoView({ block: "end" }); }, [aberta?.mensagens.length]);
 
   const agir = (fn: () => Promise<{ ok: boolean; error?: string }>, ok?: string) => start(async () => { const r = await fn(); if (!r.ok) toast.error(r.error); else { if (ok) toast.success(ok); if (sel) await carregarAberta(sel); await carregarLista(); } });

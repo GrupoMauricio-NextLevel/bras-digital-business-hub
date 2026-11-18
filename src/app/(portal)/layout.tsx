@@ -13,6 +13,8 @@ import { supportContacts } from "@/lib/support";
 import { PublicShell, type PublicNavItem } from "@/design-system/components/public-shell";
 import { FamiliaGrupo } from "@/components/ecossistema/familia-grupo";
 import { TrilhaPublica } from "@/components/portal/trilha-publica";
+import { FrentesRodape } from "@/components/portal/frentes/frentes-rodape";
+import { businessLigado } from "@/lib/business/modulos";
 
 import { getDb } from "@/db/client";
 import { fatosDoVendedor } from "@/lib/ia/vendedor-fatos";
@@ -29,6 +31,7 @@ export default async function PortalLayout({ children }: { children: React.React
   const commerce = brand.code === "NEXTLEVEL_COMMERCE" && !brand.soon;
   const closed = isClosedCommerceBrand(brand) && !brand.soon;
   const cargas = brand.landing === "cargas";
+  const frentes = commerce && businessLigado();
   // Endereço do grupo (hoje o do Master; depois nextlevelgroup.com.br, D147): só as páginas do grupo, e as marcas pelo endereço delas.
   const holding = brand.code === HOLDING_CODE;
   const site = (c: Parameters<typeof brandByCode>[0]) => brandByCode(c).baseUrl;
@@ -41,6 +44,9 @@ export default async function PortalLayout({ children }: { children: React.React
     ? [{ href: "/#beneficios", label: "Para transportadoras" }, { href: "/#importadoras", label: "Para importadoras" }, { href: "/#como-funciona", label: "Como funciona" }, { href: "/#planos", label: "Planos" }, { href: "/#duvidas", label: "Dúvidas" }]
     : closed
     ? [{ href: "/#compradores", label: "Para compradores" }, { href: "/#fornecedores", label: "Para fornecedores" }, { href: "/#videos", label: "Descobertas" }, { href: "/#como-funciona", label: "Como funciona" }, { href: "/#duvidas", label: "Dúvidas" }]
+    : commerce && frentes
+    // Ecossistema tudo em um (D336): as quatro frentes no topo; Recursos, Clientes e Parceiros vão para o rodapé.
+    ? [{ href: "/planos", label: "Loja virtual" }, { href: "/sites", label: "Sites" }, { href: "/business", label: "Business" }, { href: solucoes, label: "Soluções" }, { href: "/comparativo", label: "Comparativo" }, { href: "/temas", label: "Temas" }]
     : commerce
     ? [{ href: "/recursos", label: "Recursos" }, { href: "/comparativo", label: "Comparativo" }, { href: "/planos", label: "Planos" }, { href: "/temas", label: "Temas" }, { href: "/clientes", label: "Clientes" }, { href: "/parceiros", label: "Parceiros" }]
     : dropship
@@ -73,7 +79,7 @@ export default async function PortalLayout({ children }: { children: React.React
         // Rodapé escuro (Brás Digital Club, D158): assinatura escura com o slogan; o slogan já está na imagem e vai como texto alternativo.
         ? <BrandLogo brand={{ ...brand, name: `${brand.name}: ${brand.tagline}` }} tone="on-dark" variant="assinatura-completa" className="h-20" />
         : <><BrandLogo brand={brand} tone="auto" className="h-8" /><p className="mt-2">{brand.tagline.replace(/\.$/, "")}.</p></>}
-      footerNote={<><TrilhaPublica brand={brand} /><FamiliaGrupo brandCode={brand.code} /><NextLevelSignature product={brand.name} />{brand.code === "NEXTLEVEL_COMMERCE" ? <ContatosPorAssunto /> : null}<p className="mt-3">© {new Date().getFullYear()} NextLevel Marketing Ltda. {brand.soon ? "Termos de uso e política de privacidade serão publicados aqui antes da abertura ao público." : <><Link href="/termos" className="underline underline-offset-2">Termos de uso</Link> · <Link href="/privacidade" className="underline underline-offset-2">Política de privacidade</Link> · <PreferenciasCookies /></>}</p></>}
+      footerNote={<>{frentes ? <FrentesRodape solucoesHref={solucoes} /> : null}<TrilhaPublica brand={brand} /><FamiliaGrupo brandCode={brand.code} /><NextLevelSignature product={brand.name} />{brand.code === "NEXTLEVEL_COMMERCE" ? <ContatosPorAssunto /> : null}<p className="mt-3">© {new Date().getFullYear()} NextLevel Marketing Ltda. {brand.soon ? "Termos de uso e política de privacidade serão publicados aqui antes da abertura ao público." : <><Link href="/termos" className="underline underline-offset-2">Termos de uso</Link> · <Link href="/privacidade" className="underline underline-offset-2">Política de privacidade</Link> · <PreferenciasCookies /></>}</p></>}
       floating={<>{whatsapp ? <Link href={whatsapp} target="_blank" rel="noreferrer" aria-label="Falar no WhatsApp" className="ds-pub-btn ds-pub-btn--sm fixed bottom-4 right-4 z-40 gap-2 shadow-[var(--ds-shadow-md)]"><MessageCircle className="size-4" aria-hidden />WhatsApp</Link> : null}{vendedor}<AvisoCookies /><ColetorTrafego />{tags ? <TagsAnuncio cfg={tags} /> : null}</>}
     >
       {children}

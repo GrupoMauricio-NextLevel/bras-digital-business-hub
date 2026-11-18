@@ -35,7 +35,7 @@ export function NovoCliente({ equipe, contrato, abertoInicial = false }: { equip
     }}>
       <div className="grid gap-3 sm:grid-cols-2">
         <label className="text-sm font-medium sm:col-span-2">Nome do cliente<Input name="nome" required minLength={2} maxLength={120} className="mt-1" /></label>
-        <label className="text-sm font-medium">Segmento<Input name="segmento" maxLength={80} placeholder="Ex.: clínica, academia" className="mt-1" /></label>
+        <label className="text-sm font-medium">Segmento<Input name="segmento" maxLength={80} placeholder="Ex.: clínica, loja, escritório" className="mt-1" /></label>
         <label className="text-sm font-medium">Pessoa de contato<Input name="contatoNome" maxLength={120} className="mt-1" /></label>
         <label className="text-sm font-medium">WhatsApp<Input name="whatsapp" type="tel" maxLength={20} className="mt-1" /></label>
         <label className="text-sm font-medium">E-mail<Input name="email" type="email" maxLength={160} className="mt-1" /></label>

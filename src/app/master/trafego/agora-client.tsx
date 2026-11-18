@@ -1,4 +1,5 @@
 "use client";
+import { podeConsultar } from "@/lib/atividade-cliente";
 import * as React from "react";
 import { Bell, BellOff, FileText, MapPin, MessageCircle, Smartphone, UserPlus, Volume2, VolumeX } from "lucide-react";
 import { toast } from "sonner";
@@ -117,7 +118,7 @@ export function AgoraAoVivo({ inicial }: { inicial: AgoraNoSite }) {
       }
       if (prefs.current.som) bip();
     };
-    const t = window.setInterval(() => { void tick(); }, 5_000);
+    const t = window.setInterval(() => { if (podeConsultar({ mesmoEscondida: true, semAtividadeMs: 30 * 60_000 })) void tick(); }, 10_000);
     return () => window.clearInterval(t);
   }, []);
 

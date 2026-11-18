@@ -8,14 +8,14 @@ import { AoVivo } from "@/components/master/ao-vivo";
 const stagger = (i: number) => ({ "--i": i }) as React.CSSProperties;
 
 /** Esteira da produção do mês (D334): uma barra com os 6 trechos coloridos, crescendo da esquerda, e a legenda com números. */
-export function EsteiraProducao({ esteira, mes, i = 3 }: { esteira: ReturnType<typeof esteiraDoMes>; mes: string; i?: number }) {
+export function EsteiraProducao({ esteira, mes, i = 3, entrega = "peça", entregas = "Peças" }: { esteira: ReturnType<typeof esteiraDoMes>; mes: string; i?: number; /** Nomes da empresa (D341). */ entrega?: string; entregas?: string }) {
   if (!esteira.total) return null;
   return (
     <section className="ds-card ds-enter p-5 sm:p-6" style={stagger(i)} aria-labelledby="ag-esteira">
       <div className="flex flex-wrap items-end justify-between gap-2">
-        <div><p className="text-[11px] font-semibold uppercase tracking-[.16em] text-muted-foreground">Esteira de {mesRotulo(mes)}</p><h2 id="ag-esteira" className="mt-1 text-base font-semibold tracking-[-.01em]">Onde está cada peça do mês</h2></div>
+        <div><p className="text-[11px] font-semibold uppercase tracking-[.16em] text-muted-foreground">Esteira de {mesRotulo(mes)}</p><h2 id="ag-esteira" className="mt-1 text-base font-semibold tracking-[-.01em]">Onde está cada {entrega.toLowerCase()} do mês</h2></div>
       </div>
-      <div className="mt-4 flex h-5 w-full overflow-hidden rounded-full bg-surface-muted" role="img" aria-label={`Peças do mês por etapa: ${esteira.trechos.filter((t) => t.n).map((t) => `${t.rotulo} ${t.n}`).join(", ")}`}>
+      <div className="mt-4 flex h-5 w-full overflow-hidden rounded-full bg-surface-muted" role="img" aria-label={`${entregas} do mês por etapa: ${esteira.trechos.filter((t) => t.n).map((t) => `${t.rotulo} ${t.n}`).join(", ")}`}>
         {esteira.trechos.filter((t) => t.n).map((t, n) => <span key={t.chave} className="vida-trecho h-full" style={{ width: `${t.pct}%`, background: t.cor, animationDelay: `${n * 110}ms` }} />)}
       </div>
       <ul className="mt-4 grid grid-cols-2 gap-x-4 gap-y-2 text-sm sm:grid-cols-3 lg:grid-cols-6">

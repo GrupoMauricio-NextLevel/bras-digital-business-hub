@@ -11,6 +11,7 @@ import { ROTULO_CANAL, type Canal } from "@/lib/trafego/canal";
 import { formatBRL } from "@/lib/money";
 import { NotFoundError } from "@/lib/domain/errors";
 import { AndamentoDoContato } from "../contatos-cliente";
+import { MauricioNoContato } from "./mauricio-contato";
 
 export const dynamic = "force-dynamic";
 
@@ -40,6 +41,7 @@ export default async function FichaDoContato({ params }: { params: Promise<{ id:
           <AndamentoDoContato id={c.id} situacao={c.situacao} valorCents={c.valorCents} motivoPerda={c.motivoPerda} notas={c.notas} temResponsavel={!!c.responsavelId} motivos={MOTIVOS_PERDA} />
         </CardContent></Card>
         <div className="space-y-4">
+          <Card><CardContent className="py-5"><MauricioNoContato id={c.id} whatsapp={c.whatsapp} /></CardContent></Card>
           <Card><CardContent className="space-y-2 py-5 text-sm">
             <h2 className="text-base font-semibold">Pedido</h2>
             <p><span className="text-muted-foreground">Serviço:</span> {c.servicoNome ?? "não informado"}</p>

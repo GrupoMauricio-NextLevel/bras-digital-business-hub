@@ -43,7 +43,7 @@ export default async function PaginasDoSite() {
       )}
       <div className="mt-6 grid gap-4 lg:grid-cols-2">
         <NovaPagina />
-        <AplicarModelo modelos={Object.entries(MODELOS_SITE).map(([chave, v]) => ({ chave, nome: v.nome, descricao: v.descricao }))} />
+        <AplicarModelo modelos={Object.entries(MODELOS_SITE).filter(([, v]) => v.oferecido).map(([chave, v]) => ({ chave, nome: v.nome, descricao: v.descricao }))} />
       </div>
     </>
   );

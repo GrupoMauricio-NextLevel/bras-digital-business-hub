@@ -91,3 +91,27 @@ describe("famílias de cor dos painéis (D331)", () => {
     }
   });
 });
+
+import { fraseDoRecebido, mesDeBrasilia, recebidoPorMes, ultimosMeses } from "@/lib/domain/master-vivo";
+
+describe("Master com vida (D335): recebido dos lojistas", () => {
+  it("últimos meses no fuso de Brasília, do mais antigo ao atual", () => {
+    expect(ultimosMeses(3, new Date("2026-11-18T12:00:00Z"))).toEqual(["2026-09", "2026-10", "2026-11"]);
+    expect(ultimosMeses(2, new Date("2026-01-10T12:00:00Z"))).toEqual(["2025-12", "2026-01"]);
+    expect(mesDeBrasilia("2026-12-01T02:00:00Z")).toBe("2026-11");
+  });
+  it("soma o pago por mês e conta lojas diferentes; mês sem pagamento fica zero", () => {
+    const s = recebidoPorMes([
+      { paidAt: "2026-10-05T15:00:00Z", amountCents: 14700, storeId: "a" },
+      { paidAt: "2026-10-20T15:00:00Z", amountCents: 14700, storeId: "a" },
+      { paidAt: "2026-11-02T15:00:00Z", amountCents: 34700, storeId: "b" },
+      { paidAt: null, amountCents: 999, storeId: "c" },
+    ], ["2026-09", "2026-10", "2026-11"]);
+    expect(s).toEqual([{ mes: "2026-09", recebidoCents: 0, lojas: 0 }, { mes: "2026-10", recebidoCents: 29400, lojas: 1 }, { mes: "2026-11", recebidoCents: 34700, lojas: 1 }]);
+  });
+  it("frase com a conclusão, sem inventar", () => {
+    expect(fraseDoRecebido([{ recebidoCents: 0 }, { recebidoCents: 0 }])).toMatch(/primeira fatura/);
+    expect(fraseDoRecebido([{ recebidoCents: 10000 }, { recebidoCents: 15000 }])).toMatch(/50% a mais/);
+    expect(fraseDoRecebido([{ recebidoCents: 20000 }, { recebidoCents: 15000 }])).toMatch(/25% a menos/);
+  });
+});

@@ -4363,6 +4363,142 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Código:** regras em `src/lib/agencias/painel-vivo.ts` (`esteiraDoMes`, `fraseDaReceita`, `haQuanto`, `movimentoDaAgencia`), telas em `src/components/agencia/painel-vivo.tsx`; animações em `vida.css`, paradas com "menos movimento".
 - **Teste:** `tests/agencias-painel-vivo.test.ts` (esteira somando 100%, frase da receita, tempo em português, movimento só da própria agência, sem "peça criada" e vazio para quem não vê a carteira toda).
 
+## D335 — [E-commerce] Master "Agora" com gráfico do recebido e movimento das lojas ao vivo (2026-11-18)
+- **Pedido do dono:** "pode levar pra lá" (os gráficos e o movimento ao vivo da agência, D334, para o Master).
+- **Recebido dos lojistas · 6 meses:** colunas com o que as lojas pagaram à NextLevel em cada mês (faturas pagas: planos, adicionais e serviços, pela data do pagamento, no fuso de Brasília) e quantas lojas pagaram; título com a conclusão ("R$ X recebidos neste mês, Y% a mais que no mês passado"); link para Receita.
+- **Movimento nas lojas:** as últimas atividades das lojas (pedido, produto, publicação…), com as iniciais coloridas da loja e "há X min", levando ao diagnóstico da loja; a tela se atualiza sozinha a cada 30 s.
+- **Diferença de números:** a "Receita mensal" do topo é a recorrente dos planos ativos (anual ÷ 12); o gráfico é o dinheiro que entrou no mês (inclui adicionais e serviços). A legenda diz isso.
+- **Código:** `src/lib/domain/master-vivo.ts` (`recebidoPorMes`, `fraseDoRecebido`, `ultimosMeses`, `movimentoDaPlataforma`), `ColunasPorMes` (`src/components/graficos/colunas-mes.tsx`) e `FeedAoVivo` (`src/components/vida/feed-ao-vivo.tsx`), reaproveitáveis nos outros painéis.
+- **Teste:** `tests/painel-vivo.test.ts` (meses no fuso de Brasília, soma e lojas por mês, frase).
+
+## D336 — [E-commerce] Ecossistema tudo em um: quatro frentes (Commerce, Sites, Business, Soluções), um painel e pontes entre elas (2026-11-18)
+- **Pedido do dono:** "aceito as recomendações"; "quero muito seguir para o caminho do Bitrix"; "aproveitar o que já tem pronto ao máximo"; "isso tudo precisa se conectar por algum caminho sempre"; "usar o mesmo escopo da página do NextLevel Commerce para essas outras frentes, mudando apenas a copy". Plano: `docs/prompts/ecossistema-tudo-em-um-aproveitamento.md` (Etapa 1).
+- **Regras aceitas (recomendações de 17/11, `estrategia-dono-nextlevel-commerce-business.md`):**
+  1. portal do cliente sem limite e sem cobrança por cliente; o preço é por empresa, com a equipe inclusa no nível;
+  2. **Sites Start** com preço próprio na tabela do Master (padrão R$ 79); Sites Pro e Scale com o preço dos planos da loja;
+  3. **segundo produto com 50% de desconto** (tabela do Master), no lugar do adicional fixo do site (D310/D311); quem já pagou o adicional mantém o preço antigo;
+  4. **o plano Scale traz o NextLevel Business Essencial** (de loja ou de site);
+  5. **meta: 10 empresas pagantes em qualquer porta** (texto da regra de foco no `CLAUDE.md` e no `AGENTS.md`);
+  6. Business vendido **por proposta** até o primeiro pagante, com níveis de referência Essencial, Profissional e Avançado (R$ 199, R$ 499 e R$ 999, até 5, 20 e 50 pessoas) e 30% para quem já tem Sites ou Loja;
+  7. ficam para depois das 10 pagantes: Rede NextLevel, Business + IA, adicionais por uso e a regra 50% no 1º ano / 30% depois.
+- **Páginas públicas (mesmo molde, copy diferente):**
+  - `src/lib/marcas/frentes.ts` (`FRENTES`, `pontes`): nome, linha, herói, benefícios, passos, dúvidas e quadro "peças soltas × NextLevel" de cada frente, sem preço;
+  - `PaginaDeFrente`, `PlanosFrente`, `TambemDaNextLevel` e `FrentesRodape` (`src/components/portal/frentes/`), feitos com `CabecalhoTech`, `ec-cartao` e `BlocoEquipe`;
+  - **`/sites`** (a antiga `/empresas`, que agora leva para lá) e **`/business`** (nova); preços lidos da tabela e do catálogo;
+  - home da Commerce com "Quatro portas, um painel"; `/solucoes` com a ponte para as outras três (no site do grupo, com o endereço da Commerce); `/planos` com abas Loja virtual, Sites, Business e Soluções;
+  - topo da Commerce: Loja virtual, Sites, Business, Soluções, Comparativo e Temas; Recursos, Integrações, Clientes, Parceiros, Calculadoras e Dúvidas no rodapé;
+  - "O que você quer?" ganha "Sistema de gestão (NextLevel Business)" e "Ajuda da agência", que chegam ao Comercial do Master com o rótulo certo.
+- **Cobrança:**
+  - tabela de preços com a seção `frentes` (`segundoProdutoBps`, `sitesStartCents`, `businessClienteBps`, níveis do Business), editável no Master (Financeiro → Operação); tabela salva antes ganha os valores padrão;
+  - cadastro pelo caminho Site no Start cobra o Sites Start, **só quando ele é mais barato que o Start da loja**; ao ligar a loja, a assinatura passa ao Start da loja virtual (com o site incluso), valendo na próxima fatura;
+  - site para quem tem loja: Sites do mesmo nível com o desconto do segundo produto (`precoDoSiteDoNegocio`, `buyAddon` com preço calculado).
+- **Painel:**
+  - módulo `business` em `MODULOS` (direito `MODULO_BUSINESS` ou plano Scale);
+  - cartão "Seu ecossistema NextLevel" na visão geral, com o estado e o próximo passo de cada frente;
+  - itens "NextLevel Business" (com cadeado para quem não tem) e "Pedir ajuda da equipe" no menu do Meu negócio;
+  - Plano do negócio vira a vitrine interna das quatro frentes.
+- **Honestidade:** só aparece como incluso o que já funciona. Portal do cliente, projetos e tarefas, contratos com os clientes e caixa aparecem como "em breve" (Etapa 2 e depois).
+- **Teste:** `tests/ecossistema-frentes.test.ts` (frentes e pontes, copy sem preço, Sites Start, 50%, níveis, tabela antiga, Business no Scale, cartão, menu, cobrança do Sites Start e passagem ao Start da loja); `business-modulos` e `seo-paginas` atualizados.
+
+## D337 — [E-commerce] Business por dentro, Etapa 2: funil em quadro, "O que fazer hoje" e o Maurício no contato (2026-11-18)
+- **Pedido do dono:** "inicie o desenvolvimento imediatamente, trabalhe durante um longo período vencendo todas as etapas"; Etapa 2 do plano `docs/prompts/ecossistema-tudo-em-um-aproveitamento.md` (IA e o Business por dentro).
+- **Funil em quadro** (`/merchant/contatos?ver=quadro`): as cinco etapas lado a lado (Novo, Em atendimento, Orçamento enviado, Fechou, Perdeu), com a quantidade e a soma do valor de cada coluna; fechados e perdidos só dos últimos 30 dias (`funilEmQuadro`). A lista continua sendo o padrão.
+- **O que fazer hoje** (`/merchant/contatos?ver=hoje`): as tarefas saem do próprio funil, sem tabela nova (`tarefasDeHoje`):
+  - novos sem resposta primeiro (o mais antigo antes);
+  - depois orçamentos enviados há 2 dias ou mais sem retorno;
+  - depois atendimentos parados há 1 dia ou mais.
+  - Cada um vem com a próxima ação em português claro.
+- **Maurício no contato** (ficha do contato, cartão "Pede pro Maurício"):
+  - resumo, próxima ação e resposta sugerida para copiar ou abrir no WhatsApp; **nada é enviado sozinho**;
+  - com a cota de IA do plano (ou a chave da loja, D243) a IA escreve e o uso entra na cota; sem ela, as regras escrevem (`sugestaoPorRegras`), e a tela diz qual das duas foi usada;
+  - só lê o contato da própria loja.
+- **O que ficou para depois (questionar antes de seguir):** a Produção, os Contratos e o Portal da agência são presos ao modelo de agência (cliente, ciclo do mês, etapas de vídeo). Abrir esses módulos para qualquer empresa exige mudar o banco e o acesso. Fica para uma rodada com decisão do dono sobre o modelo:
+  - **opção A:** projetos e tarefas genéricos por loja, estendendo a tabela de peças com um dono genérico;
+  - **opção B:** começar pelo portal da academia (NB10), quando `portal-academia-piloto.md` estiver preenchido.
+- **Código:** `src/lib/business/assistente-contato.ts`, `funilEmQuadro` em `src/lib/business/contatos.ts`, `sugestaoDoContatoAction`, `MauricioNoContato` e as visões em `src/app/merchant/contatos/page.tsx`.
+- **Teste:** `tests/business-funil-ia.test.ts` (etapas e soma, ordem do dia, próxima ação, regras, leitura da IA, sem IA usa regras, contato de outra loja não aparece).
+
+## D338 — [Grupo] Banco que dorme: consultas automáticas só com gente na tela e rotinas de hora em hora (2026-11-18)
+- **O que aconteceu:** em 18/11/2026 (cerca de 10h40 UTC) o site saiu do ar: o Neon gratuito estourou as 100 horas de processamento do mês ("Your account or project has exceeded the quota"). O Neon cobra pelo tempo em que o banco fica acordado e o deixa dormir depois de 5 minutos sem consulta; o nosso quase nunca dormia.
+- **Causa:** painéis e páginas que consultam o banco sozinhos a cada 3 a 30 segundos enquanto a aba está aberta (aviso sonoro do Master, "ao vivo" do Master e da agência, Atendimento, CRM, ajuda do lojista, conversa do vendedor, tráfego ao vivo, sinal de presença das páginas públicas, conversa da loja e a esteira da expedição). Uma aba esquecida aberta mantinha o banco acordado o dia todo. As rotinas do GitHub (a cada 10 e 15 minutos) somavam pouco, porque o GitHub atrasa e pula agendamentos.
+- **Decisão do dono (final):** a mesma conta e o mesmo projeto do Neon (SuperDrop, AWS US East 2, Ohio) passaram ao plano **Launch** (por uso, sem mínimo) em 18/11/2026; o site voltou com todos os dados e logins, sem migração. (Antes cogitou conta nova e cópia dos dados; descartado.) Recomendado no Neon: limite do processamento automático em **0,25 a 1 CU** (estava 0,25 a 8) e banco dormindo após 5 minutos sem uso.
+- **Mudança:** regra única `podeConsultar()` (`src/lib/atividade-cliente.ts`): consulta automática só com a aba visível e alguém mexendo nos últimos 10 minutos (tráfego ao vivo, que avisa por notificação do sistema, até 30 minutos mesmo com a aba escondida). Parou de mexer, para de consultar; tocou na tela, volta. A esteira da expedição mostra "Pausado (toque na tela)". Aviso sonoro de 15 s para 30 s; sinal de presença das páginas públicas de 30 s para 60 s; conversa da loja fechada de 30 s para 60 s. Rotinas e monitor do GitHub de hora em hora, no mesmo minuto (:07), para o banco acordar uma vez só por hora.
+- **Efeito esperado:** o banco dorme quando ninguém está usando; no plano pago, poucos dólares por mês em vez de cerca de US$ 20.
+- **Fora desta mudança:** acompanhamento de pagamento na tela (Pix, fatura, tema), que dura só enquanto a pessoa espera pagar.
+- **Teste:** `tests/atividade-cliente.test.ts`.
+
+## D339 — [E-commerce] Captação (NB4): página de campanha em poucos cliques, links por lugar, QR e números de cada campanha (2026-11-18)
+- **Pedido do dono:** "enquanto eu não pago o Neon, vamos desenvolver o que for possível". Fase NB4 do plano `docs/prompts/nextlevel-business-coracao-do-negocio.md` (página de campanha da Meta "em poucos cliques"), sem a parte que exige configuração por loja.
+- **Assistente** (Site → **Captação**, `/merchant/captacao`), em três passos:
+  1. objetivo: pedir orçamento, agendar visita ou aula experimental, ou receber o contato da equipe;
+  2. título e frase da oferta;
+  3. até quatro motivos.
+  A página nasce pronta (topo com a oferta e botão que desce até o formulário, motivos, formulário de orçamento e contatos), fora do menu e fora da busca, e **é publicada sozinha**: outros rascunhos do site não são publicados junto (`publicarPaginas` com `somente`).
+- **Links prontos:** um por lugar (anúncio na Meta, anúncio no Google, bio e stories do Instagram, status do WhatsApp), com a origem e o nome da campanha no endereço, e o **QR** para cartaz, panfleto e balcão (para baixar).
+- **Números de cada campanha:** contatos, fechados e valor fechado, vindos de Contatos e orçamentos. Um contato conta para a campanha pela etiqueta no link ou pela página onde preencheu.
+- **Fica para depois** (configuração por loja): Pixel da Meta e retorno de conversões por loja, link curto `/l/` por loja e sugestão de texto pela IA.
+- **Acessibilidade da home (achados antigos, resolvidos):**
+  - parágrafo com `aria-label` na faixa de taxa zero virou texto para leitor de tela;
+  - rótulos verdes da Black Friday sobre fundo claro ganharam verde escuro (`black.css`);
+  - o último lugar de "Vivência de rua" e os números de índice ficaram com contraste suficiente.
+- **Código:** `src/lib/business/campanhas.ts`, `criarCampanhaAction`, `src/app/merchant/captacao/*`, item "Captação" no grupo Site do menu.
+- **Teste:** `tests/business-captacao.test.ts` (montagem por objetivo, links, contato da campanha, criação publicando só a campanha e números com fechamento); `nav-business` atualizado.
+
+## D340 — [E-commerce] Painel da Agência personalizável para qualquer segmento de serviços (50% agências, 50% outros), e a academia sai de cena (2026-11-18)
+- **Pedido do dono:**
+  - "não vamos falar em academia mais";
+  - "os termos da agência precisam ser mais adaptados para que mais segmentos possam usar, e podemos aproveitar o painel da agência que estava sendo feito para a UP";
+  - "os departamentos precisam ter um alto nível de edição, porque o foco é 50% para agências e 50% genérico para diversos outros segmentos".
+- **Como ficou:** as chaves internas (9 departamentos, 9 etapas, 6 tipos de entrega) viram "vagas" com as mesmas regras de permissão e fluxo. A empresa decide o **nome**, se está **ligada** e, nas etapas, **quem recebe** e **o que o cliente vê** no portal.
+- **Modelos de partida (8):** Agência de marketing (o de sempre), Empresa de serviços, Consultoria, Contabilidade, Escritório de advocacia, Arquitetura/engenharia/obras, Tecnologia e software, Eventos e produção. Trocar de modelo carrega os nomes dele; o que a empresa edita por cima fica gravado (só a diferença é guardada).
+- **O que é editável** (tela **Ajustes → Personalizar o painel**, só o Administrador):
+  - nomes principais: painel, cliente e clientes, entrega e entregas, tela do trabalho;
+  - departamentos (nome e ligado; Administrador e Gestor sempre ligados);
+  - etapas (usa ou não, nome, quem recebe, o que o cliente vê; Publicado/Entregue sempre ligada);
+  - tipos de entrega (nome, ligado, "pula a execução");
+  - gavetas do menu (Tráfego, Comercial, Placar e metas, Soluções NextLevel);
+  - "exigir links para avançar" (ligado na agência, desligado nos outros modelos).
+- **Regras do fluxo:**
+  - entrega nasce na primeira etapa ligada;
+  - etapa desligada é pulada;
+  - departamento desligado passa a etapa ao Gestor;
+  - ajuste volta à Edição/Acabamento ou, se desligada, à última etapa ligada antes da revisão;
+  - aprovação do cliente segue para a próxima etapa ligada.
+  - Entregas que já estão numa etapa desligada continuam visíveis na coluna dela (nada se perde).
+- **Onde os nomes aparecem:**
+  - menu (nome do painel, "Produção", "Clientes", gavetas escondidas) e topo;
+  - Produção (título, colunas, cartões, números, "Nova …", tipos);
+  - ficha da entrega, Minha fila, tela inicial (textos sem "agência" fora do modelo de agência), Equipe, Clientes, Semana, Placar, Executivos, Aprender;
+  - portal do cliente (tipos e situação de cada etapa);
+  - situações dentro da etapa neutras fora da agência ("Em andamento" no lugar de "Editando").
+- **A UP não percebe mudança:** personalização vazia = agência como sempre foi (teste confere, inclusive o que o cliente vê no portal).
+- **Academia:**
+  - o modelo de site "Academia e estúdio" deixa de ser oferecido (fica no código só para sites que já nasceram com ele);
+  - textos de Sites e da Captação sem academia;
+  - o cliente de demonstração virou "Clínica Movimento";
+  - `portal-academia-piloto.md` arquivado. A opção "B" da D337 sai; a "A" (painel para qualquer empresa) é esta decisão.
+- **Banco:** `agencias.personalizacao` (jsonb, padrão vazio), migração `0117_personalizacao-painel`.
+- **Código:**
+  - `src/lib/agencias/personalizacao.ts` (modelos, `vocabulario`, `compactar`, `rotuloSituacao`) e `personalizar.ts` (gravar, só admin);
+  - regras em `fluxo.ts` (`etapaSeAplica` com etapas ligadas, `escolherResponsavel` com departamento da etapa, `etapaInicial`);
+  - tela `src/app/agencia/personalizar/*`.
+- **Teste:** `tests/agencias-personalizacao.test.ts` (padrão = agência, travas, edição por cima do modelo, etapas puladas, gravação compacta, fluxo real de uma contabilidade, só o admin grava); `nav-agencia` atualizado; produção, portal, demonstração e agências continuam passando.
+
+## D341 — [E-commerce] Os avanços dos "painéis com vida" (D329 a D335) integrados ao ecossistema e à personalização (2026-11-18)
+- **Pedido do dono:** "pode avaliar esse chat Dashboard visual design evolution, para que não perca evoluções que tivemos lá; quero integrar os avanços".
+- **Avaliação:**
+  - a conversa parou por limite de uso logo depois de enviar a D335;
+  - todo o trabalho dela (D329 a D335: ícones 3D, cartões `NumeroVivo`, abertura com `FundoAbertura` e `AnelMeta`, gráfico de colunas, esteira do mês e movimento ao vivo na agência e no Master) já estava na branch de publicação e na branch de trabalho;
+  - a branch dela não tem nenhum commit fora da publicação. **Nada se perdeu.**
+- **Integração:**
+  - **personalização por segmento (D340) dentro das peças do kit:**
+    - a esteira do mês da tela inicial usa os nomes das etapas da empresa e esconde o trecho desligado e vazio;
+    - "Onde está cada obrigação do mês" no lugar de "peça" fora da agência;
+    - os cartões de número da tela inicial deixam "Publicados", "vídeos" e "aguardando gravação" só para a agência;
+  - **telas novas no kit:** Contatos e orçamentos e Captação trocam o bloco de números antigo pelos cartões `NumeroVivo` com as famílias de cor (clientes, pedidos, visitas, dinheiro, crescimento) e os ícones 3D;
+  - a "Primeira resposta" sem dados mostra "—" em vez de estourar o cartão.
+- **Teste:** `tests/agencias-personalizacao.test.ts` (esteira da agência igual à de sempre; contabilidade com os nomes dela e trecho desligado escondido); `agencias-painel-vivo` continua passando.
+
 ## D342 — [E-commerce] Contratos da agência a 100%: projetos com entrega, parcelas, tela Contratos, aditivo, e-mail e contratos trazidos do Master (2026-11-18)
 - **Pedido do dono (18/11):** migrar o contrato do Vestiário das Lendas do Master para o Painel da Agência; formalizar a Império Maia (Migração Nuvemshop → NextLevel, R$ 500, sinal de R$ 250 pago em 13/11 e saldo de R$ 250 em 18/11) e o Bazar Prime Outlet (Loja Virtual Pronta Express, R$ 1.600 à vista, pago), os dois com 40 produtos, 8 banners e o tema Aura de cortesia; "o setor de contratos da agência precisa estar 100%"; editar os dados de qualquer cliente quando quiser; contratos disparados por e-mail depois da assinatura. Racional e plano: `docs/prompts/agencia-nextlevel-contratos-site-catalogo.md` (aprovado). Nomes para o cliente: "Loja Virtual Pronta Express" e "Migração Nuvemshop → NextLevel".
 - **Modelos:** além da mensalidade de marketing (D321), dois modelos de **projeto** (`src/lib/contratos/projeto.ts`, regra pura): Loja Virtual Pronta Express e Migração (origem: Nuvemshop, Shopify, Tray, Loja Integrada, WooCommerce, Wix, outra). O texto traz produtos, banners, cortesias (com valor de referência), o que **já foi pago** e o que falta, prazo, desistência (sinal retido só quando há sinal), dados, "resultados não garantidos", aceite e foro.

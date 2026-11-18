@@ -15,8 +15,9 @@ import { criarPagina, publicarPaginas } from "./paginas";
  * - "academia": academia e estúdio; a grade é texto até o portal do aluno (NB10).
  */
 export const MODELOS_SITE = {
-  institucional: { nome: "Institucional de serviços", descricao: "Início, Sobre, Serviços e Contato. Para quem vende por orçamento." },
-  academia: { nome: "Academia e estúdio", descricao: "Início, Sobre, Modalidades, Grade de aulas e Contato." },
+  institucional: { nome: "Institucional de serviços", descricao: "Início, Sobre, Serviços e Contato. Para quem vende por orçamento.", oferecido: true },
+  // D340: o dono deixou de oferecer o modelo de academia; fica no código só para os sites que já nasceram com ele.
+  academia: { nome: "Academia e estúdio", descricao: "Início, Sobre, Modalidades, Grade de aulas e Contato.", oferecido: false },
 } as const;
 export type ModeloSite = keyof typeof MODELOS_SITE;
 

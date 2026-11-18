@@ -20,7 +20,7 @@ export function VivenciaRua() {
         <h2 id="vivencia-t" className="im-h2 mt-4 max-w-4xl text-foreground">Quem entende de atacado está na rua, não em outro estado.</h2>
         <p className="mt-4 max-w-2xl text-lg text-body">A NextLevel vive o atacado de São Paulo todos os dias. Essa proximidade vira loja certa, atendimento rápido e decisões que fazem sentido para o seu negócio.</p>
         <p aria-hidden className="mt-10 flex flex-wrap items-baseline gap-x-6 gap-y-1 font-display text-5xl font-bold leading-none tracking-tight text-[var(--im-acao,var(--ds-primary))] md:text-7xl">
-          {LUGARES.map((l, i) => <span key={l} className={i === LUGARES.length - 1 ? "opacity-40" : ""}>{l}</span>)}
+          {LUGARES.map((l, i) => <span key={l} className={i === LUGARES.length - 1 ? "opacity-70" : ""}>{l}</span>)}
         </p>
         <ul className="mt-12 grid gap-x-8 gap-y-10 border-t border-border pt-10 sm:grid-cols-2 lg:grid-cols-4">
           {PILARES.map((p, i) => (

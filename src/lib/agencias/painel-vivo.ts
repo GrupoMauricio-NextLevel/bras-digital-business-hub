@@ -19,9 +19,17 @@ export const TRECHOS = [
   { chave: "publicado", rotulo: "Publicado", etapas: ["PUBLICADO", "CONCLUIDO"], cor: "var(--vida-crescimento)" },
 ] as const satisfies readonly { chave: string; rotulo: string; etapas: readonly PecaEtapa[]; cor: string }[];
 
-/** Quantas peças há em cada trecho e a fatia de cada um (soma 100 quando há peças). */
-export function esteiraDoMes(porEtapa: Partial<Record<PecaEtapa, number>>) {
-  const trechos = TRECHOS.map((t) => ({ chave: t.chave, rotulo: t.rotulo, cor: t.cor, n: t.etapas.reduce((s, e) => s + (porEtapa[e] ?? 0), 0) }));
+/**
+ * Quantas peças há em cada trecho e a fatia de cada um (soma 100 quando há peças). Com a personalização (D340/D341),
+ * fora do modelo de agência o trecho leva o nome da primeira etapa ligada dele, e o trecho todo desligado e vazio some.
+ */
+export function esteiraDoMes(porEtapa: Partial<Record<PecaEtapa, number>>, v?: { segmento: string; etapa: Record<PecaEtapa, string>; etapasAtivas: ReadonlySet<PecaEtapa> }) {
+  const trechos = TRECHOS.map((t) => {
+    const n = t.etapas.reduce((s, e) => s + (porEtapa[e] ?? 0), 0);
+    const ligada = v ? (t.etapas as readonly PecaEtapa[]).find((e) => v.etapasAtivas.has(e)) : t.etapas[0];
+    const rotulo = !v || v.segmento === "AGENCIA" ? t.rotulo : v.etapa[ligada ?? t.etapas[0]];
+    return { chave: t.chave, rotulo, cor: t.cor, n, visivel: !!ligada || n > 0 };
+  }).filter((t) => t.visivel).map((t) => ({ chave: t.chave, rotulo: t.rotulo, cor: t.cor, n: t.n }));
   const total = trechos.reduce((s, t) => s + t.n, 0);
   return { total, trechos: trechos.map((t) => ({ ...t, pct: total ? Math.round((t.n / total) * 1000) / 10 : 0 })) };
 }

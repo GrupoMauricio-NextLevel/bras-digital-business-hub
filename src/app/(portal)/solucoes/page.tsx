@@ -4,6 +4,8 @@ import { SecaoEquipe } from "@/components/portal/equipe/secao-equipe";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { businessLigado } from "@/lib/business/modulos";
+import { TambemDaNextLevel } from "@/components/portal/frentes/tambem-da-nextlevel";
 import { ArrowDown, ArrowRight, Mail, MessageCircle } from "lucide-react";
 import { getDb } from "@/db/client";
 import { getBrand } from "@/lib/brand-server";
@@ -232,6 +234,8 @@ export default async function SolucoesPage({ searchParams }: { searchParams: Pro
           ) : null}
         </div>
       </section>
+      {/* Ecossistema tudo em um (D336): a agência leva às outras três frentes, no site da Commerce. */}
+      {businessLigado() ? <TambemDaNextLevel atual="solucoes" solucoesHref="/solucoes" base={brand.code === "NEXTLEVEL_COMMERCE" ? "" : commerce.baseUrl} /> : null}
     </>
   );
   return vitrine ? <SelecaoProvider catalogo={[...vitrine.itens, ...vitrine.familias.filter((f) => f.key === "SUPERDROP").flatMap((f) => f.itens)]}>{conteudo}</SelecaoProvider> : conteudo;

@@ -112,7 +112,8 @@ export async function listInvoicesFor(db: Database, actor: Actor) {
 // ---------------------------------------------------------------------------
 // Venda de add-ons (gera fatura; ao pagar, concede o direito)
 // ---------------------------------------------------------------------------
-export async function buyAddon(db: Database, actor: Actor, key: string, cycle: "MONTHLY" | "ANNUAL", now = new Date()) {
+/** `preco`: valor calculado por uma regra do domínio (ex.: segundo produto com desconto, D336); sem ele, vale a tabela. */
+export async function buyAddon(db: Database, actor: Actor, key: string, cycle: "MONTHLY" | "ANNUAL", now = new Date(), preco?: { monthlyCents: number; annualCents: number; nota?: string }) {
   const t = tenantOf(actor);
   if (!t || (actor.role !== "STORE_OWNER" && actor.role !== "SUPPLIER_ADMIN")) throw new ForbiddenError("Apenas lojistas e fornecedores compram add-ons.");
   if (!(ADDON_KEYS as readonly string[]).includes(key)) throw new NotFoundError("Add-on não encontrado.");
@@ -120,7 +121,7 @@ export async function buyAddon(db: Database, actor: Actor, key: string, cycle: "
   const addon = book.addons[key as AddonKey];
   const isStore = t.type === "STORE";
   if (addon.audience === (isStore ? "SUPPLIER" : "STORE")) throw new DomainError("NOT_FOR_YOU", "Este add-on não está disponível para o seu perfil.");
-  const amount = cycle === "ANNUAL" ? addon.annualCents : addon.monthlyCents;
+  const amount = preco ? (cycle === "ANNUAL" ? preco.annualCents : preco.monthlyCents) : cycle === "ANNUAL" ? addon.annualCents : addon.monthlyCents;
   const months = cycle === "ANNUAL" ? 12 : 1;
   const dedupeKey = `ADDON:${isStore ? t.storeId : t.supplierId}:${key}:${cycle}:${now.toISOString().slice(0, 7)}`;
   const existing = await db.query.financeInvoices.findFirst({ where: eq(financeInvoices.dedupeKey, dedupeKey) });
@@ -129,7 +130,7 @@ export async function buyAddon(db: Database, actor: Actor, key: string, cycle: "
   const supplierId = isStore ? (await supplierOfStore(db, t.storeId)) : t.supplierId;
   const id = newId("fin");
   const due = new Date(now); due.setUTCDate(due.getUTCDate() + 3);
-  await db.insert(financeInvoices).values({ id, dedupeKey, payerType: isStore ? "STORE" : "SUPPLIER", supplierId, storeId: isStore ? t.storeId : null, kind: "ADDON", description: `${addon.name} (${cycle === "ANNUAL" ? "anual" : "mensal"})`, amountCents: amount, lines: [{ kind: "ADDON", description: `${addon.name} · ${months} mês(es)`, amountCents: amount }], status: "OPEN", dueDate: due.toISOString() });
+  await db.insert(financeInvoices).values({ id, dedupeKey, payerType: isStore ? "STORE" : "SUPPLIER", supplierId, storeId: isStore ? t.storeId : null, kind: "ADDON", description: `${addon.name} (${cycle === "ANNUAL" ? "anual" : "mensal"})`, amountCents: amount, lines: [{ kind: "ADDON", description: `${addon.name} · ${months} mês(es)${preco?.nota ? ` · ${preco.nota}` : ""}`, amountCents: amount }], status: "OPEN", dueDate: due.toISOString() });
   await emitEvent(db, { type: "ADDON_ORDERED", supplierId, storeId: isStore ? t.storeId : null, actorRole: actor.role, payload: { key, cycle, invoiceId: id } });
   return { invoiceId: id, amountCents: amount };
 }

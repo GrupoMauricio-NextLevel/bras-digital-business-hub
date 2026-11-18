@@ -11,9 +11,10 @@ import { newId } from "@/lib/ids";
 import { escopoDaAgencia, pode, podeVerCliente, type Membro } from "./acesso";
 import { hojeEmSaoPaulo } from "./clientes";
 import {
-  FUNCAO_DA_ETAPA, ETAPA_ROTULO, TIPO_PARA_INCLUSO, TIPO_ROTULO, atrasada, contagemDoCiclo, escolherResponsavel, mesDe, mesRotulo, podePedirAjuste, prazoDaEtapa, proximaEtapa,
+  FUNCAO_DA_ETAPA, ETAPA_ROTULO, TIPO_PARA_INCLUSO, TIPO_ROTULO, atrasada, contagemDoCiclo, escolherResponsavel, etapaInicial, mesDe, mesRotulo, podePedirAjuste, prazoDaEtapa, proximaEtapa,
   publicada, situacaoInicial, situacaoRotulo, situacaoValida, type ContagemDoCiclo,
 } from "./fluxo";
+import { vocabulario, type Vocabulario } from "./personalizacao";
 
 /**
  * Produção da agência (D314, Fase 1A): o ciclo do mês de cada cliente e a peça de conteúdo que atravessa os
@@ -87,11 +88,13 @@ export async function criarPeca(db: Database, actor: Actor, raw: z.input<typeof 
   if (cliente.situacao === "ENCERRADO") throw new DomainError("CLIENTE_ENCERRADO", "Cliente com contrato encerrado.");
   const ciclo = await garantirCiclo(db, cliente, d.mes ?? mesDe(hoje));
   const id = newId("agpc");
+  // Personalização (D340): nasce na primeira etapa ligada, com o departamento escolhido pela empresa.
+  const v = vocabulario(agencia.personalizacao); const ini = etapaInicial(v.etapasAtivas);
   await db.insert(agenciaPecas).values({
     id, agenciaId: agencia.id, clienteId: cliente.id, cicloId: ciclo.id, tipo: d.tipo, titulo: d.titulo, objetivo: d.objetivo || null, extra: d.extra,
-    etapa: "PLANEJAMENTO", situacao: situacaoInicial("PLANEJAMENTO"), responsavelId: escolherResponsavel("PLANEJAMENTO", equipe, cliente.responsavelId), prazo: prazoDaEtapa("PLANEJAMENTO", hoje, agencia.prazosEtapas),
+    etapa: ini, situacao: situacaoInicial(ini), responsavelId: escolherResponsavel(ini, equipe, cliente.responsavelId, funcaoDasEtapas(v)), prazo: prazoDaEtapa(ini, hoje, agencia.prazosEtapas),
   });
-  await evento(db, actor, { id, agenciaId: agencia.id }, "CRIADA", `Peça criada${d.extra ? " (extra, fora do pacote)" : ""} no ciclo de ${mesRotulo(ciclo.mes)}.`);
+  await evento(db, actor, { id, agenciaId: agencia.id }, "CRIADA", `${v.nomes.entrega} criada${d.extra ? " (extra, fora do pacote)" : ""} no ciclo de ${mesRotulo(ciclo.mes)}.`);
   return { id };
 }
 
@@ -103,12 +106,13 @@ export async function planejarMes(db: Database, actor: Actor, clienteId: string,
   if (!pode.planejar(membro)) throw new ForbiddenError("Sua função não planeja o mês.");
   if (cliente.situacao !== "ATIVO") throw new DomainError("CLIENTE_INATIVO", "Só clientes ativos recebem planejamento.");
   const ciclo = await garantirCiclo(db, cliente, mes);
+  const v = vocabulario(agencia.personalizacao); const ini = etapaInicial(v.etapasAtivas);
   const existentes = await db.select({ tipo: agenciaPecas.tipo }).from(agenciaPecas).where(and(eq(agenciaPecas.cicloId, ciclo.id), eq(agenciaPecas.extra, false)));
   const novas: (typeof agenciaPecas.$inferInsert)[] = [];
   for (const [chave, tipo, rotulo] of TIPO_DO_INCLUSO) {
     const tem = existentes.filter((p) => TIPO_PARA_INCLUSO[p.tipo] === chave).length;
     for (let i = tem + 1; i <= (ciclo.contratado[chave] ?? 0); i++) {
-      novas.push({ id: newId("agpc"), agenciaId: agencia.id, clienteId: cliente.id, cicloId: ciclo.id, tipo, titulo: `${rotulo} ${i} · ${mesRotulo(mes)}`, etapa: "PLANEJAMENTO", situacao: situacaoInicial("PLANEJAMENTO"), responsavelId: escolherResponsavel("PLANEJAMENTO", equipe, cliente.responsavelId), prazo: prazoDaEtapa("PLANEJAMENTO", hoje, agencia.prazosEtapas) });
+      novas.push({ id: newId("agpc"), agenciaId: agencia.id, clienteId: cliente.id, cicloId: ciclo.id, tipo, titulo: `${v.segmento === "AGENCIA" ? rotulo : v.tipo[tipo]} ${i} · ${mesRotulo(mes)}`, etapa: ini, situacao: situacaoInicial(ini), responsavelId: escolherResponsavel(ini, equipe, cliente.responsavelId, funcaoDasEtapas(v)), prazo: prazoDaEtapa(ini, hoje, agencia.prazosEtapas) });
     }
   }
   if (novas.length) {
@@ -158,8 +162,14 @@ export async function atualizarPeca(db: Database, actor: Actor, pecaId: string, 
   if (d.prioridade && d.prioridade !== peca.prioridade) await evento(db, actor, peca, "PRIORIDADE", `Prioridade: ${d.prioridade.toLowerCase()}.`);
 }
 
-/** O que falta para concluir a etapa (regra testada). */
-export function requisitoParaAvancar(p: Pick<Peca, "etapa" | "linkBrutos" | "linkVersao" | "linkPublicacao">): string | null {
+/** Departamento que recebe cada etapa, conforme a personalização (D340). */
+const funcaoDasEtapas = (v: Vocabulario) => Object.fromEntries(PECA_ETAPAS.map((k) => [k, v.etapas[k].funcao])) as Record<PecaEtapa, AgenciaFuncao>;
+/** Contexto para saber a próxima etapa: etapas ligadas e se o tipo pula a execução (D340). */
+const contextoDaPeca = (v: Vocabulario, peca: Pick<Peca, "tipo">, cliente: { exigeAprovacao: boolean }) => ({ tipo: peca.tipo, exigeAprovacao: cliente.exigeAprovacao, ativas: v.etapasAtivas, pulaExecucao: v.tipos[peca.tipo].pulaExecucao });
+
+/** O que falta para concluir a etapa (regra testada). Só quando a empresa exige os links (agência, por padrão; D340). */
+export function requisitoParaAvancar(p: Pick<Peca, "etapa" | "linkBrutos" | "linkVersao" | "linkPublicacao">, exigirLinks = true): string | null {
+  if (!exigirLinks) return null;
   if (p.etapa === "CAPTACAO" && !p.linkBrutos) return "Registre o link dos arquivos brutos antes de mandar para a edição.";
   if (p.etapa === "EDICAO" && !p.linkVersao) return "Envie o link da versão editada antes de mandar para a revisão.";
   if (p.etapa === "AGENDAMENTO" && !p.linkPublicacao) return "Registre o link da publicação para marcar como publicado.";
@@ -170,16 +180,17 @@ export function requisitoParaAvancar(p: Pick<Peca, "etapa" | "linkBrutos" | "lin
 export async function avancarPeca(db: Database, actor: Actor, pecaId: string, hoje = hojeEmSaoPaulo()) {
   const { membro, agencia, cliente, equipe, peca } = await pecaVisivel(db, actor, pecaId);
   if (!podeMexer(membro, peca)) throw new ForbiddenError("Só o responsável da etapa ou o gestor conclui esta etapa.");
-  const proxima = proximaEtapa(peca.etapa, { tipo: peca.tipo, exigeAprovacao: cliente.exigeAprovacao });
-  if (!proxima) throw new DomainError("CONCLUIDA", "A peça já está concluída.");
-  const falta = requisitoParaAvancar(peca); if (falta) throw new DomainError("REQUISITO", falta);
-  const responsavelId = escolherResponsavel(proxima, equipe, cliente.responsavelId);
+  const v = vocabulario(agencia.personalizacao);
+  const proxima = proximaEtapa(peca.etapa, contextoDaPeca(v, peca, cliente));
+  if (!proxima) throw new DomainError("CONCLUIDA", `${v.nomes.entrega} já está concluída.`);
+  const falta = requisitoParaAvancar(peca, v.exigirLinks); if (falta) throw new DomainError("REQUISITO", falta);
+  const responsavelId = escolherResponsavel(proxima, equipe, cliente.responsavelId, funcaoDasEtapas(v));
   // Concorrência: só avança se ninguém mudou a etapa no meio do caminho (dois cliques não pulam duas etapas).
   const r = await db.update(agenciaPecas).set({ etapa: proxima, situacao: situacaoInicial(proxima), responsavelId, prazo: prazoDaEtapa(proxima, hoje, agencia.prazosEtapas), publicadoEm: proxima === "PUBLICADO" ? new Date().toISOString() : peca.publicadoEm, updatedAt: new Date().toISOString() })
     .where(and(eq(agenciaPecas.id, peca.id), eq(agenciaPecas.etapa, peca.etapa))).returning({ id: agenciaPecas.id });
   if (!r.length) throw new DomainError("MUDOU", "A peça mudou de etapa agora há pouco. Atualize a página.");
   const nome = responsavelId ? equipe.find((p) => p.userId === responsavelId)?.nome ?? (await db.query.users.findFirst({ where: eq(users.id, responsavelId), columns: { name: true } }))?.name : null;
-  await evento(db, actor, peca, "ETAPA", `Etapa ${ETAPA_ROTULO[peca.etapa]} concluída → ${ETAPA_ROTULO[proxima]}${nome ? `, com ${nome}` : " (sem responsável: defina na equipe do cliente)"}.`, null, responsavelId);
+  await evento(db, actor, peca, "ETAPA", `Etapa ${v.etapa[peca.etapa]} concluída → ${v.etapa[proxima]}${nome ? `, com ${nome}` : " (sem responsável: defina na equipe do cliente)"}.`, null, responsavelId);
   // Portal do cliente (D320): conteúdo chegando para aprovação avisa o cliente por e-mail (uma vez por versão).
   if (proxima === "APROVACAO") { const { avisarClienteParaAprovar } = await import("./portal"); await avisarClienteParaAprovar(db, peca.id).catch(() => null); }
   return { etapa: proxima, responsavelId };
@@ -191,9 +202,10 @@ export async function pedirAjuste(db: Database, actor: Actor, pecaId: string, mo
   if (!podeMexer(membro, peca)) throw new ForbiddenError("Só o responsável da etapa ou o gestor pede ajuste.");
   if (!podePedirAjuste(peca.etapa)) throw new DomainError("ETAPA", "Ajuste só na revisão interna ou na aprovação do cliente.");
   const texto = z.string().trim().min(3, "Diga o que precisa mudar").max(2000).parse(motivo);
-  const responsavelId = escolherResponsavel("EDICAO", equipe, cliente.responsavelId);
-  await db.update(agenciaPecas).set({ etapa: "EDICAO", situacao: "AJUSTES", responsavelId, prazo: prazoDaEtapa("EDICAO", hoje, agencia.prazosEtapas), updatedAt: new Date().toISOString() }).where(eq(agenciaPecas.id, peca.id));
-  await evento(db, actor, peca, "AJUSTE", `Ajuste pedido na ${ETAPA_ROTULO[peca.etapa].toLowerCase()}: ${texto}`, null, responsavelId);
+  const v = vocabulario(agencia.personalizacao); const volta = v.etapaDeAjuste;
+  const responsavelId = escolherResponsavel(volta, equipe, cliente.responsavelId, funcaoDasEtapas(v));
+  await db.update(agenciaPecas).set({ etapa: volta, situacao: volta === "EDICAO" ? "AJUSTES" : situacaoInicial(volta), responsavelId, prazo: prazoDaEtapa(volta, hoje, agencia.prazosEtapas), updatedAt: new Date().toISOString() }).where(eq(agenciaPecas.id, peca.id));
+  await evento(db, actor, peca, "AJUSTE", `Ajuste pedido na ${v.etapa[peca.etapa].toLowerCase()}: ${texto}`, null, responsavelId);
   const u = await db.query.users.findFirst({ where: eq(users.id, actor.userId), columns: { name: true } });
   await db.insert(agenciaPecaComentarios).values({ id: newId("agcm"), pecaId: peca.id, agenciaId: peca.agenciaId, autorId: actor.userId, autorNome: u?.name ?? "Equipe", texto: `Ajuste pedido: ${texto}`, interno: true });
 }
@@ -222,18 +234,19 @@ export async function comentarPeca(db: Database, actor: Actor, pecaId: string, r
 }
 
 export async function fichaDaPeca(db: Database, actor: Actor, pecaId: string) {
-  const { membro, cliente, equipe, peca } = await pecaVisivel(db, actor, pecaId);
+  const { membro, agencia, cliente, equipe, peca } = await pecaVisivel(db, actor, pecaId);
+  const v = vocabulario(agencia.personalizacao);
   const [eventos, comentarios, ciclo, resp] = await Promise.all([
     db.select().from(agenciaPecaEventos).where(eq(agenciaPecaEventos.pecaId, peca.id)).orderBy(desc(agenciaPecaEventos.createdAt)),
     db.select().from(agenciaPecaComentarios).where(eq(agenciaPecaComentarios.pecaId, peca.id)).orderBy(asc(agenciaPecaComentarios.createdAt)),
     db.query.agenciaCiclos.findFirst({ where: eq(agenciaCiclos.id, peca.cicloId) }),
     peca.responsavelId ? db.query.users.findFirst({ where: eq(users.id, peca.responsavelId), columns: { name: true } }) : null,
   ]);
-  const proxima = proximaEtapa(peca.etapa, { tipo: peca.tipo, exigeAprovacao: cliente.exigeAprovacao });
+  const proxima = proximaEtapa(peca.etapa, contextoDaPeca(v, peca, cliente));
   return {
     peca, cliente: { id: cliente.id, nome: cliente.nome, exigeAprovacao: cliente.exigeAprovacao }, mes: ciclo?.mes ?? null, responsavelNome: resp?.name ?? null,
     equipeCliente: equipe, eventos, comentarios,
-    podeMexer: podeMexer(membro, peca), podeGerir: pode.gerirProducao(membro), proxima, requisito: requisitoParaAvancar(peca), podeAjuste: podePedirAjuste(peca.etapa),
+    podeMexer: podeMexer(membro, peca), podeGerir: pode.gerirProducao(membro), proxima, requisito: requisitoParaAvancar(peca, v.exigirLinks), podeAjuste: podePedirAjuste(peca.etapa),
   };
 }
 

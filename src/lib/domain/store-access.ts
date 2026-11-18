@@ -260,7 +260,17 @@ export async function signupMember(db: Database, raw: z.input<typeof signupSchem
   const { finFlag } = await import("@/lib/finance/flags");
   if (independent && finFlag("FIN_COMMERCE_PLANS")) {
     const { startCommerceSubscription } = await import("./commerce-plans");
-    const sub = await startCommerceSubscription(db, { storeId: created.storeId, productKey: input.plan ?? "COMMERCE_START", cycle: input.cycle, taxId, now });
+    // Sites Start (D336): quem entra pelo caminho Site no Start paga o preço do Sites Start da tabela do Master.
+    const productKey = input.plan ?? "COMMERCE_START";
+    const precoSites = input.formato === "SITE" && productKey === "COMMERCE_START" ? await (async () => {
+      const { getPriceBook } = await import("./finance"); const { precosDoSites } = await import("@/lib/business/precos-frentes");
+      const { commercePlansView } = await import("./commerce-plans");
+      const planos = (await commercePlansView(db)).plans; const s = precosDoSites(await getPriceBook(db), planos).START;
+      // Só vale quando é mais barato que o Start da loja (porta de entrada); senão, o preço do catálogo.
+      const loja = planos.find((p) => p.key === "COMMERCE_START");
+      return loja?.monthlyCents && s.monthlyCents < loja.monthlyCents ? s : null;
+    })() : null;
+    const sub = await startCommerceSubscription(db, { storeId: created.storeId, productKey, cycle: input.cycle, taxId, now, precoBase: precoSites ? (input.cycle === "ANNUAL" ? precoSites.annualCents : precoSites.monthlyCents) : undefined });
     return { storeId: created.storeId, userId: user.id, slug: created.slug, trial: sub.trial };
   }
   if (code) await startTrial(db, { storeId: created.storeId, code, taxId, now });

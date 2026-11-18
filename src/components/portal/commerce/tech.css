@@ -63,7 +63,7 @@
   background: linear-gradient(var(--ds-canvas, #fff), var(--ds-canvas, #fff)) padding-box, linear-gradient(140deg, rgb(15 23 42 / .12), rgb(15 23 42 / .06)) border-box;
   transition: background var(--ds-dur-fast, .18s) ease, transform var(--ds-dur-fast, .18s) ease, box-shadow .25s ease; }
 .ec-cartao:hover { background: linear-gradient(var(--ds-canvas, #fff), var(--ds-canvas, #fff)) padding-box, var(--ec-linha) border-box; transform: translateY(-2px); box-shadow: 0 24px 50px -30px rgb(34 211 238 / .55); }
-.ec-indice { font-family: var(--ec-mono); font-size: .72rem; letter-spacing: .12em; color: color-mix(in srgb, currentColor 55%, transparent); }
+.ec-indice { font-family: var(--ec-mono); font-size: .72rem; letter-spacing: .12em; color: color-mix(in srgb, currentColor 72%, transparent); }
 .ec-icone { display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border-radius: .9rem; color: #0a1224;
   background: linear-gradient(135deg, #b8f3ff, #c9bcff 55%, #b8ffe0); box-shadow: 0 8px 20px -10px rgb(124 92 255 / .6); }
 .ec-cartao--escuro { color: #e8eefc; background: linear-gradient(#0a1224, #0a1224) padding-box, var(--ec-linha) border-box; }

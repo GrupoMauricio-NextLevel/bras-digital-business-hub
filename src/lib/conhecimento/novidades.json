@@ -1,10 +1,59 @@
 [
  {
-  "numero": 335,
+  "numero": 342,
   "frente": "E-commerce",
   "titulo": "Contratos da agência a 100%: projetos com entrega, parcelas, tela Contratos, aditivo, e-mail e contratos trazidos do Master",
   "data": "2026-11-18",
   "resumo": "Pedido do dono (18/11): migrar o contrato do Vestiário das Lendas do Master para o Painel da Agência; formalizar a Império Maia (Migração Nuvemshop → NextLevel, R$ 500, sinal de R$ 250 pago em 13/11 e saldo de R$ 250 em 18/11) e o Bazar…"
+ },
+ {
+  "numero": 341,
+  "frente": "E-commerce",
+  "titulo": "Os avanços dos \"painéis com vida\" (D329 a D335) integrados ao ecossistema e à personalização",
+  "data": "2026-11-18",
+  "resumo": "Pedido do dono: \"pode avaliar esse chat Dashboard visual design evolution, para que não perca evoluções que tivemos lá; quero integrar os avanços\"."
+ },
+ {
+  "numero": 340,
+  "frente": "E-commerce",
+  "titulo": "Painel da Agência personalizável para qualquer segmento de serviços (50% agências, 50% outros), e a academia sai de cena",
+  "data": "2026-11-18",
+  "resumo": "Pedido do dono: \"não vamos falar em academia mais\";"
+ },
+ {
+  "numero": 339,
+  "frente": "E-commerce",
+  "titulo": "Captação (NB4): página de campanha em poucos cliques, links por lugar, QR e números de cada campanha",
+  "data": "2026-11-18",
+  "resumo": "Pedido do dono: \"enquanto eu não pago o Neon, vamos desenvolver o que for possível\". Fase NB4 do plano docs/prompts/nextlevel-business-coracao-do-negocio.md (página de campanha da Meta \"em poucos cliques\"), sem a parte que exige configur…"
+ },
+ {
+  "numero": 338,
+  "frente": "Grupo",
+  "titulo": "Banco que dorme: consultas automáticas só com gente na tela e rotinas de hora em hora",
+  "data": "2026-11-18",
+  "resumo": "O que aconteceu: em 18/11/2026 (cerca de 10h40 UTC) o site saiu do ar: o Neon gratuito estourou as 100 horas de processamento do mês (\"Your account or project has exceeded the quota\"). O Neon cobra pelo tempo em que o banco fica acordado…"
+ },
+ {
+  "numero": 337,
+  "frente": "E-commerce",
+  "titulo": "Business por dentro, Etapa 2: funil em quadro, \"O que fazer hoje\" e o Maurício no contato",
+  "data": "2026-11-18",
+  "resumo": "Pedido do dono: \"inicie o desenvolvimento imediatamente, trabalhe durante um longo período vencendo todas as etapas\"; Etapa 2 do plano docs/prompts/ecossistema-tudo-em-um-aproveitamento.md (IA e o Business por dentro)."
+ },
+ {
+  "numero": 336,
+  "frente": "E-commerce",
+  "titulo": "Ecossistema tudo em um: quatro frentes (Commerce, Sites, Business, Soluções), um painel e pontes entre elas",
+  "data": "2026-11-18",
+  "resumo": "Pedido do dono: \"aceito as recomendações\"; \"quero muito seguir para o caminho do Bitrix\"; \"aproveitar o que já tem pronto ao máximo\"; \"isso tudo precisa se conectar por algum caminho sempre\"; \"usar o mesmo escopo da página do NextLevel C…"
+ },
+ {
+  "numero": 335,
+  "frente": "E-commerce",
+  "titulo": "Master \"Agora\" com gráfico do recebido e movimento das lojas ao vivo",
+  "data": "2026-11-18",
+  "resumo": "Pedido do dono: \"pode levar pra lá\" (os gráficos e o movimento ao vivo da agência, D334, para o Master)."
  },
  {
   "numero": 334,
@@ -229,54 +278,5 @@
   "titulo": "Busca e IA: \"Como nos conheceu?\", o que cada página trouxe de cliente, robôs de IA, llms.txt e trilha de navegação",
   "data": "2026-11-16",
   "resumo": "Pedido do dono: fechar os 5 itens pequenos que faltavam na base do plano de busca, IA e Academy (docs/prompts/busca-ia-academy-funil-organico.md), antes de começar o conteúdo. Tudo estende o trabalho de Tráfego e campanhas (D290 a D298 e…"
- },
- {
-  "numero": 302,
-  "frente": "E-commerce",
-  "titulo": "Tráfego e campanhas, fase TR6: leitura da Meta, custo por cliente real e números automáticos na sala do lojista",
-  "data": "2026-11-16",
-  "resumo": "Leitura pela API de Marketing da Meta (só leitura; mesmo token da API de conversões, D298, com permissão de leitura de anúncios): gasto, impressões, alcance, cliques no link, conversas e leads de cada campanha, por dia, na tabela ads_met…"
- },
- {
-  "numero": 299,
-  "frente": "E-commerce",
-  "titulo": "Anúncios na Meta pelo painel do lojista: diagnóstico, mesa da equipe e sala da campanha",
-  "data": "2026-11-14",
-  "resumo": "Pedido do dono: dar ao lojista a sensação de integração com a Meta, mesmo com a configuração feita à mão pela equipe: diagnóstico dinâmico no painel, pedido na mesa do Master, a equipe configura no Gerenciador de Anúncios e marca o andam…"
- },
- {
-  "numero": 298,
-  "frente": "E-commerce",
-  "titulo": "Tráfego e campanhas, fase TR5: retorno à Meta e ao Google pelo servidor (contato, conta, pagante e venda)",
-  "data": "2026-11-14",
-  "resumo": "O que volta para as plataformas: Fila (conversoes_envio, migração 0097): uma linha por plataforma, resultado e contato (não duplica). O identificador é o mesmo do navegador (D295), então a Meta não conta duas vezes. A rotina de 5 a 10 mi…"
- },
- {
-  "numero": 295,
-  "frente": "E-commerce",
-  "titulo": "Tráfego e campanhas, fase TR4: Pixel da Meta e Google no site da NextLevel, só com consentimento",
-  "data": "2026-11-14",
-  "resumo": "Onde configurar: Master → Tráfego e campanhas → Pixel e Google. O dono ou o Comercial colam só números públicos: Pixel da Meta (conjunto de dados), Google Ads (AW-… e o rótulo da conversão \"Contato\") e, opcional, Google Analytics 4 (G-…)…"
- },
- {
-  "numero": 294,
-  "frente": "E-commerce",
-  "titulo": "Tráfego e campanhas, fase TR3: origem de cada contato no Comercial, Fechou/Perdeu e código da visita no WhatsApp",
-  "data": "2026-11-13",
-  "resumo": "Origem de cada contato: quando alguém deixa o contato (lista de espera, janela de saída, diagnóstico) ou cria a loja, o sistema guarda de onde veio na tabela nova origens_contato, ligada à mesma chave do Comercial: canal, campanha, peça,…"
- },
- {
-  "numero": 293,
-  "frente": "E-commerce",
-  "titulo": "Busca e IA, fase S0: tabela central das páginas públicas, perguntas com fatos do sistema, robôs de IA e IndexNow",
-  "data": "2026-11-14",
-  "resumo": "Pedido do dono: começar o plano v3 de busca, IA e Academy (docs/prompts/busca-ia-academy-funil-organico.md). A troca de domínio com redirecionamento já estava feita (D281, D287); a S0 virou a base técnica e a correção dos textos vencidos."
- },
- {
-  "numero": 292,
-  "frente": "E-commerce",
-  "titulo": "Tráfego: cidade e aparelho de cada visita e notificações em tempo real",
-  "data": "2026-11-13",
-  "resumo": "Pedido do dono: \"um campo com notificação em tempo real dizendo pelo menos a cidade de onde a pessoa está acessando e por qual dispositivo; se puder, ainda mais profundo\"."
  }
 ]
