@@ -3311,6 +3311,9 @@ export const contratos = pgTable("contratos", {
   /** Impressão digital do texto que o cliente viu ao aceitar (tem de ser igual a `hash`). */
   aceitoHash: text("aceito_hash"),
   canceladoEm: ts("cancelado_em"),
+  /** Contrato de serviço levado ao Painel da Agência interna (D341): o original fica, marcado e fora das pendências. */
+  transferidoEm: ts("transferido_em"),
+  transferidoPara: text("transferido_para"),
   createdAt: createdAt(),
 }, (t) => [index("contratos_store_idx").on(t.storeId, t.status)]);
 
@@ -3392,6 +3395,8 @@ export const agencias = pgTable("agencias", {
   /** Modo demonstração (D326): agência-sandbox de outra agência real (nunca mistura dados) e a última "rodada" de movimento. */
   demoDeId: text("demo_de_id"),
   demoMovidoEm: ts("demo_movido_em"),
+  /** Agência interna (D341): a própria NextLevel Marketing Ltda. Contratos de serviço do Master podem ser trazidos para ela. */
+  interna: boolean("interna").notNull().default(false),
   /** Metas do mês da agência (D325): entregas publicadas, clientes novos e receita, por competência AAAA-MM. */
   metas: jsonb("metas").$type<Record<string, { entregas?: number; novosClientes?: number; receitaCents?: number }>>().notNull().default({}),
   captacao: jsonb("captacao").$type<{ ligada: boolean; titulo: string; texto: string; servicos: string[]; whatsapp: string | null }>(),
@@ -3600,11 +3605,19 @@ export const agenciaFaturas = pgTable("agencia_faturas", {
   pagoEm: ts("pago_em"),
   pagoComo: text("pago_como", { enum: ["SISTEMA", "MANUAL"] }),
   observacao: text("observacao"),
+  /** Parcela de um contrato de projeto (D341): sinal = 1, restante = 2... Sempre avulsa. */
+  contratoId: text("contrato_id"),
+  parcela: integer("parcela"),
+  /** Pix, transferência, dinheiro, cartão, Mercado Pago ou outro (baixa manual). */
+  pagoMeio: text("pago_meio"),
+  /** Pago e já lançado no caixa do Master (contrato trazido de lá): não soma de novo na receita da agência. */
+  registradoNoMaster: boolean("registrado_no_master").notNull().default(false),
   createdAt: createdAt(),
   updatedAt: updatedAt(),
 }, (t) => [
   uniqueIndex("agencia_faturas_mensal_uq").on(t.clienteId, t.competencia).where(sql`${t.avulsa} = false`),
   index("agencia_faturas_agencia_idx").on(t.agenciaId, t.situacao, t.vencimento),
+  uniqueIndex("agencia_faturas_parcela_uq").on(t.contratoId, t.parcela).where(sql`${t.contratoId} is not null`),
   check("agencia_faturas_valor_ck", sql`${t.valorCents} > 0`),
 ]);
 
@@ -3691,7 +3704,10 @@ export const agenciaMensagens = pgTable("agencia_mensagens", {
   createdAt: createdAt(),
 }, (t) => [index("agencia_mensagens_solicitacao_idx").on(t.solicitacaoId, t.createdAt)]);
 
-export const AGENCIA_CONTRATO_STATUS = ["ENVIADO", "ACEITO", "CANCELADO"] as const;
+export const AGENCIA_CONTRATO_STATUS = ["ENVIADO", "ACEITO", "CANCELADO", "ENCERRADO"] as const;
+/** Modelos do contrato da agência (D341): a mensalidade de marketing (D321) e os projetos com entrega. */
+export const AGENCIA_CONTRATO_MODELOS = ["MENSAL_MARKETING", "LOJA_PRONTA_EXPRESS", "MIGRACAO_PLATAFORMA"] as const;
+export type AgenciaContratoModelo = (typeof AGENCIA_CONTRATO_MODELOS)[number];
 export const agenciaContratos = pgTable("agencia_contratos", {
   id: id(),
   agenciaId: text("agencia_id").notNull().references(() => agencias.id),
@@ -3710,6 +3726,23 @@ export const agenciaContratos = pgTable("agencia_contratos", {
   aceitoIp: text("aceito_ip"),
   aceitoAparelho: text("aceito_aparelho"),
   canceladoEm: ts("cancelado_em"),
+  /** Modelo e versão do texto (D341). Contrato antigo: mensal de marketing, versão 1. */
+  modelo: text("modelo", { enum: AGENCIA_CONTRATO_MODELOS }).notNull().default("MENSAL_MARKETING"),
+  versaoModelo: integer("versao_modelo").notNull().default(1),
+  /** AGENCIA: feito no painel. MASTER: trazido do Master com o aceite original preservado (texto, impressão digital e prova). */
+  origem: text("origem", { enum: ["AGENCIA", "MASTER"] }).notNull().default("AGENCIA"),
+  origemContratoId: text("origem_contrato_id").unique().references(() => contratos.id),
+  /** Aditivo: este contrato substitui aquele (que continua como foi aceito). */
+  aditivoDeId: text("aditivo_de_id"),
+  /** Usuário que aceitou no painel da loja (contratos trazidos do Master). */
+  aceitoPor: text("aceito_por"),
+  aceitoHash: text("aceito_hash"),
+  /** Quando o PDF assinado foi mandado por e-mail ao cliente pela última vez. */
+  emailAceiteEnviadoEm: ts("email_aceite_enviado_em"),
+  /** Valor total do projeto (centavos); vazio na mensalidade. */
+  valorTotalCents: integer("valor_total_cents"),
+  encerradoEm: ts("encerrado_em"),
+  encerradoMotivo: text("encerrado_motivo"),
   createdAt: createdAt(),
 }, (t) => [index("agencia_contratos_cliente_idx").on(t.clienteId, t.status), index("agencia_contratos_agencia_idx").on(t.agenciaId)]);
 

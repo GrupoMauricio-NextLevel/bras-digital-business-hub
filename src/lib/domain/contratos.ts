@@ -78,7 +78,7 @@ export async function enviarContratoLojaPronta(db: Database, actor: Actor, raw: 
 /** Lista do Master (dono, Financeiro e Comercial veem). */
 export async function contratosDoMaster(db: Database, actor: Actor) {
   if (actor.role !== "NEXTLEVEL_MASTER" || actor.masterFunction === "CONTADOR") throw new ForbiddenError();
-  return db.select({ id: contratos.id, numero: contratos.numero, titulo: contratos.titulo, status: contratos.status, enviadoEm: contratos.enviadoEm, aceitoEm: contratos.aceitoEm, aceitoNome: contratos.aceitoNome, storeId: contratos.storeId }).from(contratos).orderBy(desc(contratos.enviadoEm)).limit(200);
+  return db.select({ id: contratos.id, numero: contratos.numero, titulo: contratos.titulo, status: contratos.status, enviadoEm: contratos.enviadoEm, aceitoEm: contratos.aceitoEm, aceitoNome: contratos.aceitoNome, storeId: contratos.storeId, transferidoEm: contratos.transferidoEm }).from(contratos).orderBy(desc(contratos.enviadoEm)).limit(200);
 }
 
 /** Contratos da loja de quem está logado (só o dono da loja; a equipe da loja não vê). */
@@ -149,7 +149,7 @@ type Parcela = typeof contratoParcelas.$inferSelect;
 const linkBase = () => brandByCode("NEXTLEVEL_COMMERCE").baseUrl.replace(/\/$/, "");
 
 /** Cria as parcelas (sinal e restante) a partir dos dados congelados, se ainda não existem. Vale para contrato antigo. */
-async function garantirParcelas(db: Database, c: Contrato) {
+export async function garantirParcelas(db: Database, c: Contrato) {
   if (c.status === "CANCELADO") return;
   const d = c.dados as unknown as DadosLojaPronta;
   const linhas = [
@@ -257,7 +257,7 @@ export async function lancarParcelaNoCaixa(db: Database, actor: Actor, parcelaId
 /** Pix que os clientes avisaram e o Master ainda não conferiu (topo da tela de Contratos). */
 export async function pixParaConferir(db: Database, actor: Actor) {
   exigirMaster(actor);
-  return db.select({ id: contratoParcelas.id, contratoId: contratos.id, numero: contratos.numero, titulo: contratos.titulo, descricao: contratoParcelas.descricao, valorCents: contratoParcelas.valorCents, avisadoEm: contratoParcelas.avisadoEm }).from(contratoParcelas).innerJoin(contratos, eq(contratos.id, contratoParcelas.contratoId)).where(and(eq(contratoParcelas.status, "AVISADA"), ne(contratos.status, "CANCELADO"))).orderBy(asc(contratoParcelas.avisadoEm));
+  return db.select({ id: contratoParcelas.id, contratoId: contratos.id, numero: contratos.numero, titulo: contratos.titulo, descricao: contratoParcelas.descricao, valorCents: contratoParcelas.valorCents, avisadoEm: contratoParcelas.avisadoEm }).from(contratoParcelas).innerJoin(contratos, eq(contratos.id, contratoParcelas.contratoId)).where(and(eq(contratoParcelas.status, "AVISADA"), ne(contratos.status, "CANCELADO"), isNull(contratos.transferidoEm))).orderBy(asc(contratoParcelas.avisadoEm));
 }
 
 /** Parcelas abertas da loja que vencem em até 3 dias (ou já venceram): faixa na tela inicial do dono. */
@@ -273,10 +273,11 @@ export async function parcelasAPagar(db: Database, actor: Actor, now = new Date(
  * a parcela vence sem o "Já fiz o Pix". Cada aviso sai uma vez só (dedupeKey). Parcela avisada ou paga não recebe lembrete.
  */
 export async function lembretesDeParcelas(db: Database, now = new Date()) {
-  const ativos = await db.select().from(contratos).where(ne(contratos.status, "CANCELADO"));
+  const ativos = await db.select().from(contratos).where(and(ne(contratos.status, "CANCELADO"), isNull(contratos.transferidoEm)));
   for (const c of ativos) await garantirParcelas(db, c);
   const hoje = dataSP(now);
-  const abertas = await db.select({ p: contratoParcelas, c: contratos }).from(contratoParcelas).innerJoin(contratos, eq(contratos.id, contratoParcelas.contratoId)).where(and(eq(contratoParcelas.status, "ABERTA"), ne(contratos.status, "CANCELADO"), lte(contratoParcelas.vencimento, somarDias(hoje, 2))));
+  // Contrato levado ao Painel da Agência (D341): os lembretes passam a sair de lá.
+  const abertas = await db.select({ p: contratoParcelas, c: contratos }).from(contratoParcelas).innerJoin(contratos, eq(contratos.id, contratoParcelas.contratoId)).where(and(eq(contratoParcelas.status, "ABERTA"), ne(contratos.status, "CANCELADO"), isNull(contratos.transferidoEm), lte(contratoParcelas.vencimento, somarDias(hoje, 2))));
   let enviados = 0;
   for (const { p, c } of abertas) {
     const d = c.dados as unknown as DadosLojaPronta;

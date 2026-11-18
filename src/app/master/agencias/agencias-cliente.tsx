@@ -3,7 +3,7 @@ import * as React from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Plus } from "lucide-react";
-import { criarAgenciaAction, mudarSituacaoDaAgenciaAction } from "@/app/actions/agencias";
+import { criarAgenciaAction, marcarAgenciaInternaAction, mudarSituacaoDaAgenciaAction } from "@/app/actions/agencias";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -44,4 +44,11 @@ export function SituacaoDaAgencia({ id, situacao }: { id: string; situacao: "PIL
       ))}
     </div>
   );
+}
+
+/** Agência interna (D341): a própria NextLevel Marketing Ltda. Usa os dados e o Pix da empresa e traz contratos do Master. */
+export function AgenciaInterna({ id, interna, nome }: { id: string; interna: boolean; nome: string }) {
+  const router = useRouter();
+  const [pending, start] = React.useTransition();
+  return <Button size="sm" variant={interna ? "ghost" : "secondary"} loading={pending} onClick={() => { if (!interna && !confirm(`Marcar ${nome} como a agência interna da NextLevel? Os contratos dela saem com os dados e o Pix da NextLevel Marketing Ltda e ela pode trazer contratos de serviço do Master.`)) return; start(async () => { const r = await marcarAgenciaInternaAction(id, !interna); if (r.ok) { toast.success(interna ? "Deixou de ser a agência interna." : "Agência interna marcada."); router.refresh(); } else toast.error(r.error); }); }}>{interna ? "Desmarcar interna" : "Marcar como agência interna"}</Button>;
 }

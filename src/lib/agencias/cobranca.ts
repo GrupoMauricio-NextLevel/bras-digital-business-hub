@@ -142,13 +142,21 @@ export async function conferirPagamentosAbertos(db: Database, actor: Actor, fetc
 }
 
 /** Baixa manual (o cliente pagou por fora: transferência, dinheiro), com observação. */
-export async function marcarPagaManual(db: Database, actor: Actor, faturaId: string, observacao: string) {
+export const baixaSchema = z.object({
+  pagoEm: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Data do pagamento").optional(),
+  meio: z.enum(["PIX", "TRANSFERENCIA", "DINHEIRO", "CARTAO", "MERCADO_PAGO", "OUTRO"]).optional(),
+});
+/** "Recebi por fora": baixa manual, com a data e o meio do pagamento quando informados (parcelas de contrato, D341). */
+export async function marcarPagaManual(db: Database, actor: Actor, faturaId: string, observacao: string, extra: z.input<typeof baixaSchema> = {}) {
   const { membro } = await escopo(db, actor);
   const f = await faturaDaAgencia(db, membro.agenciaId, faturaId);
   if (f.situacao !== "ABERTA") throw new DomainError("NAO_ABERTA", "Esta cobrança não está em aberto.");
   const obs = z.string().trim().min(3, "Diga como foi pago (ex.: Pix direto na conta)").max(300).parse(observacao);
-  await db.update(agenciaFaturas).set({ situacao: "PAGA", pagoEm: new Date().toISOString(), pagoComo: "MANUAL", observacao: obs, updatedAt: new Date().toISOString() }).where(eq(agenciaFaturas.id, f.id));
-  await recordAudit(db, actor, { action: "AGENCIA_FATURA_PAGA_MANUAL", entityType: "agencia_fatura", entityId: f.id, after: { observacao: obs } }, { force: true });
+  const e = baixaSchema.parse(extra);
+  if (e.pagoEm && e.pagoEm > hojeEmSaoPaulo()) throw new DomainError("DATA_FUTURA", "A data do pagamento não pode ser depois de hoje.");
+  const pagoEm = e.pagoEm ? `${e.pagoEm}T15:00:00.000Z` : new Date().toISOString();
+  await db.update(agenciaFaturas).set({ situacao: "PAGA", pagoEm, pagoComo: "MANUAL", pagoMeio: e.meio ?? null, observacao: obs, updatedAt: new Date().toISOString() }).where(eq(agenciaFaturas.id, f.id));
+  await recordAudit(db, actor, { action: "AGENCIA_FATURA_PAGA_MANUAL", entityType: "agencia_fatura", entityId: f.id, after: { observacao: obs, pagoEm, meio: e.meio ?? null } }, { force: true });
 }
 
 export async function cancelarCobranca(db: Database, actor: Actor, faturaId: string, motivo: string) {
@@ -177,7 +185,8 @@ export async function financeiroDaAgencia(db: Database, actor: Actor, mes?: stri
     ...r.f, cliente: r.cliente, whatsapp: r.whatsapp ? telefoneTexto(r.whatsapp) : null, whatsappDigitos: r.whatsapp, mostrada: situacaoMostrada(r.f, hoje), lembrete: r.f.situacao === "ABERTA" ? lembreteDoDia(r.f.vencimento, hoje) : null,
     mensagem: mensagemDeCobranca(r.f, { nome: r.cliente, contatoNome: r.contatoNome }, agencia.nome),
   }));
-  const doMes = lista.filter((f) => f.competencia === m && f.situacao !== "CANCELADA");
+  // Pago e lançado no caixa do Master (contrato trazido de lá, D341): aparece na lista, mas não soma de novo.
+  const doMes = lista.filter((f) => f.competencia === m && f.situacao !== "CANCELADA" && !f.registradoNoMaster);
   const atrasadas = lista.filter((f) => f.mostrada === "ATRASADA");
   return {
     mes: m, conta: agencia.mpConta, teste: agencia.mpTeste, conectada: !!agencia.mpTokenEnc, podeConectar: pode.gerirEquipe(membro),

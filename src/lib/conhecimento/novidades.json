@@ -1,5 +1,12 @@
 [
  {
+  "numero": 341,
+  "frente": "E-commerce",
+  "titulo": "Contratos da agência a 100%: projetos com entrega, parcelas, tela Contratos, aditivo, e-mail e contratos trazidos do Master",
+  "data": "2026-11-18",
+  "resumo": "Pedido do dono (18/11): migrar o contrato do Vestiário das Lendas do Master para o Painel da Agência; formalizar a Império Maia (Migração Nuvemshop → NextLevel, R$ 500, sinal de R$ 250 pago em 13/11 e saldo de R$ 250 em 18/11) e o Bazar…"
+ },
+ {
   "numero": 338,
   "frente": "Grupo",
   "titulo": "Banco que dorme: consultas automáticas só com gente na tela e rotinas de hora em hora",
@@ -271,12 +278,5 @@
   "titulo": "Tráfego e campanhas, fase TR5: retorno à Meta e ao Google pelo servidor (contato, conta, pagante e venda)",
   "data": "2026-11-14",
   "resumo": "O que volta para as plataformas: Fila (conversoes_envio, migração 0097): uma linha por plataforma, resultado e contato (não duplica). O identificador é o mesmo do navegador (D295), então a Meta não conta duas vezes. A rotina de 5 a 10 mi…"
- },
- {
-  "numero": 295,
-  "frente": "E-commerce",
-  "titulo": "Tráfego e campanhas, fase TR4: Pixel da Meta e Google no site da NextLevel, só com consentimento",
-  "data": "2026-11-14",
-  "resumo": "Onde configurar: Master → Tráfego e campanhas → Pixel e Google. O dono ou o Comercial colam só números públicos: Pixel da Meta (conjunto de dados), Google Ads (AW-… e o rótulo da conversão \"Contato\") e, opcional, Google Analytics 4 (G-…)…"
  }
 ]

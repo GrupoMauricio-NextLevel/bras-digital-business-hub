@@ -11,7 +11,7 @@ describe("menu do Painel da Agência em gavetas (D327)", () => {
   });
   it("nenhum endereço antigo some do menu, exceto Aprender e Maurício, que foram para botões do topo", () => {
     const hrefs = new Set(itens.map((i) => i.href));
-    for (const h of ["/agencia", "/agencia/fila", "/agencia/semana", "/agencia/producao", "/agencia/clientes", "/agencia/comercial", "/agencia/financeiro", "/agencia/equipe", "/agencia/solucoes", "/agencia/atendimento", "/agencia/placar", "/agencia/crescimento", "/agencia/trafego"]) expect(hrefs, h).toContain(h);
+    for (const h of ["/agencia", "/agencia/fila", "/agencia/semana", "/agencia/producao", "/agencia/clientes", "/agencia/comercial", "/agencia/financeiro", "/agencia/equipe", "/agencia/solucoes", "/agencia/atendimento", "/agencia/placar", "/agencia/crescimento", "/agencia/trafego", "/agencia/contratos"]) expect(hrefs, h).toContain(h);
     expect(hrefs.has("/agencia/aprender")).toBe(false);
     expect(hrefs.has("/agencia/agente")).toBe(false);
   });

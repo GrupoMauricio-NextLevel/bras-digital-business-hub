@@ -7,7 +7,7 @@ import { agenciasLigado } from "@/lib/agencias/acesso";
 import { listarAgencias } from "@/lib/agencias/agencias";
 import { agenciasUrl } from "@/lib/host-routing";
 import { brandByCode } from "@/lib/brand";
-import { NovaAgencia, SituacaoDaAgencia } from "./agencias-cliente";
+import { AgenciaInterna, NovaAgencia, SituacaoDaAgencia } from "./agencias-cliente";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Agências" };
@@ -29,11 +29,12 @@ export default async function AgenciasMaster() {
           {lista.map((a) => (
             <li key={a.id} className="flex flex-wrap items-center gap-3 px-4 py-3">
               <span className="min-w-0 flex-1 basis-60">
-                <b className="block">{a.nome}{a.fundadora ? <span className="ml-2 rounded-full bg-[var(--ds-link)]/10 px-2 py-0.5 text-xs font-semibold text-[var(--ds-link)]">Fundadora</span> : null}</b>
+                <b className="block">{a.nome}{a.fundadora ? <span className="ml-2 rounded-full bg-[var(--ds-link)]/10 px-2 py-0.5 text-xs font-semibold text-[var(--ds-link)]">Fundadora</span> : null}{a.interna ? <span className="ml-2 rounded-full bg-success-soft px-2 py-0.5 text-xs font-semibold text-success">Agência interna</span> : null}</b>
                 <span className="text-xs text-muted-foreground">desde {quando(a.createdAt)} · {a.clientes} cliente(s) na carteira · {a.equipe} pessoa(s) na equipe</span>
               </span>
               <span className="rounded-full bg-surface-muted px-2.5 py-1 text-xs font-semibold">{ROTULO[a.situacao]}</span>
               <SituacaoDaAgencia id={a.id} situacao={a.situacao} />
+              <AgenciaInterna id={a.id} interna={a.interna} nome={a.nome} />
             </li>
           ))}
         </ul>

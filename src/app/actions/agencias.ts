@@ -5,17 +5,18 @@ import { getDb } from "@/db/client";
 import { getSession } from "@/lib/auth";
 import { runAction } from "@/lib/action-result";
 import { ForbiddenError } from "@/lib/domain/errors";
-import { convidarMembro, criarAgencia, desligarMembro, mudarFuncao, mudarSituacaoDaAgencia, type novaAgenciaSchema, type novoMembroSchema } from "@/lib/agencias/agencias";
+import { convidarMembro, criarAgencia, desligarMembro, marcarAgenciaInterna, mudarFuncao, mudarSituacaoDaAgencia, type novaAgenciaSchema, type novoMembroSchema } from "@/lib/agencias/agencias";
 import { atualizarCliente, criarCliente, definirEquipeDoCliente, importarClientes, mudarSituacaoDoCliente, type ClienteInput } from "@/lib/agencias/clientes";
 import type { AgenciaClienteSituacao, AgenciaFuncao } from "@/db/schema";
 import { atualizarPeca, avancarPeca, comentarPeca, criarPeca, pedirAjuste, planejarMes, transferirPeca, type atualizacaoPecaSchema, type comentarioSchema, type novaPecaSchema } from "@/lib/agencias/producao";
 import { mesValido } from "@/lib/agencias/fluxo";
 import { responderAulaDaAgencia } from "@/lib/agencias/aprender";
 import { copiarRecorrentes, excluirDespesa, lancarDespesa, marcarDespesaPaga, type despesaSchema } from "@/lib/agencias/despesas";
-import { cancelarCobranca, conectarMercadoPago, conferirPagamentosAbertos, criarCobrancaAvulsa, desconectarMercadoPago, gerarCobrancasDoMes, gerarLinkDePagamento, marcarPagaManual, type avulsaSchema } from "@/lib/agencias/cobranca";
+import { cancelarCobranca, conectarMercadoPago, conferirPagamentosAbertos, criarCobrancaAvulsa, desconectarMercadoPago, gerarCobrancasDoMes, gerarLinkDePagamento, marcarPagaManual, type avulsaSchema, type baixaSchema } from "@/lib/agencias/cobranca";
 import { responderSolicitacao } from "@/lib/agencias/portal";
 import { salvarCaptacao, type captacaoSchema } from "@/lib/agencias/captacao";
-import { cancelarContratoDaAgencia, enviarContrato, previaDoContrato, salvarDadosJuridicos, type OpcoesContrato, type dadosJuridicosSchema } from "@/lib/agencias/contratos";
+import { cancelarContratoDaAgencia, encerrarContratoDaAgencia, enviarContrato, previaDoContrato, reenviarContratoPorEmail, salvarDadosJuridicos, type OpcoesContrato, type dadosJuridicosSchema } from "@/lib/agencias/contratos";
+import { trazerContratoDoMaster } from "@/lib/agencias/migrar-contrato-master";
 import { atualizarOportunidade, criarOportunidade, marcarOnboarding, perderOportunidade, virarCliente, type oportunidadeSchema } from "@/lib/agencias/comercial";
 
 /** Ações do Painel da Agência (D313). Permissão e agência conferidas no domínio, a partir da sessão. */
@@ -135,8 +136,8 @@ export async function gerarLinkDePagamentoAction(id: string) {
 export async function conferirPagamentosAction() {
   return runAction(async () => { const { actor, db } = await ctx(); const r = await conferirPagamentosAbertos(db, actor); refreshFin(); return r; });
 }
-export async function marcarPagaManualAction(id: string, observacao: string) {
-  return runAction(async () => { const { actor, db } = await ctx(); await marcarPagaManual(db, actor, idFatura.parse(id), observacao); refreshFin(); return undefined; });
+export async function marcarPagaManualAction(id: string, observacao: string, extra: z.input<typeof baixaSchema> = {}) {
+  return runAction(async () => { const { actor, db } = await ctx(); await marcarPagaManual(db, actor, idFatura.parse(id), observacao, extra); refreshFin(); revalidatePath("/agencia/contratos", "layout"); return undefined; });
 }
 export async function cancelarCobrancaAction(id: string, motivo: string) {
   return runAction(async () => { const { actor, db } = await ctx(); await cancelarCobranca(db, actor, idFatura.parse(id), motivo); refreshFin(); return undefined; });
@@ -172,6 +173,19 @@ export async function previaContratoAction(clienteId: string, opcoes: OpcoesCont
 }
 export async function enviarContratoAction(clienteId: string, opcoes: OpcoesContrato) {
   return runAction(async () => { const { actor, db } = await ctx(); const r = await enviarContrato(db, actor, idCliente.parse(clienteId), opcoes); revalidatePath("/agencia", "layout"); return r; });
+}
+/** D341: encerrar contrato aceito, reenviar por e-mail e trazer do Master. */
+export async function encerrarContratoAgenciaAction(id: string, motivo: string) {
+  return runAction(async () => { const { actor, db } = await ctx(); await encerrarContratoDaAgencia(db, actor, idContrato.parse(id), motivo); refresh(); return undefined; });
+}
+export async function reenviarContratoAction(id: string) {
+  return runAction(async () => { const { actor, db } = await ctx(); return reenviarContratoPorEmail(db, actor, idContrato.parse(id)); });
+}
+export async function trazerContratoDoMasterAction(contratoId: string) {
+  return runAction(async () => { const { actor, db } = await ctx(); const r = await trazerContratoDoMaster(db, actor, z.string().regex(/^ctr_[a-z0-9]+$/i).parse(contratoId)); refresh(); revalidatePath("/master/contratos"); return r; });
+}
+export async function marcarAgenciaInternaAction(agenciaId: string, interna: boolean) {
+  return runAction(async () => { const { actor, db } = await ctx(); await marcarAgenciaInterna(db, actor, z.string().regex(/^agc_[a-z0-9]+$/i).parse(agenciaId), interna); revalidatePath("/master/agencias"); return undefined; });
 }
 export async function cancelarContratoAgenciaAction(id: string) {
   return runAction(async () => { const { actor, db } = await ctx(); await cancelarContratoDaAgencia(db, actor, idContrato.parse(id)); revalidatePath("/agencia", "layout"); return undefined; });

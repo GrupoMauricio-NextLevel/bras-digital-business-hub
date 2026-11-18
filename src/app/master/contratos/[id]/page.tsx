@@ -22,6 +22,7 @@ export default async function ContratoMasterPage({ params }: { params: Promise<{
   return (
     <>
       <PageHeader eyebrow="Contratos" title={`Contrato ${c.numero}`} description={c.status === "ACEITO" ? "Assinado pelas duas partes." : c.status === "ENVIADO" ? "Assinado pela NextLevel; aguardando o aceite do cliente no painel." : "Cancelado."} />
+      {c.transferidoEm ? <p role="status" className="mb-4 rounded-xl border border-border bg-accent-soft px-4 py-3 text-sm"><b>Transferido para o Painel da Agência</b> em {new Date(c.transferidoEm).toLocaleDateString("pt-BR", { timeZone: "America/Sao_Paulo" })}. O texto e o aceite continuam os mesmos; parcelas e lembretes passam a ser acompanhados lá.</p> : null}
       <p className="mb-4 flex gap-4 text-sm"><Link className="underline" href="/master/contratos">← Contratos</Link><Link className="underline" href={`/master/contratos/${c.id}/pdf`} target="_blank">Baixar PDF</Link></p>
       <div className="grid gap-5">
         {parcelas.length > 0 && <Parcelas parcelas={parcelas} lado="master" chavePix={d.contratada.chavePix} banco={d.contratada.banco} favorecido={d.contratada.favorecido} emailComprovante={d.contratada.emailRepresentante} />}

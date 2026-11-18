@@ -70,6 +70,23 @@ export async function mudarSituacaoDaAgencia(db: Database, actor: Actor, agencia
   await recordAudit(db, actor, { action: "AGENCIA_SITUACAO", entityType: "agencia", entityId: agenciaId, before: { situacao: a.situacao }, after: { situacao } });
 }
 
+/**
+ * Só o Master: marca a agência interna (D341), a própria NextLevel Marketing Ltda. Ela usa os dados da empresa e o Pix do
+ * Itaú nos contratos e pode trazer contratos de serviço do Master. No máximo uma: marcar outra desmarca a anterior.
+ */
+export async function marcarAgenciaInterna(db: Database, actor: Actor, agenciaId: string, interna: boolean) {
+  exigirAgenciasLigado();
+  requireMaster(actor);
+  if (actor.masterFunction) throw new ForbiddenError("Só o dono marca a agência interna.");
+  const a = await db.query.agencias.findFirst({ where: eq(agencias.id, agenciaId) });
+  if (!a || a.demoDeId) throw new NotFoundError("Agência não encontrada.");
+  await db.transaction(async (tx) => {
+    if (interna) await tx.update(agencias).set({ interna: false, updatedAt: new Date().toISOString() }).where(and(eq(agencias.interna, true), ne(agencias.id, agenciaId)));
+    await tx.update(agencias).set({ interna, updatedAt: new Date().toISOString() }).where(eq(agencias.id, agenciaId));
+  });
+  await recordAudit(db, actor, { action: "AGENCIA_INTERNA", entityType: "agencia", entityId: agenciaId, before: { interna: a.interna }, after: { interna } }, { force: true });
+}
+
 /** Equipe da agência (qualquer pessoa da agência vê quem é quem; só o administrador muda). */
 export async function listarEquipe(db: Database, actor: Actor) {
   const { membro } = await escopoDaAgencia(db, actor);
