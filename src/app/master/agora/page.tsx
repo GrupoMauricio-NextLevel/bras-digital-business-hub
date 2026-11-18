@@ -5,8 +5,11 @@ import { requireRole } from "@/lib/require-session";
 import { agoraEcommerce, rotuloTipoAgora, type ItemAgora } from "@/lib/domain/agora-ecommerce";
 import { DEGRAUS } from "@/lib/domain/funil-ecommerce";
 import { formatBRL } from "@/lib/money";
-import { PageHeader, SectionTitle } from "@/components/app/page-header";
-import { MetricCard } from "@/components/app/metric-card";
+import { SectionTitle } from "@/components/app/page-header";
+import { NumeroVivo } from "@/components/vida/numero-vivo";
+import { AnelMeta, FundoAbertura } from "@/components/vida/abertura";
+import { HandCoins, MessagesSquare, Rocket, UserPlus } from "lucide-react";
+import { saudacao } from "@/lib/finance/executivo-regras";
 import { EmptyState } from "@/components/app/empty-state";
 import { AoVivo } from "@/components/master/ao-vivo";
 import { pendenciasDoDono } from "@/lib/domain/pendencias-dono";
@@ -28,10 +31,29 @@ export default async function AgoraPage() {
   const [a, aprender] = await Promise.all([agoraEcommerce(db, session.actor, agora), pendenteDoAprender(db, session.actor)]);
   const pend = pendenciasDoDono().filter((p) => !p.feita);
   const k = a.contadores;
-  const pct = Math.min(100, Math.round((k.pagantes / Math.max(1, k.meta)) * 100));
   return (
     <>
-      <PageHeader eyebrow="NextLevel Commerce" title="Agora" description="Quem atender primeiro, quem está perto de pagar e quem travou. Atualiza sozinho." actions={<AoVivo />} />
+      {/* Painéis com vida (D333): a estrela-guia (lojistas pagantes) em destaque no topo, sobre a constelação do Brasil. */}
+      <section className="ds-hero ds-enter mb-6 !py-5 px-5 sm:!py-6 sm:px-8">
+        <FundoAbertura nome="pv-abertura-master-escuro" />
+        <div className="relative flex flex-wrap items-center justify-between gap-x-8 gap-y-4">
+          <div className="min-w-0">
+            <p className="text-[11px] font-semibold uppercase tracking-[.18em] text-[var(--ds-link)]">NextLevel Commerce · Agora</p>
+            <h1 className="mt-1.5 text-[clamp(1.5rem,3.2vw,2.25rem)] font-semibold leading-[1.05] tracking-[-.04em]">{saudacao()}, {session.user.name.split(" ")[0]}.</h1>
+            <p className="mt-1.5 max-w-md text-sm">Quem atender primeiro, quem está perto de pagar e quem travou.</p>
+            <div className="mt-3"><AoVivo /></div>
+          </div>
+          <div className="vida-hoje flex items-center gap-5">
+            <AnelMeta feito={k.pagantes} meta={k.meta} rotulo="Lojistas pagantes" />
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[.18em]">Estrela-guia</p>
+              <p className="mt-1 text-lg font-semibold leading-tight">Lojistas pagantes</p>
+              <p className="mt-1 text-sm">{k.pagantes >= k.meta ? "Meta do mês batida!" : `Faltam ${k.meta - k.pagantes} para a meta do mês`}{k.cortesia ? ` · ${k.cortesia} em cortesia` : ""}</p>
+              <p className="mt-2 text-sm"><span className="font-semibold tabular-nums">{formatBRL(k.mrrCents)}</span> de receita mensal</p>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {aprender ? (
         <Link href="/master/aprender" className="ds-card mb-6 flex flex-wrap items-center gap-3 p-4 hover:border-foreground/30">
@@ -41,12 +63,11 @@ export default async function AgoraPage() {
         </Link>
       ) : null}
 
-      <section className="ds-kpis mb-6" aria-label="Números de agora">
-        <MetricCard label="Conversas esperando" value={k.conversas} hint={k.conversas ? "responda primeiro" : "ninguém esperando"} tone={k.conversas ? "danger" : "neutral"} />
-        <MetricCard label="Novos nas últimas 24 h" value={k.novos24h} hint="cadastros e interessados" />
-        <MetricCard label="Em teste" value={k.teste} hint="lojas testando agora" />
-        <MetricCard label="Pagantes" value={`${k.pagantes} de ${k.meta}`} hint={`meta do mês${k.cortesia ? ` · ${k.cortesia} cortesia` : ""}`} />
-        <MetricCard label="Receita mensal" value={formatBRL(k.mrrCents)} hint="planos ativos (anual ÷ 12)" />
+      <section className="mb-6 grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4" aria-label="Números de agora">
+        <NumeroVivo i={1} familia="clientes" icone={MessagesSquare} rotulo="Conversas esperando" valor={String(k.conversas)} nota={k.conversas ? "responda primeiro" : "ninguém esperando"} href="/master/ia" />
+        <NumeroVivo i={2} familia="crescimento" icone={UserPlus} rotulo="Novos nas últimas 24 h" valor={String(k.novos24h)} nota="cadastros e interessados" href="/master/comercial" />
+        <NumeroVivo i={3} familia="pedidos" icone={Rocket} rotulo="Em teste" valor={String(k.teste)} nota="lojas testando agora" href="/commerce" />
+        <NumeroVivo i={4} familia="dinheiro" icone={HandCoins} rotulo="Receita mensal" valor={formatBRL(k.mrrCents)} nota="planos ativos (anual ÷ 12)" href="/master/receita" />
       </section>
 
       <div className="ds-grid ds-grid--main">
@@ -90,11 +111,6 @@ export default async function AgoraPage() {
               </ul>
             </section>
           ) : null}
-          <section className="ds-card" aria-labelledby="meta-t">
-            <h2 id="meta-t" className="text-lg font-bold">Meta do mês</h2>
-            <p className="mt-1 text-sm text-muted-foreground">{k.pagantes} de {k.meta} lojistas pagantes</p>
-            <div className="mt-3 h-3 overflow-hidden rounded-full bg-surface-muted" role="progressbar" aria-valuemin={0} aria-valuemax={k.meta} aria-valuenow={k.pagantes} aria-label="Meta de pagantes"><span className="block h-full rounded-full bg-primary" style={{ width: `${pct}%` }} /></div>
-          </section>
           <section className="ds-card" aria-labelledby="funil-t">
             <h2 id="funil-t" className="text-lg font-bold">Funil de ativação</h2>
             {a.funil.total ? (
@@ -102,7 +118,7 @@ export default async function AgoraPage() {
                 {a.funil.degraus.map((d, n) => (
                   <li key={d.key} className="grid grid-cols-[minmax(0,1fr)_3rem] items-center gap-2 text-sm">
                     <span className="truncate">{n + 1}. {d.rotulo}</span><b className="text-right tabular-nums">{d.n}</b>
-                    <span className="col-span-2 h-1.5 overflow-hidden rounded-full bg-surface-muted" aria-hidden><span className="block h-full bg-primary" style={{ width: `${d.pct}%` }} /></span>
+                    <span className="col-span-2 h-1.5 overflow-hidden rounded-full bg-surface-muted" aria-hidden><span className="block h-full rounded-full" style={{ width: `${d.pct}%`, background: `linear-gradient(90deg, var(--vida-dinheiro), var(--vida-crescimento))` }} /></span>
                   </li>
                 ))}
               </ol>

@@ -13,7 +13,11 @@ import { hojeEmSaoPaulo } from "@/lib/agencias/clientes";
 import { Handshake, MessageSquare } from "lucide-react";
 import { getDb } from "@/db/client";
 import { requireRole } from "@/lib/require-session";
-import { Kpi } from "@/components/commerce/commerce-home";
+import { NumeroVivo } from "@/components/vida/numero-vivo";
+import { AnelMeta, FundoAbertura } from "@/components/vida/abertura";
+import { EsteiraProducao, MovimentoAoVivo, ReceitaMeses } from "@/components/agencia/painel-vivo";
+import { esteiraDoMes, fraseDaReceita, movimentoDaAgencia } from "@/lib/agencias/painel-vivo";
+import { crescimentoDaAgencia } from "@/lib/agencias/gestao";
 import { buttonVariants } from "@/components/ui/button";
 import { cockpitDaAgencia, inclusoTexto } from "@/lib/agencias/clientes";
 import { FUNCAO_ROTULO } from "@/lib/agencias/acesso";
@@ -41,6 +45,10 @@ export default async function HojeNaAgencia() {
   const pedidos = await solicitacoesDaAgencia(db, session.actor, { abertas: true });
   const novosSite = await contatosSemResposta(db, session.actor);
   const funil = resumoDoFunil(oportunidades, hojeEmSaoPaulo());
+  // Painel com vida (D334): receita dos últimos 6 meses (só quem vê valores), esteira da produção e movimento ao vivo.
+  const [serie, movimento] = await Promise.all([k.verValores ? crescimentoDaAgencia(db, session.actor) : Promise.resolve(null), k.verCarteiraToda ? movimentoDaAgencia(db, session.actor, 6) : Promise.resolve([])]);
+  const esteira = esteiraDoMes(prod.total.porEtapa);
+  const agora = new Date();
   const t = prod.total;
   const piores = [...prod.clientes].sort((a, b) => b.contagem.atrasadas - a.contagem.atrasadas || a.contagem.percentualPublicado - b.contagem.percentualPublicado).slice(0, 8);
   const pend = k.pendencias;
@@ -71,9 +79,11 @@ export default async function HojeNaAgencia() {
   const mostrarPassos = k.verCarteiraToda && feitos < passos.length && !demo;
   return (
     <div className="mx-auto max-w-[1240px] space-y-5 sm:space-y-6">
-      <section className="ds-hero ds-enter px-5 py-6 sm:px-10 sm:py-9">
-        <div className="ds-hero-stage" aria-hidden><span className="ds-blade ds-blade--c" /><span className="ds-blade ds-blade--a" /><span className="ds-blade ds-blade--b" /></div>
-        <div className="relative max-w-[60%] max-sm:max-w-none">
+      {/* Painéis com vida (D333): abertura com imagem e o número do mês em destaque (receita para quem vê valores; produção para a equipe). */}
+      <section className="ds-hero ds-enter !py-5 px-5 sm:!py-6 sm:px-8">
+        <FundoAbertura nome="pv-abertura-loja-escuro" />
+        <div className="relative flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
+        <div className="min-w-0">
           <p className="text-[11px] font-semibold uppercase tracking-[.18em] text-[var(--ds-link)]">Visão geral da agência</p>
           <h1 className="mt-2 text-[clamp(1.75rem,4.2vw,2.75rem)] font-semibold leading-[1.05] tracking-[-.04em]">{saudacao()}, {session.user.name.split(" ")[0]}.</h1>
           <p className="mt-2 text-sm text-muted-foreground"><span className="font-medium text-foreground">{k.agencia.nome}</span> · {FUNCAO_ROTULO[k.funcao]}</p>
@@ -89,7 +99,35 @@ export default async function HojeNaAgencia() {
             {k.verCarteiraToda ? <Link href="/agencia/clientes?novo=1" className={buttonVariants()}><Plus />Novo cliente</Link> : null}
           </div>
         </div>
+        {k.verValores ? (
+          <div className="vida-hoje min-w-0 text-left sm:text-right" aria-label="Receita contratada por mês">
+            <p className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[.18em]"><span className="vida-aovivo" aria-hidden />Receita do mês</p>
+            <p className="mt-1 text-[clamp(2rem,4.6vw,3.25rem)] font-bold leading-none tracking-[-.045em] tabular-nums" style={{ fontFamily: "var(--nl-font-display)" }}>{formatBRL(k.receitaContratadaCents ?? 0)}</p>
+            <p className="mt-1.5 text-xs">{k.ativos} cliente{k.ativos === 1 ? "" : "s"} ativo{k.ativos === 1 ? "" : "s"}{k.aReceber7DiasCents ? ` · ${formatBRL(k.aReceber7DiasCents)} vencem em 7 dias` : ""}</p>
+          </div>
+        ) : k.verCarteiraToda && t.contratado ? (
+          <div className="vida-hoje flex items-center gap-4"><AnelMeta feito={t.publicadas} meta={t.contratado} rotulo={`Publicados em ${mesRotulo(prod.mes)}`} tamanho={112} /><div><p className="text-[11px] font-semibold uppercase tracking-[.18em]">Produção do mês</p><p className="mt-1 text-sm">{t.publicadas} de {t.contratado} publicados</p></div></div>
+        ) : null}
+        </div>
       </section>
+
+      {!semCarteira && k.verValores ? (
+        <section aria-label="Números da agência">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
+            <NumeroVivo i={1} familia="clientes" icone={UsersRound} rotulo="Clientes ativos" valor={String(k.ativos)} href="/agencia/clientes" nota={[k.pausados ? `${k.pausados} pausado${k.pausados > 1 ? "s" : ""}` : "nenhum pausado", k.encerradosNoMes ? `${k.encerradosNoMes} saiu este mês` : "nenhum saiu este mês"].join(" · ")} />
+            <NumeroVivo i={2} familia="dinheiro" icone={HandCoins} rotulo="Receita contratada" valor={formatBRL(k.receitaContratadaCents ?? 0)} nota="por mês, clientes ativos" href="/agencia/financeiro" />
+            <NumeroVivo i={3} familia="visitas" icone={CalendarClock} rotulo="Vence em 7 dias" valor={formatBRL(k.aReceber7DiasCents ?? 0)} href="/agencia/financeiro" nota={`${k.vencimentos.length} cobrança${k.vencimentos.length === 1 ? "" : "s"}`} />
+            <NumeroVivo i={4} familia="crescimento" icone={Receipt} rotulo="Ticket médio" valor={k.ticketMedioCents ? formatBRL(k.ticketMedioCents) : "—"} nota="por cliente ativo" />
+          </div>
+        </section>
+      ) : null}
+
+      {!semCarteira && (serie || k.verCarteiraToda) ? (
+        <div className={`grid gap-5 sm:gap-6 ${serie && k.verCarteiraToda ? "lg:grid-cols-[1.35fr_1fr]" : ""}`}>
+          {serie ? <ReceitaMeses serie={serie} titulo={fraseDaReceita(serie)} /> : null}
+          {k.verCarteiraToda ? <MovimentoAoVivo itens={movimento} agora={agora} /> : null}
+        </div>
+      ) : null}
 
       {mostrarPassos ? (
         <section className="ds-card ds-enter p-5 sm:p-6" style={stagger(2)} aria-labelledby="ag-passos">
@@ -121,11 +159,12 @@ export default async function HojeNaAgencia() {
       {k.verCarteiraToda ? (
         <section aria-labelledby="ag-prod" className="space-y-3">
           <div className="flex items-end justify-between"><h2 id="ag-prod" className="text-base font-semibold tracking-[-.01em]">Produção de {mesRotulo(prod.mes)}</h2><Link href="/agencia/producao" className="inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-[var(--ds-link)]">Ver produção <ArrowRight className="size-4" aria-hidden /></Link></div>
+          <EsteiraProducao esteira={esteira} mes={prod.mes} />
           <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
-            <Kpi i={1} icon={Clapperboard} label="Contratados no mês" value={String(t.contratado)} note={`${t.contratadoVideos} vídeos · ${t.planejadas} planejados`} />
-            <Kpi i={2} icon={CheckCircle2} label="Publicados" value={`${t.percentualPublicado}%`} note={`${t.publicadas} publicados · ${t.produzidas} produzidos`} />
-            <Kpi i={3} icon={Scissors} label="Em edição" value={String(t.emEdicao)} note={`${t.emCaptacao} aguardando gravação · ${t.emRoteiro} em roteiro`} />
-            <Kpi i={4} icon={AlarmClock} label="Atrasadas" value={String(t.atrasadas)} note={`${t.aguardandoAprovacao} aguardando aprovação`} />
+            <NumeroVivo traco i={1} familia="pedidos" icone={Clapperboard} rotulo="Contratados no mês" valor={String(t.contratado)} href="/agencia/producao" nota={`${t.contratadoVideos} vídeos · ${t.planejadas} planejados`} />
+            <NumeroVivo traco i={2} familia="crescimento" icone={CheckCircle2} rotulo="Publicados" valor={`${t.percentualPublicado}%`} href="/agencia/producao" nota={`${t.publicadas} publicados · ${t.produzidas} produzidos`} />
+            <NumeroVivo traco i={3} familia="clientes" icone={Scissors} rotulo="Em edição" valor={String(t.emEdicao)} href="/agencia/producao" nota={`${t.emCaptacao} aguardando gravação · ${t.emRoteiro} em roteiro`} />
+            <NumeroVivo traco i={4} familia="festa" icone={AlarmClock} rotulo="Atrasadas" valor={String(t.atrasadas)} href="/agencia/producao?atrasadas=1&ver=lista" nota={`${t.aguardandoAprovacao} aguardando aprovação`} />
           </div>
           {piores.length ? <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">{piores.map((c) => <CartaoClienteMes key={c.clienteId} id={c.clienteId} nome={c.clienteNome} segmento={c.segmento} c={c.contagem} />)}</div> : null}
         </section>
@@ -137,16 +176,7 @@ export default async function HojeNaAgencia() {
         </Link>
       )}
 
-      {k.verValores ? (
-        <section aria-label="Números da agência">
-          <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
-            <Kpi i={1} icon={UsersRound} label="Clientes ativos" value={String(k.ativos)} note={[k.pausados ? `${k.pausados} pausado${k.pausados > 1 ? "s" : ""}` : "nenhum pausado", k.encerradosNoMes ? `${k.encerradosNoMes} saiu este mês` : "nenhum saiu este mês"].join(" · ")} />
-            <Kpi i={2} icon={HandCoins} label="Receita contratada" value={formatBRL(k.receitaContratadaCents ?? 0)} note="por mês, clientes ativos" />
-            <Kpi i={3} icon={CalendarClock} label="Vence em 7 dias" value={formatBRL(k.aReceber7DiasCents ?? 0)} note={`${k.vencimentos.length} cobrança${k.vencimentos.length === 1 ? "" : "s"}`} />
-            <Kpi i={4} icon={Receipt} label="Ticket médio" value={k.ticketMedioCents ? formatBRL(k.ticketMedioCents) : "—"} note="por cliente ativo" />
-          </div>
-        </section>
-      ) : null}
+
 
       <div className="grid gap-5 sm:gap-6 lg:grid-cols-[1.4fr_1fr]">
         {k.verCarteiraToda ? (

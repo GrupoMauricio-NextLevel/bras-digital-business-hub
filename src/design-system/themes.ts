@@ -189,9 +189,20 @@ const decls = (c: ThemeColors) => Object.entries(c).map(([k, v]) => `--ds-${came
 export const DATAVIZ_SERIES = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300"] as const;
 /** Degradê do botão do Agente (padrão Hostinger, D210): igual em todos os temas, lido como `--agente-*`. */
 export const AGENTE_DEGRADE = { fundo: "#0c0718", rosa: "#ff3fd1", lilas: "#b44cff", violeta: "#6a5cff", azul: "#3d8bff", coral: "#ff5a5a" } as const;
+/** Famílias de cor dos painéis com vida (D331): uma cor por assunto, claro e escuro, lidas como `--vida-*`. */
+export const CORES_VIDA = {
+  dinheiro: { claro: "#1D5FD6", escuro: "#4D9BFF" },
+  pedidos: { claro: "#0E7490", escuro: "#22D3EE" },
+  clientes: { claro: "#6D28D9", escuro: "#A78BFA" },
+  visitas: { claro: "#B45309", escuro: "#FBBF24" },
+  crescimento: { claro: "#047857", escuro: "#34E89E" },
+  festa: { claro: "#BE185D", escuro: "#F472B6" },
+} as const;
+const vidaVars = (modo: "claro" | "escuro") => Object.entries(CORES_VIDA).map(([k, v]) => `--vida-${k}:${v[modo]};`).join("");
+const vidaCss = () => `:root{${vidaVars("claro")}}:root[data-theme="dark"],:root .ds-tema-escuro{${vidaVars("escuro")}}@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){${vidaVars("escuro")}}}`;
 const agenteCss = () => Object.entries(AGENTE_DEGRADE).map(([k, v]) => `--agente-${k}:${v};`).join("");
 // Junto vão as constantes `--bdc-*` da Brás Digital Club `--nlg-*` da marca-mãe e `--ec-*` do NextLevel Commerce: nomes próprios, lidos só pelos componentes de cada uma.
-const seriesCss = () => `:root{${DATAVIZ_SERIES.map((c, i) => `--series-${i + 1}:${c};`).join("")}${bdcCssVars()}${nlCssVars()}${ecCssVars()}${agenteCss()}}`;
+const seriesCss = () => `:root{${DATAVIZ_SERIES.map((c, i) => `--series-${i + 1}:${c};`).join("")}${bdcCssVars()}${nlCssVars()}${ecCssVars()}${agenteCss()}}` + vidaCss();
 
 export function themeCss(key: ThemeKey): string {
   const light = decls(themeColors(key, "light")), dark = decls(themeColors(key, "dark"));

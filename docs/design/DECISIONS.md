@@ -4311,6 +4311,58 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Correção (`src/components/transicao-de-pagina.tsx`):** o carregamento some no primeiro de cinco sinais independentes: (1) o endereço muda (caminho ou parâmetros; âncora `#` não conta); (2) o navegador avisa que a navegação terminou ou falhou; (3) voltar/avançar, página restaurada do cache ou aba escondida; (4) a pessoa clica ou digita de novo; (5) limite de 6 segundos. Links para outro site, `mailto:`, nova aba, download e âncora na mesma página não abrem o carregamento. Ele continua sem bloquear cliques. Vale para painéis, páginas públicas e lojas.
 - **Teste:** `tests/transicao-de-pagina.test.ts` e `e2e/carga-nao-trava.mjs` (filtros de Temas, abas do Master, voltar, link cancelado, clique novo). Com a versão antiga, 10 de 12 cenários ficavam presos; com a nova, nenhum.
 
+## D331 — [E-commerce] Painéis com vida: direção visual de todos os painéis e prompt mestre PV0 a PV10 (2026-11-17)
+- **Pedido do dono (17/11/2026):** vida nos painéis (cores, gráficos, números em destaque, imagem de fundo em blocos certos, efeitos e movimento) em todos os níveis, do Master ao cliente final, para aumentar a percepção de valor.
+- **Referência:** print conceitual de um painel escuro (`docs/melhorias/prints/2026-11-17-referencia-painel-com-vida.jpg`). Ponto de partida capturado na demonstração local (`docs/design/capturas/paineis-com-vida/`): no computador, os 4 números do mês do lojista começam a cerca de 1.200 px do topo, abaixo de três faixas de aviso e da abertura; o início da Commerce não tem gráfico; no Master, "0 de 10 pagantes" é um cartão igual aos outros.
+- **Direção registrada ("vida com propósito"):**
+  - vida forte nas telas de visão geral (Agora/Hoje, "Meu negócio", Dinheiro, Crescer, conquistas, portal do cliente, acompanhamento do pedido); vida discreta em listas e fichas; calma total em formulários, pagamento, contratos e ajustes;
+  - a seção 3 da direção v4 (D42, "evite gradiente e número gigante") passa a valer para as telas de trabalho; nas telas de visão geral vale o kit novo, a partir do visual de tecnologia já aprovado (D224, D225);
+  - número sempre verdadeiro e do próprio cliente; nada de canal, recurso ou marca que o cliente não tem (não copiar da referência os canais SuperDrop, Brás, TikTok Shop, Mercado Livre, Shopee e China Hub, nem os "99,9% de disponibilidade");
+  - famílias de cor fixas por assunto (dinheiro, pedidos, clientes, visitas, crescimento, festa) em todos os painéis, separadas dos estados de sistema;
+  - um kit único de componentes e gráficos em SVG próprio, sem biblioteca pesada, consolidando os gráficos que já existem;
+  - movimento que estende a "Subida" (D193), desligado com "menos movimento";
+  - a área do consumidor usa as cores da loja, nunca a roupa da NextLevel.
+- **Plano:** prompt mestre `docs/prompts/paineis-com-vida-prompt-mestre.md` (fases PV0 a PV10; ordem recomendada: lojista na PV3, Master na PV5; rodada relâmpago opcional antes da Black Friday) e o pedido de 42 imagens em 5 lotes, com prioridade 1 de 15, em `docs/prompts/imagens-paineis-com-vida-gpt.md`.
+- **A responder pelo dono antes da PV1 (seção A6 do prompt):** tema padrão (recomendado: seguir o aparelho), canais futuros só em Aplicativos, um convite de plano por tela, som de venda desligado até o lojista ligar, selo "feito com NextLevel" no cartão de conquista, Jornada da loja com as 5 fases existentes e meta do mês, dados de exemplo só no gráfico, ordem das fases e imagens.
+- **Também atualizados:** skill `painel-interno` (aviso da D331 na direção), `docs/melhorias/telas-observacoes-do-dono.md` (item 2) e `docs/prompts/README.md`.
+- **Sem mudança no sistema nesta etapa:** só documentos; nada muda nas telas até uma fase ser pedida.
+
+## D332 — [E-commerce] Painéis com vida, rodada relâmpago: início do lojista com números em destaque, cores por assunto e gráfico de vendas (2026-11-17)
+- **Pedido do dono:** "Pode seguir com as recomendações e faça a rodada relâmpago" (antes da Black Friday). Com isso, as recomendações da seção A6 do prompt mestre (D331) passam a valer como padrão: canais só os reais, um convite de plano por tela, som de venda desligado até o lojista ligar, dados de exemplo só no gráfico, lojista primeiro e Master depois, fundos em código até as imagens chegarem. Tema padrão e selo do cartão de conquista ficam para as fases que os usam.
+- **O que mudou na primeira tela do lojista da Commerce (`CommerceHome`):**
+  - abertura mais baixa, com a saudação à esquerda e **as vendas de hoje em destaque** à direita, comparadas com o mesmo dia da semana passada e com o ponto "ao vivo";
+  - **os 4 números do mês logo abaixo da abertura** (antes começavam a cerca de 1.200 px do topo), cada um com a sua cor (dinheiro, pedidos, clientes ou visitas, crescimento), faixa colorida no alto, variação com seta e sinal e mini gráfico nas vendas; "Visitas que viram venda" substitui "Clientes" quando há 100 visitas ou mais em 30 dias;
+  - **gráfico de vendas** (7 ou 30 dias, troca por link) com a linha do período anterior tracejada, o melhor dia marcado e o título com a conclusão ("Sexta, 13/11, foi o seu melhor dia: R$ …"); sem venda, curva cinza com o selo "Exemplo";
+  - **"Por onde você vende"**: rosca com os canais reais dos pedidos (Loja virtual, WhatsApp, Instagram, Venda manual);
+  - **uma faixa por vez:** a "Novidade" saiu do topo e foi para o pé da tela; a pílula de vendas do pulso não se repete (já está em destaque).
+- **Código:** regras puras em `src/lib/domain/painel-vivo.ts`; cores em `src/components/vida/cores.ts` e `src/design-system/vida.css` (`--vida-*`, claro e escuro, "menos movimento" desliga as animações); `NumeroVivo` (`src/components/vida/numero-vivo.tsx`), `GraficoVendas` e `RoscaCanais` (`src/components/graficos/`); `getMerchantOverview` devolve também os 30 dias anteriores e os canais (mesmo contrato de venda da Análise).
+- **Teste:** `tests/painel-vivo.test.ts` (comparação com a semana anterior, períodos, frase do melhor dia, mini gráfico, conversão com 100 visitas, rosca somando 100%, contraste das famílias de cor nos dois temas).
+- **Imagens do dono (lote 1, Gemini):** 12 aprovadas, convertidas para AVIF e WebP (todas até 62 KB) em `public/paineis/v1/` com `MANIFESTO.md`. A abertura do lojista já usa `pv-abertura-loja-escuro` (fitas de luz somadas ao vidro roxo, calma à esquerda); as outras ficam guardadas para Master, convite de próximo nível, calendário comercial e conquistas. As três de tela vazia vieram com o quadriculado desenhado dentro (sem transparência de verdade) e vão ser refeitas.
+- **Cores no lugar certo:** os valores das famílias `--vida-*` moram em `src/design-system/themes.ts` (`CORES_VIDA`), a única fonte de cor do núcleo (teste `design-system`).
+- **Fica para as próximas fases:** consulta agregada no banco (PV2), "O que a NextLevel fez por você", meta, Jornada, conquistas e "venda aprovada" ao vivo (PV2 a PV4), Master (PV5).
+
+## D333 — [E-commerce] Painéis com vida no Master ("Agora") e no Painel da Agência (2026-11-18)
+- **Pedido do dono:** "segue pelo meu master, pelo painel da agência e vou olhar entrando como agência"; foco alto no NextLevel Business como produto, com o acesso do Léo (UP), que vai trazer 30 empresas pagantes.
+- **Master, tela "Agora":**
+  - abertura com a constelação do Brasil (imagem do dono) e a **estrela-guia em destaque**: anel "X de 10 lojistas pagantes", quanto falta para a meta, cortesias e a receita mensal;
+  - os números de agora viram cartões coloridos com ícone 3D (conversas esperando, novos em 24 h, em teste, receita mensal), cada um levando à tela que resolve;
+  - o cartão "Meta do mês" saiu do lado (está no topo); o funil de ativação ganhou barras nas cores da família dinheiro → crescimento.
+- **Painel da Agência, tela "Agora":**
+  - abertura com as fitas de luz e a **receita do mês em destaque** (para quem vê valores), com clientes ativos e o que vence em 7 dias; para a equipe sem acesso a valores, o anel da produção do mês (publicados de contratados);
+  - os números de dinheiro (clientes ativos, receita contratada, vence em 7 dias, ticket médio) sobem para logo abaixo da abertura, com ícones 3D; os números da produção usam a mesma peça com ícone de traço;
+  - cada função continua vendo só o que é dela (D317, D325).
+- **Peças reaproveitadas:** `FundoAbertura` e `AnelMeta` (`src/components/vida/abertura.tsx`), `NumeroVivo` com a opção de ícone de traço.
+- **Verificação:** capturas em 1440 (claro e escuro) e 390 px, sem rolagem lateral; demonstração local com `AGENCIAS_V1=true`.
+
+## D334 — [E-commerce] Painel da Agência com gráficos e movimento ao vivo (2026-11-18)
+- **Pedido do dono:** "por que não vieram gráficos e elementos pra cá? preciso de algo dinâmico" (depois da D333; foco no NextLevel Business com a agência UP, do Léo).
+- **O que entrou no início da agência:**
+  - **Receita dos últimos 6 meses** (só administrador e financeiro): colunas da receita contratada que crescem ao entrar, o ponto do que foi recebido em cada mês e o título com a conclusão ("A receita recorrente cresceu X% no período"), a partir de `crescimentoDaAgencia` (D325);
+  - **Movimento agora** (quem vê a carteira toda): as últimas mudanças de verdade na produção, com as iniciais coloridas de quem fez e "há X min"; a tela se atualiza sozinha a cada 30 s; ficam de fora "peça criada", prazo e prioridade;
+  - **Esteira do mês**: uma barra com os 6 trechos da produção (planejar, roteiro, gravação, edição, aprovação, publicado), cada um com a sua cor, crescendo da esquerda, e os números de cada trecho.
+- **Código:** regras em `src/lib/agencias/painel-vivo.ts` (`esteiraDoMes`, `fraseDaReceita`, `haQuanto`, `movimentoDaAgencia`), telas em `src/components/agencia/painel-vivo.tsx`; animações em `vida.css`, paradas com "menos movimento".
+- **Teste:** `tests/agencias-painel-vivo.test.ts` (esteira somando 100%, frase da receita, tempo em português, movimento só da própria agência, sem "peça criada" e vazio para quem não vê a carteira toda).
+
 ## D335 — [E-commerce] Contratos da agência a 100%: projetos com entrega, parcelas, tela Contratos, aditivo, e-mail e contratos trazidos do Master (2026-11-18)
 - **Pedido do dono (18/11):** migrar o contrato do Vestiário das Lendas do Master para o Painel da Agência; formalizar a Império Maia (Migração Nuvemshop → NextLevel, R$ 500, sinal de R$ 250 pago em 13/11 e saldo de R$ 250 em 18/11) e o Bazar Prime Outlet (Loja Virtual Pronta Express, R$ 1.600 à vista, pago), os dois com 40 produtos, 8 banners e o tema Aura de cortesia; "o setor de contratos da agência precisa estar 100%"; editar os dados de qualquer cliente quando quiser; contratos disparados por e-mail depois da assinatura. Racional e plano: `docs/prompts/agencia-nextlevel-contratos-site-catalogo.md` (aprovado). Nomes para o cliente: "Loja Virtual Pronta Express" e "Migração Nuvemshop → NextLevel".
 - **Modelos:** além da mensalidade de marketing (D321), dois modelos de **projeto** (`src/lib/contratos/projeto.ts`, regra pura): Loja Virtual Pronta Express e Migração (origem: Nuvemshop, Shopify, Tray, Loja Integrada, WooCommerce, Wix, outra). O texto traz produtos, banners, cortesias (com valor de referência), o que **já foi pago** e o que falta, prazo, desistência (sinal retido só quando há sinal), dados, "resultados não garantidos", aceite e foro.
