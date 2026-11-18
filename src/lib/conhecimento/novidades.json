@@ -1,5 +1,12 @@
 [
  {
+  "numero": 341,
+  "frente": "E-commerce",
+  "titulo": "Os avanços dos \"painéis com vida\" (D329 a D335) integrados ao ecossistema e à personalização",
+  "data": "2026-11-18",
+  "resumo": "Pedido do dono: \"pode avaliar esse chat Dashboard visual design evolution, para que não perca evoluções que tivemos lá; quero integrar os avanços\"."
+ },
+ {
   "numero": 340,
   "frente": "E-commerce",
   "titulo": "Painel da Agência personalizável para qualquer segmento de serviços (50% agências, 50% outros), e a academia sai de cena",
@@ -271,12 +278,5 @@
   "titulo": "Tráfego e campanhas, fase TR6: leitura da Meta, custo por cliente real e números automáticos na sala do lojista",
   "data": "2026-11-16",
   "resumo": "Leitura pela API de Marketing da Meta (só leitura; mesmo token da API de conversões, D298, com permissão de leitura de anúncios): gasto, impressões, alcance, cliques no link, conversas e leads de cada campanha, por dia, na tabela ads_met…"
- },
- {
-  "numero": 299,
-  "frente": "E-commerce",
-  "titulo": "Anúncios na Meta pelo painel do lojista: diagnóstico, mesa da equipe e sala da campanha",
-  "data": "2026-11-14",
-  "resumo": "Pedido do dono: dar ao lojista a sensação de integração com a Meta, mesmo com a configuração feita à mão pela equipe: diagnóstico dinâmico no painel, pedido na mesa do Master, a equipe configura no Gerenciador de Anúncios e marca o andam…"
  }
 ]

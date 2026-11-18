@@ -4483,3 +4483,18 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
   - regras em `fluxo.ts` (`etapaSeAplica` com etapas ligadas, `escolherResponsavel` com departamento da etapa, `etapaInicial`);
   - tela `src/app/agencia/personalizar/*`.
 - **Teste:** `tests/agencias-personalizacao.test.ts` (padrão = agência, travas, edição por cima do modelo, etapas puladas, gravação compacta, fluxo real de uma contabilidade, só o admin grava); `nav-agencia` atualizado; produção, portal, demonstração e agências continuam passando.
+
+## D341 — [E-commerce] Os avanços dos "painéis com vida" (D329 a D335) integrados ao ecossistema e à personalização (2026-11-18)
+- **Pedido do dono:** "pode avaliar esse chat Dashboard visual design evolution, para que não perca evoluções que tivemos lá; quero integrar os avanços".
+- **Avaliação:**
+  - a conversa parou por limite de uso logo depois de enviar a D335;
+  - todo o trabalho dela (D329 a D335: ícones 3D, cartões `NumeroVivo`, abertura com `FundoAbertura` e `AnelMeta`, gráfico de colunas, esteira do mês e movimento ao vivo na agência e no Master) já estava na branch de publicação e na branch de trabalho;
+  - a branch dela não tem nenhum commit fora da publicação. **Nada se perdeu.**
+- **Integração:**
+  - **personalização por segmento (D340) dentro das peças do kit:**
+    - a esteira do mês da tela inicial usa os nomes das etapas da empresa e esconde o trecho desligado e vazio;
+    - "Onde está cada obrigação do mês" no lugar de "peça" fora da agência;
+    - os cartões de número da tela inicial deixam "Publicados", "vídeos" e "aguardando gravação" só para a agência;
+  - **telas novas no kit:** Contatos e orçamentos e Captação trocam o bloco de números antigo pelos cartões `NumeroVivo` com as famílias de cor (clientes, pedidos, visitas, dinheiro, crescimento) e os ícones 3D;
+  - a "Primeira resposta" sem dados mostra "—" em vez de estourar o cartão.
+- **Teste:** `tests/agencias-personalizacao.test.ts` (esteira da agência igual à de sempre; contabilidade com os nomes dela e trecho desligado escondido); `agencias-painel-vivo` continua passando.

@@ -5,7 +5,7 @@ import { getDb } from "@/db/client";
 import { requireRole } from "@/lib/require-session";
 import { PageHeader } from "@/components/app/page-header";
 import { EmptyState } from "@/components/app/empty-state";
-import { OperationalPulse } from "@/components/app/operational-pulse";
+import { NumeroVivo } from "@/components/vida/numero-vivo";
 import { modulosDoNegocio } from "@/lib/business/modulos";
 import { duracao, funilEmQuadro, listarContatos, resumoDosContatos, SITUACAO_ROTULO } from "@/lib/business/contatos";
 import { listarServicos } from "@/lib/business/servicos";
@@ -36,12 +36,13 @@ export default async function ContatosDoNegocio({ searchParams }: { searchParams
   return (
     <>
       <PageHeader eyebrow={NOME_GERENCIADOR.nome} title="Contatos e orçamentos" description="Cada pedido que chega pelo site, com de onde veio. Assuma, responda e marque o andamento até fechar." actions={<NovoContatoManual servicos={servicos.filter((s) => s.ativo).map((s) => ({ id: s.id, nome: s.nome }))} />} />
-      <OperationalPulse className="mb-5" items={[
-        { label: "Novos sem resposta", value: resumo.novos, icon: UserRoundPlus, tone: resumo.novos ? "warning" : "neutral", hint: "responda primeiro estes" },
-        { label: "Em aberto", value: resumo.abertos, icon: Inbox, tone: "info", hint: "últimos 30 dias" },
-        { label: "Primeira resposta", value: duracao(resumo.medianaRespostaMs), icon: Clock, tone: "neutral", hint: "tempo do meio (mediana)" },
-        { label: "Fechados", value: resumo.ganhos, icon: Trophy, tone: resumo.ganhos ? "success" : "neutral", hint: resumo.valorGanhoCents ? formatBRL(resumo.valorGanhoCents) : "nos últimos 30 dias" },
-      ]} />
+      {/* Painéis com vida (D331, integrado na D341): os números do funil com a família de cor de cada assunto. */}
+      <section aria-label="Resumo dos contatos" className="mb-5 grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
+        <NumeroVivo i={1} familia="clientes" icone={UserRoundPlus} rotulo="Novos sem resposta" valor={String(resumo.novos)} nota="responda primeiro estes" href="/merchant/contatos?ver=hoje" />
+        <NumeroVivo i={2} familia="pedidos" icone={Inbox} rotulo="Em aberto" valor={String(resumo.abertos)} nota="últimos 30 dias" href="/merchant/contatos?ver=quadro" />
+        <NumeroVivo i={3} familia="visitas" icone={Clock} rotulo="Primeira resposta" valor={resumo.medianaRespostaMs === null ? "—" : duracao(resumo.medianaRespostaMs)} nota={resumo.medianaRespostaMs === null ? "aparece depois das primeiras respostas" : "tempo do meio (mediana)"} />
+        <NumeroVivo i={4} familia="dinheiro" icone={Trophy} rotulo="Fechados · 30 dias" valor={String(resumo.ganhos)} nota={resumo.valorGanhoCents ? formatBRL(resumo.valorGanhoCents) : "marque ao fechar"} />
+      </section>
       {resumo.porCanal.length ? <p className="mb-4 text-sm text-muted-foreground">De onde vieram (30 dias): {resumo.porCanal.map(([c, n]) => `${ROTULO_CANAL[c as Canal] ?? c} ${n}`).join(" · ")}</p> : null}
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         {quadro ? <p className="text-sm text-muted-foreground">Fechados e perdidos dos últimos 30 dias. Abra o contato para mudar a etapa.</p> : hoje ? <p className="text-sm text-muted-foreground">Quem está esperando por você, do mais urgente ao menos, com o que fazer em cada um.</p> : (
