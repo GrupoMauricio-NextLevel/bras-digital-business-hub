@@ -15,6 +15,9 @@ import { getDb } from "@/db/client";
 import { requireRole } from "@/lib/require-session";
 import { NumeroVivo } from "@/components/vida/numero-vivo";
 import { AnelMeta, FundoAbertura } from "@/components/vida/abertura";
+import { EsteiraProducao, MovimentoAoVivo, ReceitaMeses } from "@/components/agencia/painel-vivo";
+import { esteiraDoMes, fraseDaReceita, movimentoDaAgencia } from "@/lib/agencias/painel-vivo";
+import { crescimentoDaAgencia } from "@/lib/agencias/gestao";
 import { buttonVariants } from "@/components/ui/button";
 import { cockpitDaAgencia, inclusoTexto } from "@/lib/agencias/clientes";
 import { FUNCAO_ROTULO } from "@/lib/agencias/acesso";
@@ -42,6 +45,10 @@ export default async function HojeNaAgencia() {
   const pedidos = await solicitacoesDaAgencia(db, session.actor, { abertas: true });
   const novosSite = await contatosSemResposta(db, session.actor);
   const funil = resumoDoFunil(oportunidades, hojeEmSaoPaulo());
+  // Painel com vida (D334): receita dos últimos 6 meses (só quem vê valores), esteira da produção e movimento ao vivo.
+  const [serie, movimento] = await Promise.all([k.verValores ? crescimentoDaAgencia(db, session.actor) : Promise.resolve(null), k.verCarteiraToda ? movimentoDaAgencia(db, session.actor, 6) : Promise.resolve([])]);
+  const esteira = esteiraDoMes(prod.total.porEtapa);
+  const agora = new Date();
   const t = prod.total;
   const piores = [...prod.clientes].sort((a, b) => b.contagem.atrasadas - a.contagem.atrasadas || a.contagem.percentualPublicado - b.contagem.percentualPublicado).slice(0, 8);
   const pend = k.pendencias;
@@ -115,6 +122,13 @@ export default async function HojeNaAgencia() {
         </section>
       ) : null}
 
+      {!semCarteira && (serie || k.verCarteiraToda) ? (
+        <div className={`grid gap-5 sm:gap-6 ${serie && k.verCarteiraToda ? "lg:grid-cols-[1.35fr_1fr]" : ""}`}>
+          {serie ? <ReceitaMeses serie={serie} titulo={fraseDaReceita(serie)} /> : null}
+          {k.verCarteiraToda ? <MovimentoAoVivo itens={movimento} agora={agora} /> : null}
+        </div>
+      ) : null}
+
       {mostrarPassos ? (
         <section className="ds-card ds-enter p-5 sm:p-6" style={stagger(2)} aria-labelledby="ag-passos">
           <div className="mb-4 flex flex-wrap items-end justify-between gap-2"><div><p className="text-[11px] font-semibold uppercase tracking-[.16em] text-muted-foreground">Primeiros passos</p><h2 id="ag-passos" className="mt-1 text-base font-semibold tracking-[-.01em]">{feitos === 0 ? "Vamos montar a sua agência aqui dentro" : "Falta pouco para a agência rodar pelo painel"}</h2></div><span className="text-sm tabular-nums text-muted-foreground">{feitos} de {passos.length} feitos</span></div>
@@ -145,6 +159,7 @@ export default async function HojeNaAgencia() {
       {k.verCarteiraToda ? (
         <section aria-labelledby="ag-prod" className="space-y-3">
           <div className="flex items-end justify-between"><h2 id="ag-prod" className="text-base font-semibold tracking-[-.01em]">Produção de {mesRotulo(prod.mes)}</h2><Link href="/agencia/producao" className="inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-[var(--ds-link)]">Ver produção <ArrowRight className="size-4" aria-hidden /></Link></div>
+          <EsteiraProducao esteira={esteira} mes={prod.mes} />
           <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
             <NumeroVivo traco i={1} familia="pedidos" icone={Clapperboard} rotulo="Contratados no mês" valor={String(t.contratado)} href="/agencia/producao" nota={`${t.contratadoVideos} vídeos · ${t.planejadas} planejados`} />
             <NumeroVivo traco i={2} familia="crescimento" icone={CheckCircle2} rotulo="Publicados" valor={`${t.percentualPublicado}%`} href="/agencia/producao" nota={`${t.publicadas} publicados · ${t.produzidas} produzidos`} />

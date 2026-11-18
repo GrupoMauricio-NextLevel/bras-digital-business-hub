@@ -4353,3 +4353,12 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
   - cada função continua vendo só o que é dela (D317, D325).
 - **Peças reaproveitadas:** `FundoAbertura` e `AnelMeta` (`src/components/vida/abertura.tsx`), `NumeroVivo` com a opção de ícone de traço.
 - **Verificação:** capturas em 1440 (claro e escuro) e 390 px, sem rolagem lateral; demonstração local com `AGENCIAS_V1=true`.
+
+## D334 — [E-commerce] Painel da Agência com gráficos e movimento ao vivo (2026-11-18)
+- **Pedido do dono:** "por que não vieram gráficos e elementos pra cá? preciso de algo dinâmico" (depois da D333; foco no NextLevel Business com a agência UP, do Léo).
+- **O que entrou no início da agência:**
+  - **Receita dos últimos 6 meses** (só administrador e financeiro): colunas da receita contratada que crescem ao entrar, o ponto do que foi recebido em cada mês e o título com a conclusão ("A receita recorrente cresceu X% no período"), a partir de `crescimentoDaAgencia` (D325);
+  - **Movimento agora** (quem vê a carteira toda): as últimas mudanças de verdade na produção, com as iniciais coloridas de quem fez e "há X min"; a tela se atualiza sozinha a cada 30 s; ficam de fora "peça criada", prazo e prioridade;
+  - **Esteira do mês**: uma barra com os 6 trechos da produção (planejar, roteiro, gravação, edição, aprovação, publicado), cada um com a sua cor, crescendo da esquerda, e os números de cada trecho.
+- **Código:** regras em `src/lib/agencias/painel-vivo.ts` (`esteiraDoMes`, `fraseDaReceita`, `haQuanto`, `movimentoDaAgencia`), telas em `src/components/agencia/painel-vivo.tsx`; animações em `vida.css`, paradas com "menos movimento".
+- **Teste:** `tests/agencias-painel-vivo.test.ts` (esteira somando 100%, frase da receita, tempo em português, movimento só da própria agência, sem "peça criada" e vazio para quem não vê a carteira toda).

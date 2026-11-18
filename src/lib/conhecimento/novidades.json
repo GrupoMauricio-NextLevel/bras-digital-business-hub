@@ -1,5 +1,12 @@
 [
  {
+  "numero": 334,
+  "frente": "E-commerce",
+  "titulo": "Painel da Agência com gráficos e movimento ao vivo",
+  "data": "2026-11-18",
+  "resumo": "Pedido do dono: \"por que não vieram gráficos e elementos pra cá? preciso de algo dinâmico\" (depois da D333; foco no NextLevel Business com a agência UP, do Léo)."
+ },
+ {
   "numero": 333,
   "frente": "E-commerce",
   "titulo": "Painéis com vida no Master (\"Agora\") e no Painel da Agência",
@@ -271,12 +278,5 @@
   "titulo": "Tráfego e campanhas, fase TR2: medição própria do site e \"Agora no site\" em tempo real",
   "data": "2026-11-13",
   "resumo": "Coletor próprio: as páginas públicas das marcas (nunca as lojas dos lojistas, D185, nem os painéis) mandam um sinal ao abrir cada página, um \"ainda aqui\" a cada 30 s com a aba visível, e marcam clique no WhatsApp e ida ao cadastro (/api/…"
- },
- {
-  "numero": 290,
-  "frente": "E-commerce",
-  "titulo": "Tráfego e campanhas, fases TR0 e TR1: aviso de cookies, origem completa e links rastreados",
-  "data": "2026-11-13",
-  "resumo": "Pedido do dono: saber de onde vem cada visita e cada lead (anúncio da Meta, do Google, orgânico), com links rastreados em tudo, como base para a campanha de teste e para devolver vendas à Meta e ao Google. Plano completo: docs/prompts/tr…"
  }
 ]

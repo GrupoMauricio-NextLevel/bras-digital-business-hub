@@ -36,6 +36,13 @@ a.vida-num:hover .vida-num__icone3d { transform: translateY(-2px) rotate(-5deg) 
 .vida-linha { stroke-dasharray: 1; stroke-dashoffset: 1; animation: vida-desenha 900ms var(--ds-ease-out) 120ms forwards; }
 .vida-area { opacity: 0; animation: vida-aparece 500ms ease 700ms forwards; }
 .vida-fatia { animation: vida-aparece 600ms ease both; }
+/* Esteira e colunas crescem; o movimento novo chega subindo (D334). */
+.vida-trecho { transform-origin: left; animation: vida-cresce-x 700ms var(--ds-ease-out) both; }
+.vida-coluna { transform-box: fill-box; transform-origin: bottom; animation: vida-cresce-y 700ms var(--ds-ease-out) both; }
+.vida-chega { animation: vida-sobe 420ms var(--ds-ease-out) both; }
+@keyframes vida-cresce-x { from { transform: scaleX(0); } to { transform: none; } }
+@keyframes vida-cresce-y { from { transform: scaleY(0); } to { transform: none; } }
+@keyframes vida-sobe { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 @keyframes vida-desenha { to { stroke-dashoffset: 0; } }
 @keyframes vida-aparece { to { opacity: 1; } }
 
@@ -51,7 +58,7 @@ a.vida-num:hover .vida-num__icone3d { transform: translateY(-2px) rotate(-5deg) 
 
 @media (prefers-reduced-motion: reduce) {
   .vida-linha { animation: none; stroke-dashoffset: 0; }
-  .vida-area, .vida-fatia { animation: none; opacity: 1; }
+  .vida-area, .vida-fatia, .vida-trecho, .vida-coluna, .vida-chega { animation: none; opacity: 1; transform: none; }
   .vida-aovivo::after { animation: none; }
   a.vida-num:hover, a.vida-num:hover .vida-num__icone3d, .vida-acao:hover .vida-acao__img { transform: none; }
 }
