@@ -8,7 +8,7 @@ import { campanhasDaLoja, criarCampanha, linkDaCampanha, modeloDaCampanha, veioD
 import { criarPagina } from "@/lib/business/paginas";
 import { atualizarContato, registrarContato } from "@/lib/business/contatos";
 
-describe("página de campanha em poucos cliques (NB4, D338)", () => {
+describe("página de campanha em poucos cliques (NB4, D339)", () => {
   it("monta topo com a oferta, motivos, formulário e contatos; o botão do topo leva ao formulário", () => {
     const t = modeloDaCampanha({ objetivo: "VISITA", titulo: "Aula experimental grátis", oferta: "Conheça o estúdio", motivos: ["Turmas pequenas", "", "Professores formados"] }, "Estúdio Leve");
     expect(t.order).toEqual(["destaque", "motivos", "orcamento", "contato"]);

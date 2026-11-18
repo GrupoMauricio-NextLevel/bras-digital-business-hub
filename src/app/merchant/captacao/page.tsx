@@ -18,7 +18,7 @@ import { CampanhaCartao, NovaCampanha } from "./captacao-cliente";
 export const dynamic = "force-dynamic";
 
 /**
- * Captação (NB4, D338): páginas de campanha prontas em poucos cliques, os links para cada lugar onde a empresa anuncia,
+ * Captação (NB4, D339): páginas de campanha prontas em poucos cliques, os links para cada lugar onde a empresa anuncia,
  * o QR para materiais impressos e os números de cada campanha (contatos, fechados e valor), vindos de Contatos e orçamentos.
  */
 export default async function Captacao({ searchParams }: { searchParams: Promise<{ nova?: string }> }) {

@@ -11,7 +11,7 @@ import { formatBRL } from "@/lib/money";
 
 const campo = "mt-1 h-10 w-full rounded-lg border border-border bg-surface px-3 text-sm";
 
-/** Assistente da página de campanha (NB4, D338): objetivo, oferta e motivos; a página nasce pronta e publicada. */
+/** Assistente da página de campanha (NB4, D339): objetivo, oferta e motivos; a página nasce pronta e publicada. */
 export function NovaCampanha({ objetivos, abrir }: { objetivos: { chave: string; rotulo: string; descricao: string }[]; abrir: boolean }) {
   const router = useRouter();
   const [aberto, setAberto] = React.useState(abrir);

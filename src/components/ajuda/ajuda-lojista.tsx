@@ -1,4 +1,5 @@
 "use client";
+import { podeConsultar } from "@/lib/atividade-cliente";
 import * as React from "react";
 import { createPortal } from "react-dom";
 import { ChevronDown, LifeBuoy, Send, X } from "lucide-react";
@@ -26,7 +27,7 @@ export function AjudaLojista({ whatsappUrl }: { whatsappUrl?: string | null }) {
     let vivo = true;
     const buscar = async () => { const r = await verAjudaAction(); if (vivo && r.ok) juntar(r.data.mensagens as Msg[]); };
     void buscar();
-    const t = setInterval(buscar, 4000);
+    const t = setInterval(() => { if (podeConsultar()) void buscar(); }, 4000);
     return () => { vivo = false; clearInterval(t); };
   }, [aberto, juntar]);
   React.useEffect(() => { fim.current?.scrollIntoView({ block: "end" }); }, [msgs.length]);

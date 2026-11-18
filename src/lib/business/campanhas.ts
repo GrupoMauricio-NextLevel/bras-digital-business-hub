@@ -9,7 +9,7 @@ import type { Template } from "@/lib/themes/types";
 import { criarPagina, publicarPaginas } from "./paginas";
 
 /**
- * Captação: página de campanha em poucos cliques (NB4, D338). O dono escolhe o objetivo, escreve a oferta e até quatro
+ * Captação: página de campanha em poucos cliques (NB4, D339). O dono escolhe o objetivo, escreve a oferta e até quatro
  * motivos; a página nasce pronta (topo com a oferta, motivos, formulário de orçamento e contatos), já publicada, com os
  * links prontos para o anúncio (Meta, Google, Instagram) e o QR. Os pedidos chegam em Contatos e orçamentos com a origem,
  * e cada campanha mostra quantos contatos e fechamentos trouxe.

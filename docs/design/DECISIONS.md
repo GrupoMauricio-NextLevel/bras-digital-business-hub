@@ -4418,7 +4418,16 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Código:** `src/lib/business/assistente-contato.ts`, `funilEmQuadro` em `src/lib/business/contatos.ts`, `sugestaoDoContatoAction`, `MauricioNoContato` e as visões em `src/app/merchant/contatos/page.tsx`.
 - **Teste:** `tests/business-funil-ia.test.ts` (etapas e soma, ordem do dia, próxima ação, regras, leitura da IA, sem IA usa regras, contato de outra loja não aparece).
 
-## D338 — [E-commerce] Captação (NB4): página de campanha em poucos cliques, links por lugar, QR e números de cada campanha (2026-11-18)
+## D338 — [Grupo] Banco que dorme: consultas automáticas só com gente na tela e rotinas de hora em hora (2026-11-18)
+- **O que aconteceu:** em 18/11/2026 (cerca de 10h40 UTC) o site saiu do ar: o Neon gratuito estourou as 100 horas de processamento do mês ("Your account or project has exceeded the quota"). O Neon cobra pelo tempo em que o banco fica acordado e o deixa dormir depois de 5 minutos sem consulta; o nosso quase nunca dormia.
+- **Causa:** painéis e páginas que consultam o banco sozinhos a cada 3 a 30 segundos enquanto a aba está aberta (aviso sonoro do Master, "ao vivo" do Master e da agência, Atendimento, CRM, ajuda do lojista, conversa do vendedor, tráfego ao vivo, sinal de presença das páginas públicas, conversa da loja e a esteira da expedição). Uma aba esquecida aberta mantinha o banco acordado o dia todo. As rotinas do GitHub (a cada 10 e 15 minutos) somavam pouco, porque o GitHub atrasa e pula agendamentos.
+- **Decisão do dono:** conta nova no Neon (os dados de teste podem ser perdidos: praticamente sem clientes), começar no plano grátis e passar ao pago (Launch, por uso, sem mínimo) na semana seguinte. Mesma região do Render (AWS US East 2, Ohio), endereço com "pooling". O projeto antigo é apagado depois (o Neon pede uma conta por pessoa).
+- **Mudança:** regra única `podeConsultar()` (`src/lib/atividade-cliente.ts`): consulta automática só com a aba visível e alguém mexendo nos últimos 10 minutos (tráfego ao vivo, que avisa por notificação do sistema, até 30 minutos mesmo com a aba escondida). Parou de mexer, para de consultar; tocou na tela, volta. A esteira da expedição mostra "Pausado (toque na tela)". Aviso sonoro de 15 s para 30 s; sinal de presença das páginas públicas de 30 s para 60 s; conversa da loja fechada de 30 s para 60 s. Rotinas e monitor do GitHub de hora em hora, no mesmo minuto (:07), para o banco acordar uma vez só por hora.
+- **Efeito esperado:** o banco dorme quando ninguém está usando; no plano pago, poucos dólares por mês em vez de cerca de US$ 20.
+- **Fora desta mudança:** acompanhamento de pagamento na tela (Pix, fatura, tema), que dura só enquanto a pessoa espera pagar.
+- **Teste:** `tests/atividade-cliente.test.ts`.
+
+## D339 — [E-commerce] Captação (NB4): página de campanha em poucos cliques, links por lugar, QR e números de cada campanha (2026-11-18)
 - **Pedido do dono:** "enquanto eu não pago o Neon, vamos desenvolver o que for possível". Fase NB4 do plano `docs/prompts/nextlevel-business-coracao-do-negocio.md` (página de campanha da Meta "em poucos cliques"), sem a parte que exige configuração por loja.
 - **Assistente** (Site → **Captação**, `/merchant/captacao`), em três passos:
   1. objetivo: pedir orçamento, agendar visita ou aula experimental, ou receber o contato da equipe;

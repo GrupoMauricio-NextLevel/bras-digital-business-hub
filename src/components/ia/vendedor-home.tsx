@@ -1,4 +1,5 @@
 "use client";
+import { podeConsultar } from "@/lib/atividade-cliente";
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -53,7 +54,7 @@ export function VendedorHome({ fatos, whatsappEquipe }: { fatos: FatosVenda; wha
   // Ao vivo: enquanto a conversa está aberta, busca as respostas da equipe a cada 4 segundos.
   React.useEffect(() => {
     if (!aberto || !sessao) return;
-    const t = setInterval(async () => { const r = await novasMensagensAction({ ...sessao, depoisDe: ultimo }); if (r.ok) aplicar(r.data); }, 4000);
+    const t = setInterval(async () => { if (!podeConsultar()) return; const r = await novasMensagensAction({ ...sessao, depoisDe: ultimo }); if (r.ok) aplicar(r.data); }, 4000);
     return () => clearInterval(t);
   }, [aberto, sessao, ultimo, aplicar]);
 

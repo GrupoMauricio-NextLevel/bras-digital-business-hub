@@ -1,4 +1,5 @@
 "use client";
+import { podeConsultar } from "@/lib/atividade-cliente";
 import * as React from "react";
 import { CheckCircle2, MessageCircle, Send } from "lucide-react";
 import { toast } from "sonner";
@@ -19,8 +20,8 @@ export function CaixaDaLoja({ inicial, abrirId }: { inicial: Lista; abrirId?: st
   const [pending, start] = React.useTransition();
   const lista = React.useCallback(async () => { const r = await listarAtendimentoDaLojaAction(filtro); if (r.ok) setDados(r.data); }, [filtro]);
   const abrir = React.useCallback(async (id: string) => { const r = await abrirAtendimentoDaLojaAction(id); if (r.ok) setAberta(r.data); }, []);
-  React.useEffect(() => { void lista(); const t = setInterval(lista, 5000); return () => clearInterval(t); }, [lista]); // eslint-disable-line react-hooks/set-state-in-effect
-  React.useEffect(() => { if (!sel) return; void abrir(sel); const t = setInterval(() => abrir(sel), 3000); return () => clearInterval(t); }, [sel, abrir]); // eslint-disable-line react-hooks/set-state-in-effect
+  React.useEffect(() => { void lista(); const t = setInterval(() => { if (podeConsultar()) void lista(); }, 5000); return () => clearInterval(t); }, [lista]); // eslint-disable-line react-hooks/set-state-in-effect
+  React.useEffect(() => { if (!sel) return; void abrir(sel); const t = setInterval(() => { if (podeConsultar()) void abrir(sel); }, 3000); return () => clearInterval(t); }, [sel, abrir]); // eslint-disable-line react-hooks/set-state-in-effect
   const c = aberta?.conversa;
   const whats = c?.whatsapp ? `https://wa.me/${c.whatsapp.startsWith("55") ? c.whatsapp : `55${c.whatsapp}`}` : null;
   return (

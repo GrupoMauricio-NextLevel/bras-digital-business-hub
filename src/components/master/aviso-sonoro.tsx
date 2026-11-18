@@ -1,4 +1,5 @@
 "use client";
+import { podeConsultar } from "@/lib/atividade-cliente";
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { Volume2, VolumeX } from "lucide-react";
@@ -66,7 +67,7 @@ export function AvisoSonoro({ loja = false }: { loja?: boolean }) {
       antes.current = esperando;
     };
     void conferir();
-    const t = setInterval(() => { if (document.visibilityState === "visible") void conferir(); }, 15_000);
+    const t = setInterval(() => { if (podeConsultar()) void conferir(); }, 30_000);
     return () => { vivo = false; clearInterval(t); };
   }, [router, loja]);
   const alternar = () => setSom((s) => { const n = !s; try { localStorage.setItem(CHAVE, n ? "1" : "0"); } catch { /* ok */ } if (n) tocarSubida(); return n; });
