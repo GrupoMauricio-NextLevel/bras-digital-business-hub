@@ -1,10 +1,17 @@
 [
  {
-  "numero": 346,
+  "numero": 347,
   "frente": "E-commerce",
   "titulo": "Domínio próprio sem promessa falsa, aviso no Master e endereço de teste de toda loja (slug.nextlevelcommerce.com.br)",
   "data": "2026-11-18",
   "resumo": "Pedido do dono (entrega do Site Express do Vestiário das Lendas, com prints da wBuy): \"em outra plataforma fica sempre uma URL para teste, como um subdomínio nosso, e a URL oficial; precisamos disso\"; \"domínio próprio parece lento ou com…"
+ },
+ {
+  "numero": 346,
+  "frente": "E-commerce",
+  "titulo": "Abacus no computador do dono: começa pelo visual com trava de envio e passa a tocar 100% do projeto",
+  "data": "2026-11-18",
+  "resumo": "Pedido do dono: \"quero iniciar a migração deste trabalho para o Abacus; eles têm um modo desktop que vai ajudar a acelerar a evolução visual. Como fazer isso de forma segura para rodar localmente?\" Aceitou as recomendações."
  },
  {
   "numero": 345,
@@ -271,12 +278,5 @@
   "titulo": "Três produtos sobre a mesma conta: NextLevel Business (base), Site e Loja virtual, vendidos em pacotes",
   "data": "2026-11-16",
   "resumo": "Decisão do dono (16/11/2026): aprovada a proposta da Parte 0.2 do plano (docs/prompts/nextlevel-business-coracao-do-negocio.md). Também autorizou publicar e seguir para a NB3, com testes só no necessário para andar rápido."
- },
- {
-  "numero": 307,
-  "frente": "E-commerce",
-  "titulo": "NextLevel Business, fase NB2: páginas do site, serviços da empresa e modelos prontos (Institucional e Academia)",
-  "data": "2026-11-16",
-  "resumo": "Pedido do dono: \"vamos desenvolver\" (depois da junção com as outras conversas, D304 a D306). Plano: docs/prompts/nextlevel-business-coracao-do-negocio.md, NB2."
  }
 ]

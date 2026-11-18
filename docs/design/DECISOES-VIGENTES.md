@@ -19,7 +19,7 @@
 - **Soluções Digitais:** serviços da agência NextLevel. Agências parceiras não compram o código; o degrau maior é a Licença dedicada. (D312)
 - **Portal do cliente** sem limite e sem cobrança por cliente; o preço é por empresa. (D336)
 
-- **Domínio das lojas:** domínio próprio por registros A/CNAME (D234); toda loja tem também o endereço de teste `slug.nextlevelcommerce.com.br`, ligado por `LOJA_TESTE_DOMINIO` (D346). Com `RENDER_API_KEY` o domínio entra sozinho na hospedagem; sem ela, o Master avisa para cadastrar. (D234, D346)
+- **Domínio das lojas:** domínio próprio por registros A/CNAME (D234); toda loja tem também o endereço de teste `slug.nextlevelcommerce.com.br`, ligado por `LOJA_TESTE_DOMINIO` (D347). Com `RENDER_API_KEY` o domínio entra sozinho na hospedagem; sem ela, o Master avisa para cadastrar. (D234, D347)
 
 ## Dinheiro e cobrança
 - Valores em centavos; preços e regras sempre da tabela do Master (`getPriceBook`, `getPartnerSettings`), nunca fixos no código. (D123)

@@ -4548,8 +4548,21 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
 - **Substitui:** os planos Start, Pro e Scale e a regra "planos intactos" (D311), o Sites Start e os níveis do Business (D336), o desconto de 50% no segundo produto (D336) e a taxa de plataforma sobre as vendas.
 - **Sistema:** em 2 a 3 rodadas, na ordem da seção 13 (tabela de preços, catálogo, implantação ligada ao contrato de projeto da D342, cadastro, limites por plano, páginas públicas, Black, base de conhecimento). Valores sempre na tabela do Master.
 
+## D346 — [E-commerce] Abacus no computador do dono: começa pelo visual com trava de envio e passa a tocar 100% do projeto (2026-11-18)
+- **Pedido do dono:** "quero iniciar a migração deste trabalho para o Abacus; eles têm um modo desktop que vai ajudar a acelerar a evolução visual. Como fazer isso de forma segura para rodar localmente?" Aceitou as recomendações.
+- **Decisão:**
+  - o Abacus trabalha **só no computador do dono**, numa pasta própria, na branch `abacus/visual`, com a demonstração local (`scripts/dev-demo.ps1`, banco de treino em memória);
+  - **só visual** (mesma área que era do Codex em `AGENTS.md`); lógica, banco, pagamentos, permissões e testes continuam com o Claude;
+  - **nenhuma senha de produção** na pasta nem no chat do Abacus; desligar o uso de dados para treino se o Abacus oferecer;
+  - **quem envia é o dono**; o Claude revisa a `abacus/visual`, roda a bateria completa e junta à publicação (uma montagem por rodada, regra do Render).
+- **Trava de envio:** o `.githooks/pre-push` ganhou uma trava que só age quando a cópia tem `git config nextlevel.branchPermitida` (gravado pelo script); aí o push só vai para essa branch. As outras cópias (Claude, Codex) não mudam.
+- **Imagens:** o Abacus gera imagens; as listas com os nomes exatos já existem (`imagens-paginas-publicas-gpt.md`, `imagens-temas-gpt.md`). Novo conversor `scripts/imagens/converter-webp.mjs` (Node + sharp, funciona no Windows): WebP qualidade 80, sem metadados, reduz até caber em 250 KB e avisa o que passar.
+- **Arquivos:** `scripts/preparar-abacus.ps1`, `scripts/imagens/converter-webp.mjs`, `.githooks/pre-push`, `docs/abacus/COMECE-AQUI.md` (guia, regras e a primeira mensagem para colar), avisos em `AGENTS.md` e `docs/nextlevel-commerce/visualizar-ao-vivo.md`.
+- **Teste:** `tests/abacus-trava-envio.test.ts` (a trava bloqueia outra branch, libera a permitida e não age sem a configuração).
+- **Atualização no mesmo dia:** depois de testar, o dono decidiu continuar **100% do projeto** pelo Abacus Desktop. Roteiro em `docs/abacus/PROJETO-COMPLETO.md`: cópia na branch de publicação **sem** a trava (`git config --unset nextlevel.branchPermitida`), GitHub só com este repositório, Render só para ler erros (publicar continua sendo o push), Neon fora do dia a dia (o banco se atualiza sozinho ao publicar, `src/db/client.ts`; se precisar consultar, usuário só de leitura ou cópia do banco). As conversas não se exportam: `scripts/gerar-pacote-abacus.mjs` junta regras, base de conhecimento, observações e decisões recentes num arquivo para o Projeto do Abacus.
+- **Numeração:** registrada como D343 na branch de trabalho; renumerada para D346 ao juntar (D343 a D345 já usadas na publicação).
 
-## D346 — [E-commerce] Domínio próprio sem promessa falsa, aviso no Master e endereço de teste de toda loja (slug.nextlevelcommerce.com.br) (2026-11-18)
+## D347 — [E-commerce] Domínio próprio sem promessa falsa, aviso no Master e endereço de teste de toda loja (slug.nextlevelcommerce.com.br) (2026-11-18)
 - **Pedido do dono** (entrega do Site Express do Vestiário das Lendas, com prints da wBuy): "em outra plataforma fica sempre uma URL para teste, como um subdomínio nosso, e a URL oficial; precisamos disso"; "domínio próprio parece lento ou com erro; na wBuy é só alterar os servidores de nomes".
 - **Diagnóstico (18/11):** o DNS do `vestiariodaslendas.com.br` já apontava certo (A 216.24.57.1 e CNAME www → superdrop.onrender.com). O que faltava era o domínio estar cadastrado na hospedagem (Render), e isso só é automático com `RENDER_API_KEY` no ambiente (pendência do dono desde 09/11). Sem a chave, a tela dizia "o HTTPS sai sozinho em alguns minutos", o que nunca acontecia.
 - **Correções:** (1) com DNS certo e sem a chave, a tela diz a verdade ("falta a equipe NextLevel ativar o domínio na hospedagem"); (2) o "Precisa de você agora" de Lojistas no Master mostra cada domínio aguardando ativação, com o caminho (Render → serviço superdrop → Custom Domains, ou colocar a `RENDER_API_KEY`).

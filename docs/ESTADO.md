@@ -2,7 +2,9 @@
 
 > **Primeira coisa que toda conversa lê** (a skill `/retomar` faz isso). Uma página só: o que está no ar, o que está em andamento, o que vem em seguida e o que espera o dono. **Quem termina uma conversa atualiza este arquivo** (skill `/encerrar`). Histórico não fica aqui: decisões vão para `docs/design/DECISIONS.md` e as regras em vigor para `docs/design/DECISOES-VIGENTES.md`.
 
-**Atualizado em:** 18/11/2026 · **Última decisão:** D345 · **Última migração:** 0118 · **Branch de publicação:** `claude/wonderful-cannon-5o38v5`
+**Atualizado em:** 18/11/2026 · **Última decisão:** D346 · **Última migração:** 0118 · **Branch de publicação:** `claude/wonderful-cannon-5o38v5`
+
+> **Desde 18/11/2026 (D346): o projeto é tocado pelo Abacus Desktop no computador do dono.** Roteiro de conexões e regras: `docs/abacus/PROJETO-COMPLETO.md`. Pacote de contexto para o Projeto do Abacus: `node scripts/gerar-pacote-abacus.mjs`.
 
 ## No ar (o que mudou nos últimos dias)
 - Quatro portas e um painel: páginas `/sites` e `/business`, 50% no segundo produto, cartão do ecossistema (D336).
@@ -20,6 +22,7 @@
 | **Planos tudo em um (D345)** | rodada 1: tabela de preços, catálogo e implantação como produto (seção 13) | Business por dentro |
 
 ## Esperando o dono
+0. **Abacus (D346):** conectar o GitHub (só este repositório), clonar a branch de publicação, subir o pacote de contexto no Projeto e fazer o primeiro teste de ponta a ponta (`docs/abacus/PROJETO-COMPLETO.md`, seção 5).
 1. **Precificação tudo em um aprovada (D345):** falta o "pode começar" da rodada 1 do sistema (seção 13 de `docs/precificacao/PRECIFICACAO-TUDO-EM-UM.md`), para estar no ar em 01/12.
 1b. **Racional comercial e páginas de venda (18/11):** `docs/vendas/RACIONAL-COMERCIAL-E-PAGINAS.md`. Falta o dono responder a Parte 8. Nada implementado.
 2. **Neon:** limitar o processamento a no máximo 1 CU e acompanhar o consumo (D338).
