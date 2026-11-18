@@ -1,3 +1,4 @@
+import { verificacaoBuscadores } from "@/lib/seo/verificacao";
 import type { Metadata, Viewport } from "next";
 import { ogImageFor } from "@/lib/og-marca";
 import localFont from "next/font/local";
@@ -32,6 +33,8 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: { siteName: brand.name, locale: "pt_BR", type: "website", title: brand.name, description: brand.description, images: [ogImageFor(brand)] },
     // Marca de operação fechada (Brás Digital) ainda "em breve": nenhuma página do endereço é indexável. As demais marcas não mudam.
     ...(robotsForBrandPortal(brand) ? { robots: robotsForBrandPortal(brand) } : {}),
+    // Google Search Console e Bing Webmaster (D343): código colado no Render; só na Commerce.
+    ...(brand.code === "NEXTLEVEL_COMMERCE" && verificacaoBuscadores() ? { verification: verificacaoBuscadores() } : {}),
   };
 }
 

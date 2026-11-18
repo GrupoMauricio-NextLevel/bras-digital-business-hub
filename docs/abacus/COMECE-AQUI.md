@@ -1,4 +1,4 @@
-# Abacus no computador do dono: começar com segurança (D343)
+# Abacus no computador do dono: começar com segurança (D346)
 
 > **Para que serve:** acelerar a evolução visual com o Abacus (aplicativo de computador) rodando o sistema no seu PC, vendo cada mudança na hora, sem publicar nada por engano e sem expor senhas. O Claude continua na nuvem com lógica, banco, pagamentos, testes e a revisão antes de publicar.
 

@@ -66,7 +66,7 @@ export async function painelDosExecutivos(db: Database, actor: Actor, now = new 
     const entregas = minhas.filter((r) => r.status === "ENTREGUE").map((r) => r.entregueEm!).sort();
     return {
       id: p.id, nome: p.displayName, email, telefone: p.phone, status: p.status, nivel: p.tier,
-      vendasSemana: vendas.filter((v) => v.partnerId === p.id && v.criado >= sem.inicio.toISOString()).length,
+      vendasSemana: vendas.filter((v) => v.partnerId === p.id && Date.parse(v.criado) >= sem.inicio.getTime()).length, // o banco devolve "AAAA-MM-DD hh:mm:ss+00": comparar instantes, nunca texto
       vendasMes: vendas.filter((v) => v.partnerId === p.id).length,
       comissaoMesCents: comissoes.filter((c) => c.partnerId === p.id).reduce((t, c) => t + c.valor, 0),
       dinheiroComEleCents: comigo.reduce((t, r) => t + r.valorCents, 0),

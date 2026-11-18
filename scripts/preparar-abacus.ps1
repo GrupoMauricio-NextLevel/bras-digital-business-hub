@@ -1,4 +1,4 @@
-# Prepara uma cópia do projeto para o Abacus (ou outro agente de visual) trabalhar no computador do dono, com segurança (D343).
+# Prepara uma cópia do projeto para o Abacus (ou outro agente de visual) trabalhar no computador do dono, com segurança (D346).
 # Uso (no PowerShell, DENTRO da pasta do projeto já clonada):
 #   powershell -ExecutionPolicy Bypass -File scripts/preparar-abacus.ps1
 # O que faz:

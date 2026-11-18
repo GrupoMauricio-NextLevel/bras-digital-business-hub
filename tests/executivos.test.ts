@@ -79,8 +79,9 @@ describe("executivos no banco (CX3)", () => {
     expect((await ctx.db.select().from(partnerCommissions).where(eq(partnerCommissions.partnerId, ex.partnerId))).map((c) => c.kind)).toEqual(["SALE"]);
     const meu = await painelDoExecutivo(ctx.db, ex.actor, AGORA);
     expect(meu).toMatchObject({ totalComigoCents: r.valorCents, travado: false });
-    // A comissão é gravada com a hora real do banco: o painel é conferido no "agora" de verdade.
-    expect((await painelDosExecutivos(ctx.db, ctx.actors.master))[0]).toMatchObject({ dinheiroComEleCents: r.valorCents, vendasSemana: 1, atrasados: 0 });
+    // A comissão é gravada com a hora real do banco: fixa no AGORA do teste para não depender do dia em que roda.
+    await ctx.db.update(partnerCommissions).set({ createdAt: AGORA.toISOString() }).where(eq(partnerCommissions.partnerId, ex.partnerId));
+    expect((await painelDosExecutivos(ctx.db, ctx.actors.master, AGORA))[0]).toMatchObject({ dinheiroComEleCents: r.valorCents, vendasSemana: 1, atrasados: 0 });
 
     await expect(receberDoExecutivo(ctx.db, ctx.actors.master, r.id, AGORA)).rejects.toThrow(/não foi aberto/);
     await abrirCaixa(ctx.db, ctx.actors.master, { data: "2026-12-10", saldoInicialCents: 0 }, AGORA);
@@ -90,6 +91,22 @@ describe("executivos no banco (CX3)", () => {
     expect(dia.resumo.esperadoGavetaCents).toBe(r.valorCents);
     await expect(receberDoExecutivo(ctx.db, ctx.actors.master, r.id, AGORA)).rejects.toThrow(/já foi recebido/);
     expect((await painelDoExecutivo(ctx.db, ex.actor, AGORA)).totalComigoCents).toBe(0);
+  });
+
+  it("vendas da semana no painel do dono: segunda de madrugada entra, domingo à noite fecha a semana certa (fuso de São Paulo)", async () => {
+    const ex = await executivo();
+    await registrarVendaDeRua(ctx.db, ex.actor, { storeId: await loja(ex.partnerId), productKey: "COMMERCE_START", cycle: "MONTHLY", meio: "DINHEIRO" }, AGORA);
+    const casos: [venda: string, agora: string, conta: number][] = [
+      ["2026-12-14T03:30:00Z", "2026-12-14T12:00:00Z", 1], // venda segunda 00h30 em SP, conferida na própria segunda (era o erro: data igual ao início da semana)
+      ["2026-12-14T03:00:00Z", "2026-12-14T03:00:00Z", 1], // segunda 00h00 em SP: o início da semana é inclusivo
+      ["2026-12-14T02:30:00Z", "2026-12-14T12:00:00Z", 0], // domingo 23h30 em SP (já segunda em UTC): é da semana anterior
+      ["2026-12-21T02:30:00Z", "2026-12-21T02:45:00Z", 1], // domingo 20/12 23h30 em SP, conferida no mesmo domingo à noite
+      ["2026-12-14T03:30:00Z", "2026-12-21T03:00:00Z", 0], // virou a segunda seguinte em SP: a semana zera
+    ];
+    for (const [venda, agora, conta] of casos) {
+      await ctx.db.update(partnerCommissions).set({ createdAt: venda }).where(eq(partnerCommissions.partnerId, ex.partnerId));
+      expect((await painelDosExecutivos(ctx.db, ctx.actors.master, new Date(agora)))[0]!.vendasSemana, `${venda} conferida em ${agora}`).toBe(conta);
+    }
   });
 
   it("prazo vencido trava nova venda em dinheiro (maquininha segue); maquininha entra no caixa como Mercado Pago", async () => {

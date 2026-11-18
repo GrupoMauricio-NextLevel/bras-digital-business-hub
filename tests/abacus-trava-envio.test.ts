@@ -5,7 +5,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
 /**
- * D343: a cópia do Abacus (computador do dono) só consegue enviar para a branch própria. A trava fica no começo do
+ * D346: a cópia do Abacus (computador do dono) só consegue enviar para a branch própria. A trava fica no começo do
  * .githooks/pre-push e só age com `git config nextlevel.branchPermitida`. Aqui rodamos só o trecho da trava num
  * repositório de teste (sem tipos/estilo, que vêm depois no gancho).
  */
@@ -20,7 +20,7 @@ function trava(permitida: string | null, destino: string) {
   return spawnSync("bash", [script], { cwd: pasta, input: `refs/heads/x 111 refs/heads/${destino} 222\n`, encoding: "utf8" });
 }
 
-describe("trava de envio da cópia do Abacus (D343)", () => {
+describe("trava de envio da cópia do Abacus (D346)", () => {
   it("bloqueia o envio para a branch de publicação", () => {
     const r = trava("abacus/visual", "claude/wonderful-cannon-5o38v5");
     expect(r.status).toBe(1);

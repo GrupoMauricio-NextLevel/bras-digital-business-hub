@@ -3,7 +3,7 @@
 ## Por quê
 Publicar no Render leva de 3 a 6 minutos e vai para o ar a cada push. Para **desenhar**, o melhor é rodar o sistema **no seu próprio computador**: cada arquivo salvo atualiza a tela no navegador em poucos segundos (é o "ao vivo" de verdade). Só quando você aprovar, publica.
 
-> **Abacus (D343):** para trabalhar o visual com o Abacus, use o guia `docs/abacus/COMECE-AQUI.md` e o script `scripts/preparar-abacus.ps1` (branch `abacus/visual`, com trava de envio). O resto desta página vale igual.
+> **Abacus (D346):** para trabalhar o visual com o Abacus, use o guia `docs/abacus/COMECE-AQUI.md` e o script `scripts/preparar-abacus.ps1` (branch `abacus/visual`, com trava de envio). O resto desta página vale igual.
 
 ## Preparar o computador (uma vez)
 1. Instale o **Node 22 (LTS)** (nodejs.org) e o **Git**.

@@ -1,10 +1,31 @@
 [
  {
-  "numero": 343,
+  "numero": 346,
   "frente": "E-commerce",
-  "titulo": "Abacus no computador do dono para acelerar o visual, com cópia própria e trava de envio",
+  "titulo": "Abacus no computador do dono: começa pelo visual com trava de envio e passa a tocar 100% do projeto",
   "data": "2026-11-18",
   "resumo": "Pedido do dono: \"quero iniciar a migração deste trabalho para o Abacus; eles têm um modo desktop que vai ajudar a acelerar a evolução visual. Como fazer isso de forma segura para rodar localmente?\" Aceitou as recomendações."
+ },
+ {
+  "numero": 345,
+  "frente": "E-commerce",
+  "titulo": "Precificação tudo em um aprovada: quatro planos, zero taxa sobre as vendas e implantação em todo plano",
+  "data": "2026-11-18",
+  "resumo": "Dono (18/11/2026): \"aceito suas recomendações, vamos refazer tudo e aprimorar\". Proposta: docs/precificacao/PRECIFICACAO-TUDO-EM-UM.md (seções 1 a 16)."
+ },
+ {
+  "numero": 344,
+  "frente": "E-commerce",
+  "titulo": "Um motor só: NextLevel Business é o painel de serviços personalizável; planejamento unificado e conversas com começo e fim",
+  "data": "2026-11-18",
+  "resumo": "Contexto: em três dias, cerca de 12 conversas em paralelo criaram duas migrações 0117, duas D335 e duas D324, e o mesmo assunto (funil, contratos, cobrança, portal, projetos) estava sendo construído em três lugares: Master, Painel da Agê…"
+ },
+ {
+  "numero": 343,
+  "frente": "E-commerce",
+  "titulo": "Busca e IA: verificação no Google Search Console e no Bing Webmaster por código colado no Render",
+  "data": "2026-11-17",
+  "resumo": "Pedido do dono: \"não estamos sendo encontrados nos mecanismos\". Conferência de 17/11/2026: o site responde certo aos robôs (páginas 200, robots e sitemap completos, sem bloqueio), mas uma busca site:nextlevelcommerce.com.br não mostra ne…"
  },
  {
   "numero": 342,
@@ -257,26 +278,5 @@
   "titulo": "NextLevel Business, fase NB2: páginas do site, serviços da empresa e modelos prontos (Institucional e Academia)",
   "data": "2026-11-16",
   "resumo": "Pedido do dono: \"vamos desenvolver\" (depois da junção com as outras conversas, D304 a D306). Plano: docs/prompts/nextlevel-business-coracao-do-negocio.md, NB2."
- },
- {
-  "numero": 306,
-  "frente": "E-commerce",
-  "titulo": "NextLevel Business, fase NB1: dois caminhos na entrada, menu do gerenciador do negócio e vitrine do caminho Site",
-  "data": "2026-11-14",
-  "resumo": "Pedido do dono: \"prossiga\" (NB1 do plano docs/prompts/nextlevel-business-coracao-do-negocio.md, depois da NB0, D305)."
- },
- {
-  "numero": 305,
-  "frente": "E-commerce",
-  "titulo": "NextLevel Business, fase NB0: linha de base, padrões aceitos e academia piloto confirmada",
-  "data": "2026-11-13",
-  "resumo": "Pedido do dono: \"pode seguir com a NB0\". Ele também já tem uma academia para o piloto do portal e vai detalhar o piloto em outra conversa."
- },
- {
-  "numero": 304,
-  "frente": "E-commerce",
-  "titulo": "A plataforma continua NextLevel Commerce, com dois caminhos (Site e Loja virtual) e o gerenciador do negócio \"NextLevel Business\" dentro do painel",
-  "data": "2026-11-13",
-  "resumo": "Pedido do dono: a NextLevel deixa de ser só plataforma de loja virtual e vira o coração do negócio do cliente, sem marca nova. Plano completo (racional técnico e prompt engenheiro mestre, fases NB0 a NB10): docs/prompts/nextlevel-busines…"
  }
 ]

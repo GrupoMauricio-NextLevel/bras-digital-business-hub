@@ -1,4 +1,4 @@
-// Gera o "pacote de contexto" do projeto num arquivo só, para subir num Projeto do Abacus (D343).
+// Gera o "pacote de contexto" do projeto num arquivo só, para subir num Projeto do Abacus (D346).
 // As conversas com o Claude não se exportam, mas tudo o que foi decidido nelas está registrado no repositório
 // (regras, decisões, base de conhecimento, observações do dono). Este arquivo junta o essencial.
 // Uso: node scripts/gerar-pacote-abacus.mjs [arquivo-de-saida]   (padrão: contexto-nextlevel-abacus.md na pasta atual)
