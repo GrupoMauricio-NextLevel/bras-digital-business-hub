@@ -10,6 +10,9 @@ import { NumeroVivo } from "@/components/vida/numero-vivo";
 import { AnelMeta, FundoAbertura } from "@/components/vida/abertura";
 import { HandCoins, MessagesSquare, Rocket, UserPlus } from "lucide-react";
 import { saudacao } from "@/lib/finance/executivo-regras";
+import { fraseDoRecebido, movimentoDaPlataforma, recebidoDosLojistas } from "@/lib/domain/master-vivo";
+import { ColunasPorMes } from "@/components/graficos/colunas-mes";
+import { FeedAoVivo } from "@/components/vida/feed-ao-vivo";
 import { EmptyState } from "@/components/app/empty-state";
 import { AoVivo } from "@/components/master/ao-vivo";
 import { pendenciasDoDono } from "@/lib/domain/pendencias-dono";
@@ -28,7 +31,8 @@ export default async function AgoraPage() {
   const session = await requireRole("NEXTLEVEL_MASTER");
   const agora = new Date();
   const db = await getDb();
-  const [a, aprender] = await Promise.all([agoraEcommerce(db, session.actor, agora), pendenteDoAprender(db, session.actor)]);
+  // Master com vida (D335): recebido dos lojistas nos últimos 6 meses e o movimento da plataforma.
+  const [a, aprender, recebido, movimento] = await Promise.all([agoraEcommerce(db, session.actor, agora), pendenteDoAprender(db, session.actor), recebidoDosLojistas(db, agora), movimentoDaPlataforma(db, 6)]);
   const pend = pendenciasDoDono().filter((p) => !p.feita);
   const k = a.contadores;
   return (
@@ -69,6 +73,11 @@ export default async function AgoraPage() {
         <NumeroVivo i={3} familia="pedidos" icone={Rocket} rotulo="Em teste" valor={String(k.teste)} nota="lojas testando agora" href="/commerce" />
         <NumeroVivo i={4} familia="dinheiro" icone={HandCoins} rotulo="Receita mensal" valor={formatBRL(k.mrrCents)} nota="planos ativos (anual ÷ 12)" href="/master/receita" />
       </section>
+
+      <div className="mb-6 grid gap-5 sm:gap-6 lg:grid-cols-[1.35fr_1fr]">
+        <ColunasPorMes rotulo="Recebido dos lojistas · 6 meses" titulo={fraseDoRecebido(recebido)} serie={recebido.map((r) => ({ mes: r.mes, cents: r.recebidoCents, n: r.lojas }))} contagem="lojas" legenda="Faturas pagas pelas lojas (planos, adicionais e serviços), pela data do pagamento." rodape={<Link href="/master/receita" className="mt-2 inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-[var(--ds-link)]">Ver receita <ArrowRight className="size-4" aria-hidden /></Link>} />
+        <FeedAoVivo rotulo="Plataforma" titulo="Movimento nas lojas" agora={agora} vazio="Quando uma loja vender, publicar ou mudar algo, aparece aqui na hora." itens={movimento.map((m) => ({ id: m.id, quem: m.loja, texto: m.mensagem.charAt(0).toLowerCase() + m.mensagem.slice(1), quando: m.createdAt, href: m.slug ? `/master/stores/${m.slug}` : undefined }))} />
+      </div>
 
       <div className="ds-grid ds-grid--main">
         <section className="ds-card" aria-labelledby="fila-t">

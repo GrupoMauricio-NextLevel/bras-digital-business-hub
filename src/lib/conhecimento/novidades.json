@@ -1,5 +1,12 @@
 [
  {
+  "numero": 335,
+  "frente": "E-commerce",
+  "titulo": "Master \"Agora\" com gráfico do recebido e movimento das lojas ao vivo",
+  "data": "2026-11-18",
+  "resumo": "Pedido do dono: \"pode levar pra lá\" (os gráficos e o movimento ao vivo da agência, D334, para o Master)."
+ },
+ {
   "numero": 334,
   "frente": "E-commerce",
   "titulo": "Painel da Agência com gráficos e movimento ao vivo",
@@ -271,12 +278,5 @@
   "titulo": "Tráfego: cidade e aparelho de cada visita e notificações em tempo real",
   "data": "2026-11-13",
   "resumo": "Pedido do dono: \"um campo com notificação em tempo real dizendo pelo menos a cidade de onde a pessoa está acessando e por qual dispositivo; se puder, ainda mais profundo\"."
- },
- {
-  "numero": 291,
-  "frente": "E-commerce",
-  "titulo": "Tráfego e campanhas, fase TR2: medição própria do site e \"Agora no site\" em tempo real",
-  "data": "2026-11-13",
-  "resumo": "Coletor próprio: as páginas públicas das marcas (nunca as lojas dos lojistas, D185, nem os painéis) mandam um sinal ao abrir cada página, um \"ainda aqui\" a cada 30 s com a aba visível, e marcam clique no WhatsApp e ida ao cadastro (/api/…"
  }
 ]

@@ -4362,3 +4362,11 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
   - **Esteira do mês**: uma barra com os 6 trechos da produção (planejar, roteiro, gravação, edição, aprovação, publicado), cada um com a sua cor, crescendo da esquerda, e os números de cada trecho.
 - **Código:** regras em `src/lib/agencias/painel-vivo.ts` (`esteiraDoMes`, `fraseDaReceita`, `haQuanto`, `movimentoDaAgencia`), telas em `src/components/agencia/painel-vivo.tsx`; animações em `vida.css`, paradas com "menos movimento".
 - **Teste:** `tests/agencias-painel-vivo.test.ts` (esteira somando 100%, frase da receita, tempo em português, movimento só da própria agência, sem "peça criada" e vazio para quem não vê a carteira toda).
+
+## D335 — [E-commerce] Master "Agora" com gráfico do recebido e movimento das lojas ao vivo (2026-11-18)
+- **Pedido do dono:** "pode levar pra lá" (os gráficos e o movimento ao vivo da agência, D334, para o Master).
+- **Recebido dos lojistas · 6 meses:** colunas com o que as lojas pagaram à NextLevel em cada mês (faturas pagas: planos, adicionais e serviços, pela data do pagamento, no fuso de Brasília) e quantas lojas pagaram; título com a conclusão ("R$ X recebidos neste mês, Y% a mais que no mês passado"); link para Receita.
+- **Movimento nas lojas:** as últimas atividades das lojas (pedido, produto, publicação…), com as iniciais coloridas da loja e "há X min", levando ao diagnóstico da loja; a tela se atualiza sozinha a cada 30 s.
+- **Diferença de números:** a "Receita mensal" do topo é a recorrente dos planos ativos (anual ÷ 12); o gráfico é o dinheiro que entrou no mês (inclui adicionais e serviços). A legenda diz isso.
+- **Código:** `src/lib/domain/master-vivo.ts` (`recebidoPorMes`, `fraseDoRecebido`, `ultimosMeses`, `movimentoDaPlataforma`), `ColunasPorMes` (`src/components/graficos/colunas-mes.tsx`) e `FeedAoVivo` (`src/components/vida/feed-ao-vivo.tsx`), reaproveitáveis nos outros painéis.
+- **Teste:** `tests/painel-vivo.test.ts` (meses no fuso de Brasília, soma e lojas por mês, frase).
