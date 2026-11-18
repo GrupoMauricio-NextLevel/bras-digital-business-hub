@@ -2,7 +2,7 @@
 
 > **Primeira coisa que toda conversa lê** (a skill `/retomar` faz isso). Uma página só: o que está no ar, o que está em andamento, o que vem em seguida e o que espera o dono. **Quem termina uma conversa atualiza este arquivo** (skill `/encerrar`). Histórico não fica aqui: decisões vão para `docs/design/DECISIONS.md` e as regras em vigor para `docs/design/DECISOES-VIGENTES.md`.
 
-**Atualizado em:** 18/11/2026 · **Última decisão:** D344 · **Última migração:** 0118 · **Branch de publicação:** `claude/wonderful-cannon-5o38v5`
+**Atualizado em:** 18/11/2026 · **Última decisão:** D345 · **Última migração:** 0118 · **Branch de publicação:** `claude/wonderful-cannon-5o38v5`
 
 ## No ar (o que mudou nos últimos dias)
 - Quatro portas e um painel: páginas `/sites` e `/business`, 50% no segundo produto, cartão do ecossistema (D336).
@@ -17,10 +17,10 @@
 | **Business = Painel da Agência** (D344) | ligar o cartão "NextLevel Business" do Meu negócio ao painel personalizável; trazer as telas novas para o visual "com vida" | planos da loja |
 | **Meu negócio / Sites** | Captação: Pixel e link curto por loja (fica para depois da D339) | painel da agência |
 | **Loja virtual** | ajustes que os lojistas reais pedirem | Business |
-| **Planos tudo em um (Bitrix24)** | dono responde a seção 14 da proposta; depois, a rodada de sistema da seção 13 | código, até a aprovação |
+| **Planos tudo em um (D345)** | rodada 1: tabela de preços, catálogo e implantação como produto (seção 13) | Business por dentro |
 
 ## Esperando o dono
-1. **Precificação tudo em um (proposta pronta, 18/11):** `docs/precificacao/PRECIFICACAO-TUDO-EM-UM.md`. Quatro planos (Começo R$ 97, Crescer R$ 297, Performance R$ 897, Sob medida a partir de R$ 2.500), zero taxa sobre as vendas e implantação em todo plano (R$ 497 grátis no anual, R$ 2.997, R$ 7.997, diagnóstico R$ 2.500). Falta o dono responder a seção 14. Brás e Cargas já saíram do Render.
+1. **Precificação tudo em um aprovada (D345):** falta o "pode começar" da rodada 1 do sistema (seção 13 de `docs/precificacao/PRECIFICACAO-TUDO-EM-UM.md`), para estar no ar em 01/12.
 2. **Neon:** limitar o processamento a no máximo 1 CU e acompanhar o consumo (D338).
 3. **Google e Bing:** criar a propriedade no Search Console e colar o código no Render (`GOOGLE_SITE_VERIFICATION`, `BING_SITE_VERIFICATION`) (D343).
 4. **Master:** criar o usuário da equipe pedido na conversa do editor de temas (Equipe do Master, sem Financeiro) e mandar o e-mail.

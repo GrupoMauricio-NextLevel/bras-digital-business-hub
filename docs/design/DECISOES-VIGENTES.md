@@ -1,7 +1,7 @@
 # Decisões que valem hoje (resumo)
 
 > **Leia isto no lugar do `DECISIONS.md` inteiro.** O `DECISIONS.md` é o histórico completo (343 decisões, mais de 570 mil caracteres) e só serve para consultar uma decisão pelo número. Aqui fica uma linha por regra **em vigor**, com o número para conferir o detalhe.
-> Atualize este arquivo sempre que uma decisão nova mudar ou substituir uma regra (a skill `/encerrar` cobra isso). Última revisão: 18/11/2026, até a D344.
+> Atualize este arquivo sempre que uma decisão nova mudar ou substituir uma regra (a skill `/encerrar` cobra isso). Última revisão: 18/11/2026, até a D345.
 
 ## Direção e foco
 - **Fase atual:** só a NextLevel Commerce e o Master. SuperDrop, Brás, Cargas, Hub Creators e China Hub estão em pausa; não quebrar o que existe, mas não travar por causa deles. (D216, D287)
@@ -11,14 +11,12 @@
 - **Academia fora de cena:** não falar em academia nem em NextLevel Club; o piloto e o portal de academia estão arquivados. (D340, D344)
 
 ## Produtos (as quatro portas)
-- **Loja virtual:** planos Start, Pro e Scale intactos (preço, funções e telas). Ninguém muda isso sem decisão nova do dono. (D311)
-- **Sites:** captação ligada aos anúncios. Sites Start tem preço próprio na tabela; Pro e Scale custam o mesmo que os planos da loja. (D336)
-- **Segundo produto com 50% de desconto** (tabela do Master), no lugar do adicional fixo do site. Quem já pagou o adicional mantém o preço. (D336; substitui o preço da D310/D311)
-- **NextLevel Business:** sistema avançado, vendido por proposta até o primeiro pagante (níveis de referência Essencial, Profissional e Avançado). O plano Scale traz o Essencial. (D324, D336)
+- **Planos (D345):** uma escada só, tudo em um: Começo R$ 97, Crescer R$ 297, Performance R$ 897 e Sob medida a partir de R$ 2.500 por mês; anual = 10 mensalidades; pessoa extra R$ 29; **zero taxa sobre as vendas**. Sem níveis dentro de cada persona. Detalhes: `docs/precificacao/PRECIFICACAO-TUDO-EM-UM.md`.
+- **Implantação em toda contratação (D345):** Ativação R$ 497 (grátis no anual do Começo), Crescer R$ 2.997, Performance R$ 7.997 e Diagnóstico sob medida R$ 2.500. Obrigatória do Crescer em diante. Liga-se ao contrato de projeto (D342).
+- **NextLevel Business e Sites** deixam de ter preço próprio: fazem parte dos planos (o Business completo a partir do Crescer). (D345)
 - **Um motor só:** o NextLevel Business é o painel de serviços personalizável (o antigo Painel da Agência, com o modelo "Agência de marketing" como um dos modelos). O "Meu negócio" de todo cliente fica com o funil simples (Contatos e orçamentos, quadro, Hoje e Maurício). Não se constrói projeto, contrato, cobrança ou portal de novo em outro lugar. (D344)
 - **Nome do painel:** o painel de todo cliente se chama "Meu negócio". "NextLevel Business" só para o produto avançado. (D324)
 - **Soluções Digitais:** serviços da agência NextLevel. Agências parceiras não compram o código; o degrau maior é a Licença dedicada. (D312)
-- **Preço (dono, 18/11):** nada de preço baseado em concorrentes; a direção é planos **tudo em um, no padrão Bitrix24**, ainda em proposta. Até a aprovação, valem os preços da tabela do Master. (D344)
 - **Portal do cliente** sem limite e sem cobrança por cliente; o preço é por empresa. (D336)
 
 ## Dinheiro e cobrança
@@ -42,6 +40,7 @@
 - Segurança: código a cada entrada em todos os painéis (D286); segredos só criptografados; um cliente nunca lê dados de outro.
 
 ## Substituídas (não seguir)
+- D311 (Start, Pro e Scale intactos), Sites Start, níveis do Business e 50% no segundo produto (D336), taxa sobre as vendas e virada de preço da Black (D229) → **D345**.
 - D304/D308 "Business é a base de todo cliente" → **D324** (Business é o produto avançado).
 - D310 adicional "Loja virtual" → **D311**; adicional fixo do site → **D336** (50% no segundo produto).
 - D305/D307 academia piloto, NB10 portal da academia → **D340/D344** (arquivados).

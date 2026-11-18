@@ -16,7 +16,7 @@ Sistema da **NextLevel Marketing Ltda** (CNPJ 51.392.006/0001-92; dono: Mauricio
 ## Direção (resumo; detalhes em `DECISOES-VIGENTES.md`)
 - **Fase atual (D216):** só a NextLevel Commerce e o Master. SuperDrop, Brás, Cargas, Hub Creators e China Hub em pausa: não trave mudança por causa deles, mas não quebre o que existe.
 - **Meta (D174, D336):** 10 empresas pagantes em qualquer porta. Até lá, 60% Commerce, 25% SuperDrop e 15% o resto; título de decisão leva a frente entre colchetes (`[E-commerce]`, `[SuperDrop]`, `[Brás]`, `[Cargas]`, `[Grupo]`); relatório do dia traz "Esforço do dia por frente". Na dúvida, vence o que aproxima o 10º pagante.
-- **Quatro portas, um painel (D324, D336, D344):** Loja virtual (Start, Pro e Scale intactos), Sites (captação), NextLevel Business (o painel de serviços personalizável, base do antigo Painel da Agência) e Soluções Digitais (serviços da agência). O painel de todo cliente se chama "Meu negócio".
+- **Quatro portas, um painel (D324, D336, D344, D345):** Loja virtual, Sites (captação), NextLevel Business (o painel de serviços personalizável, base do antigo Painel da Agência) e Soluções Digitais (serviços da agência). O painel de todo cliente se chama "Meu negócio". **Preço (D345):** quatro planos tudo em um (Começo, Crescer, Performance, Sob medida), zero taxa sobre as vendas e implantação em toda contratação.
 - **Domínios (D287, D315):** `nextlevelcommerce.com.br` (plataforma), `nextlevelgroup.com.br` (grupo e agência; Master em `master.`), agências em `painel.nextlevelcommerce.com.br`.
 
 ## Regra anti-duplicação

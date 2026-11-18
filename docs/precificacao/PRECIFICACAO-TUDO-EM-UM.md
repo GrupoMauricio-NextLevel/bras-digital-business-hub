@@ -1,6 +1,6 @@
 # Precificação tudo em um da NextLevel (proposta do zero)
 
-> **Situação:** proposta para o dono decidir, escrita em 18/11/2026. Nada disso está no sistema ainda.
+> **Situação:** **aprovada pelo dono em 18/11/2026** ("aceito suas recomendações", D345): valem as recomendações das seções 5 a 12 e as respostas recomendadas da seção 14. A mudança no sistema segue a seção 13.
 > **Ponto de partida, nas palavras do dono:** "não estou mais me preocupando com concorrência porque sinto que estamos fazendo algo único"; "vamos começar inteiramente do zero"; "uma coisa é a assinatura, outra coisa é a ativação, implantação e treinamento"; "considerar que não existem lojistas atuais".
 > **Substitui, se aprovada:** os planos Start, Pro e Scale (D311), os preços separados de Sites (D336) e do Business (D336), o desconto de 50% no segundo produto (D336) e a taxa sobre as vendas. Também encerra a Black Friday.
 > **Como ler:** as seções 1 a 3 são o raciocínio. As seções 4 a 8 trazem os planos, as implantações e os números. As seções 9 a 14 mostram como vender, o que muda no sistema e o que o dono precisa decidir.
@@ -537,3 +537,25 @@ Responda cada item com **sim**, **não** ou **muda para…**:
 ---
 
 **Próximo passo:** o dono responde a seção 14. Com as respostas, a decisão é registrada (com a frente `[E-commerce]`) e entra a rodada de sistema da seção 13.
+
+---
+
+## 16. Níveis de plano dentro de cada persona? (pergunta do dono, 18/11)
+
+**Recomendação: não.** Cada persona já **é** um degrau da mesma escada. Criar níveis dentro de cada uma (por exemplo, Começo 1, 2 e 3) daria 12 planos, e voltaríamos ao problema que esta proposta resolve: tabela difícil de entender e difícil de vender.
+
+**Por quê:**
+1. **Quem decide pelo preço precisa de uma escolha só.** A persona do Começo decide no celular em minutos; três opções dentro do Começo travam a decisão.
+2. **A diferença entre clientes da mesma persona é de tamanho, não de tipo.** E tamanho já tem a sua alavanca: **pessoas extras** (R$ 29), **pacotes de IA** (R$ 49 por 500 usos) e **serviços avulsos** (seção 7). O cliente ajusta o plano à operação sem mudar de plano.
+3. **A escada única faz o cliente subir.** Quando o Começo fica pequeno (mais de 2 pessoas, mais de 200 produtos, precisa de atacado ou departamentos), o próximo degrau é óbvio: Crescer. Com níveis dentro de cada persona, o cliente ficaria parado no "Começo 3" e não subiria.
+4. **Uma tabela só para todos os segmentos.** Loja, empresa de serviços e atacado usam os mesmos quatro planos; muda só o modelo ligado na implantação (seção 4, persona 5).
+5. **Quem vende** (equipe, parceiros, executivos) memoriza 97, 297 e 897 em um minuto.
+
+**Onde existe variação, e é de propósito:**
+| Onde | Como varia | Por quê |
+|---|---|---|
+| **Implantação** | um nível por plano, com avulsos por cima (lote de produtos, departamento extra, treinamento extra) | é aqui que o tamanho da empresa pesa de verdade (horas da equipe) |
+| **Pessoas e IA** | por unidade (R$ 29 por pessoa, R$ 49 por 500 usos) | acompanha o crescimento sem trocar de plano |
+| **Sob medida** | por proposta, com dois formatos: **Sob medida no motor** (a partir de R$ 2.500/mês) e **Licença dedicada** (D312, R$ 30 mil + cerca de R$ 3.900/mês) | cada projeto é diferente |
+
+**Quando rever:** se, depois de 6 meses, mais de 30% dos clientes de um plano estiverem pagando 5 ou mais pessoas extras, é sinal de que falta um degrau no meio (por exemplo, entre Crescer e Performance). Aí se cria **um** plano novo na escada, nunca subníveis.

@@ -1,5 +1,12 @@
 [
  {
+  "numero": 345,
+  "frente": "E-commerce",
+  "titulo": "Precificação tudo em um aprovada: quatro planos, zero taxa sobre as vendas e implantação em todo plano",
+  "data": "2026-11-18",
+  "resumo": "Dono (18/11/2026): \"aceito suas recomendações, vamos refazer tudo e aprimorar\". Proposta: docs/precificacao/PRECIFICACAO-TUDO-EM-UM.md (seções 1 a 16)."
+ },
+ {
   "numero": 344,
   "frente": "E-commerce",
   "titulo": "Um motor só: NextLevel Business é o painel de serviços personalizável; planejamento unificado e conversas com começo e fim",
@@ -271,12 +278,5 @@
   "titulo": "NextLevel Business, fase NB1: dois caminhos na entrada, menu do gerenciador do negócio e vitrine do caminho Site",
   "data": "2026-11-14",
   "resumo": "Pedido do dono: \"prossiga\" (NB1 do plano docs/prompts/nextlevel-business-coracao-do-negocio.md, depois da NB0, D305)."
- },
- {
-  "numero": 305,
-  "frente": "E-commerce",
-  "titulo": "NextLevel Business, fase NB0: linha de base, padrões aceitos e academia piloto confirmada",
-  "data": "2026-11-13",
-  "resumo": "Pedido do dono: \"pode seguir com a NB0\". Ele também já tem uma academia para o piloto do portal e vai detalhar o piloto em outra conversa."
  }
 ]

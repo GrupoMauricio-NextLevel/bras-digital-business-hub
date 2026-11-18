@@ -4534,3 +4534,16 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
   - `CLAUDE.md` enxuto: só regras em vigor; o histórico fica nos documentos.
 - **Preço (resposta do dono, 18/11):** "esquece esse racional de se basear nos concorrentes, tudo mudou e precisamos pensar em planos all in one igual ao Bitrix24". O mapa de preços de 14/11 (`claude/vigilant-bell-neurpc`) fica descartado. Próximo passo: proposta de planos tudo em um para o dono aprovar, dizendo o que muda na D311 (planos da loja intactos), nos lojistas atuais e na virada de 01/12.
 - **Next 16.4.6:** a 16.4.1 da branch de segurança também tinha falha conhecida e o build parava; subimos para a última correção da linha 16.4.
+
+## D345 — [E-commerce] Precificação tudo em um aprovada: quatro planos, zero taxa sobre as vendas e implantação em todo plano (2026-11-18)
+- **Dono (18/11/2026):** "aceito suas recomendações, vamos refazer tudo e aprimorar". Proposta: `docs/precificacao/PRECIFICACAO-TUDO-EM-UM.md` (seções 1 a 16).
+- **Planos (uma escada só, um sistema só):** Começo R$ 97/mês, Crescer R$ 297/mês, Performance R$ 897/mês e Sob medida a partir de R$ 2.500/mês. Anual = 10 mensalidades. Pessoas incluídas: 2, 5 e 15; pessoa extra a R$ 29/mês. Loja, site e gestão no mesmo plano.
+- **Zero taxa da NextLevel sobre as vendas** em todos os planos.
+- **Implantação em toda contratação:** Ativação R$ 497 (grátis no anual do Começo), Implantação Crescer R$ 2.997 (R$ 1.997 no anual; é a Loja Pronta Express), Implantação Performance R$ 7.997 (15% de desconto no anual) e Diagnóstico sob medida R$ 2.500 (abatido do projeto, a partir de R$ 15.000). Obrigatória do Crescer em diante; no Começo mensal, só o dono libera a exceção.
+- **Personas:** Começo (box do Brás, sacoleira), Crescer (já tem loja e precisa de estrutura), Performance (acima de R$ 100 mil/mês), Sob medida (grandes dores); empresas de serviços usam os mesmos planos (só muda o modelo do segmento, D340); agências ficam no programa de parceiros (D312). **Sem níveis dentro de cada persona** (seção 16): o tamanho varia por pessoas extras, pacotes de IA e avulsos.
+- **Comissão:** assinatura pela regra única de 20%, 24% e 28% (D260); implantação com 10% para quem indicou e até 60% para parceiro certificado que executar.
+- **Black Friday encerrada:** a tabela nova entra em 01/12/2026; campanha de lançamento, se houver, só na implantação. O agendamento da virada de preço (D229) é desligado ou apontado para a tabela nova.
+- **Clientes de Site Express:** Começo com a ativação contada como feita, ou oferta para o Crescer descontando o que já pagaram; contratos existentes seguem até a próxima cobrança, com aviso de 30 dias.
+- **Substitui:** os planos Start, Pro e Scale e a regra "planos intactos" (D311), o Sites Start e os níveis do Business (D336), o desconto de 50% no segundo produto (D336) e a taxa de plataforma sobre as vendas.
+- **Sistema:** em 2 a 3 rodadas, na ordem da seção 13 (tabela de preços, catálogo, implantação ligada ao contrato de projeto da D342, cadastro, limites por plano, páginas públicas, Black, base de conhecimento). Valores sempre na tabela do Master.
+
