@@ -4417,3 +4417,20 @@ Proposta, ainda sem decisão do dono: `docs/prompts/lojas-nivel-shopify-temas-ba
   - **opção B:** começar pelo portal da academia (NB10), quando `portal-academia-piloto.md` estiver preenchido.
 - **Código:** `src/lib/business/assistente-contato.ts`, `funilEmQuadro` em `src/lib/business/contatos.ts`, `sugestaoDoContatoAction`, `MauricioNoContato` e as visões em `src/app/merchant/contatos/page.tsx`.
 - **Teste:** `tests/business-funil-ia.test.ts` (etapas e soma, ordem do dia, próxima ação, regras, leitura da IA, sem IA usa regras, contato de outra loja não aparece).
+
+## D338 — [E-commerce] Captação (NB4): página de campanha em poucos cliques, links por lugar, QR e números de cada campanha (2026-11-18)
+- **Pedido do dono:** "enquanto eu não pago o Neon, vamos desenvolver o que for possível". Fase NB4 do plano `docs/prompts/nextlevel-business-coracao-do-negocio.md` (página de campanha da Meta "em poucos cliques"), sem a parte que exige configuração por loja.
+- **Assistente** (Site → **Captação**, `/merchant/captacao`), em três passos:
+  1. objetivo: pedir orçamento, agendar visita ou aula experimental, ou receber o contato da equipe;
+  2. título e frase da oferta;
+  3. até quatro motivos.
+  A página nasce pronta (topo com a oferta e botão que desce até o formulário, motivos, formulário de orçamento e contatos), fora do menu e fora da busca, e **é publicada sozinha**: outros rascunhos do site não são publicados junto (`publicarPaginas` com `somente`).
+- **Links prontos:** um por lugar (anúncio na Meta, anúncio no Google, bio e stories do Instagram, status do WhatsApp), com a origem e o nome da campanha no endereço, e o **QR** para cartaz, panfleto e balcão (para baixar).
+- **Números de cada campanha:** contatos, fechados e valor fechado, vindos de Contatos e orçamentos. Um contato conta para a campanha pela etiqueta no link ou pela página onde preencheu.
+- **Fica para depois** (configuração por loja): Pixel da Meta e retorno de conversões por loja, link curto `/l/` por loja e sugestão de texto pela IA.
+- **Acessibilidade da home (achados antigos, resolvidos):**
+  - parágrafo com `aria-label` na faixa de taxa zero virou texto para leitor de tela;
+  - rótulos verdes da Black Friday sobre fundo claro ganharam verde escuro (`black.css`);
+  - o último lugar de "Vivência de rua" e os números de índice ficaram com contraste suficiente.
+- **Código:** `src/lib/business/campanhas.ts`, `criarCampanhaAction`, `src/app/merchant/captacao/*`, item "Captação" no grupo Site do menu.
+- **Teste:** `tests/business-captacao.test.ts` (montagem por objetivo, links, contato da campanha, criação publicando só a campanha e números com fechamento); `nav-business` atualizado.

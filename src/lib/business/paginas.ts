@@ -142,10 +142,10 @@ export async function salvarRascunhoDaPagina(db: Database, actor: Actor, storeId
 }
 
 /** Publica as páginas com rascunho (junto com "Publicar" do editor). Guarda cada versão no histórico. */
-export async function publicarPaginas(db: Database, actor: Actor, storeId: string, label = "Publicação", opts: { expected?: Record<string, number | undefined> } = {}) {
+export async function publicarPaginas(db: Database, actor: Actor, storeId: string, label = "Publicação", opts: { expected?: Record<string, number | undefined>; /** Só estas páginas (ex.: a página de campanha recém-criada, D338); sem ela, todas com rascunho. */ somente?: string[] } = {}) {
   const store = await editor(db, actor, storeId);
   const ctx = await editingContextFor(db, store);
-  const rows = (await db.select().from(paginasSite).where(eq(paginasSite.storeId, storeId))).filter((r) => r.draft);
+  const rows = (await db.select().from(paginasSite).where(eq(paginasSite.storeId, storeId))).filter((r) => r.draft && (!opts.somente || opts.somente.includes(r.id)));
   for (const r of rows) { const e = opts.expected?.[CHAVE_PAGINA(r.id)]; if (e !== undefined) assertRevision(r.revision, e); }
   const publicadas: string[] = [];
   for (const r of rows) {

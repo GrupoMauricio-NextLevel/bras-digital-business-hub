@@ -16,10 +16,10 @@ describe("menu do lojista com o NextLevel Business (NB1, D306)", () => {
     expect(grupos(itens)).toEqual([B, "Site", "Loja virtual", "Ajustes"]);
     expect(itens.filter((i) => i.group === "Site")).toEqual([expect.objectContaining({ label: "Ligar site", locked: true, href: "/merchant/negocio/plano" })]);
   });
-  it("site: grupo Site com Páginas, Serviços, Aparência e Domínio, e um cartão só para ligar a loja", () => {
+  it("site: grupo Site com Páginas, Serviços, Captação, Aparência e Domínio, e um cartão só para ligar a loja", () => {
     const itens = nav("painel", "contatos", "site");
     expect(grupos(itens)).toEqual([B, "Site", "Loja virtual", "Ajustes"]);
-    expect(itens.filter((i) => i.group === "Site").map((i) => i.label)).toEqual(["Páginas", "Serviços", "Aparência", "Domínio"]);
+    expect(itens.filter((i) => i.group === "Site").map((i) => i.label)).toEqual(["Páginas", "Serviços", "Captação", "Aparência", "Domínio"]);
     const loja = itens.filter((i) => i.group === "Loja virtual");
     expect(loja).toHaveLength(1);
     expect(loja[0]).toMatchObject({ label: "Ligar loja virtual", locked: true });

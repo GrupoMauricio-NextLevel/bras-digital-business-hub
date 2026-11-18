@@ -54,6 +54,8 @@
 .bk-on .ec-cabecalho-titulo em { background: linear-gradient(90deg, #22e08a, #22d3ee); -webkit-background-clip: text; background-clip: text; }
 .bk-on .ecc-planos .cm-plan--on, .bk-on .cm-plan--on { box-shadow: 0 0 0 2px #22e08a, 0 30px 70px -30px rgb(34 224 138 / .7); }
 .bk-on .im-eyebrow { color: #22c27a; }
+/* Sobre fundo claro o verde da Black não passa no contraste AA (2,3:1, achado do axe na D338): verde escuro da mesma família. */
+.bk-on .im-eyebrow--claro { color: #0b7a46; }
 @media (max-width: 640px) { .bk-contagem--lg .bk-bloco b { font-size: 1.5rem; } }
 
 /* D233: o topo da home vira o topo da Black */
