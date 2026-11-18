@@ -140,7 +140,7 @@ export async function atualizarCliente(db: Database, actor: Actor, id: string, r
   await db.update(agenciaClientes).set({ ...patch, updatedAt: new Date().toISOString() }).where(eq(agenciaClientes.id, c.id));
   const antes = Object.fromEntries(Object.keys(patch).map((k) => [k, (c as Record<string, unknown>)[k] ?? null]));
   await recordAudit(db, actor, { action: "AGENCIA_CLIENTE_ATUALIZADO", entityType: "agencia_cliente", entityId: c.id, before: antes, after: patch as Record<string, unknown> });
-  // Contrato enviado e ainda não aceito acompanha os dados novos; o aceito nunca muda (D335).
+  // Contrato enviado e ainda não aceito acompanha os dados novos; o aceito nunca muda (D342).
   const { regerarContratosPendentes } = await import("./contratos");
   await regerarContratosPendentes(db, membro.agenciaId, c.id);
 }

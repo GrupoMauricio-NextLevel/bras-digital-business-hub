@@ -18,7 +18,7 @@ export const metadata = { title: "Contratos" };
 
 const dm = (iso: string) => iso.slice(0, 10).split("-").reverse().join("/");
 
-/** Contratos da agência (D335): mensalidades e projetos, com o que já foi pago, o que espera aceite e os trazidos do Master. */
+/** Contratos da agência (D342): mensalidades e projetos, com o que já foi pago, o que espera aceite e os trazidos do Master. */
 export default async function ContratosDaAgencia({ searchParams }: { searchParams: Promise<{ filtro?: string; q?: string }> }) {
   const session = await requireRole("AGENCY");
   const db = await getDb();

@@ -3311,7 +3311,7 @@ export const contratos = pgTable("contratos", {
   /** Impressão digital do texto que o cliente viu ao aceitar (tem de ser igual a `hash`). */
   aceitoHash: text("aceito_hash"),
   canceladoEm: ts("cancelado_em"),
-  /** Contrato de serviço levado ao Painel da Agência interna (D335): o original fica, marcado e fora das pendências. */
+  /** Contrato de serviço levado ao Painel da Agência interna (D342): o original fica, marcado e fora das pendências. */
   transferidoEm: ts("transferido_em"),
   transferidoPara: text("transferido_para"),
   createdAt: createdAt(),
@@ -3395,7 +3395,7 @@ export const agencias = pgTable("agencias", {
   /** Modo demonstração (D326): agência-sandbox de outra agência real (nunca mistura dados) e a última "rodada" de movimento. */
   demoDeId: text("demo_de_id"),
   demoMovidoEm: ts("demo_movido_em"),
-  /** Agência interna (D335): a própria NextLevel Marketing Ltda. Contratos de serviço do Master podem ser trazidos para ela. */
+  /** Agência interna (D342): a própria NextLevel Marketing Ltda. Contratos de serviço do Master podem ser trazidos para ela. */
   interna: boolean("interna").notNull().default(false),
   /** Metas do mês da agência (D325): entregas publicadas, clientes novos e receita, por competência AAAA-MM. */
   metas: jsonb("metas").$type<Record<string, { entregas?: number; novosClientes?: number; receitaCents?: number }>>().notNull().default({}),
@@ -3605,7 +3605,7 @@ export const agenciaFaturas = pgTable("agencia_faturas", {
   pagoEm: ts("pago_em"),
   pagoComo: text("pago_como", { enum: ["SISTEMA", "MANUAL"] }),
   observacao: text("observacao"),
-  /** Parcela de um contrato de projeto (D335): sinal = 1, restante = 2... Sempre avulsa. */
+  /** Parcela de um contrato de projeto (D342): sinal = 1, restante = 2... Sempre avulsa. */
   contratoId: text("contrato_id"),
   parcela: integer("parcela"),
   /** Pix, transferência, dinheiro, cartão, Mercado Pago ou outro (baixa manual). */
@@ -3705,7 +3705,7 @@ export const agenciaMensagens = pgTable("agencia_mensagens", {
 }, (t) => [index("agencia_mensagens_solicitacao_idx").on(t.solicitacaoId, t.createdAt)]);
 
 export const AGENCIA_CONTRATO_STATUS = ["ENVIADO", "ACEITO", "CANCELADO", "ENCERRADO"] as const;
-/** Modelos do contrato da agência (D335): a mensalidade de marketing (D321) e os projetos com entrega. */
+/** Modelos do contrato da agência (D342): a mensalidade de marketing (D321) e os projetos com entrega. */
 export const AGENCIA_CONTRATO_MODELOS = ["MENSAL_MARKETING", "LOJA_PRONTA_EXPRESS", "MIGRACAO_PLATAFORMA"] as const;
 export type AgenciaContratoModelo = (typeof AGENCIA_CONTRATO_MODELOS)[number];
 export const agenciaContratos = pgTable("agencia_contratos", {
@@ -3726,7 +3726,7 @@ export const agenciaContratos = pgTable("agencia_contratos", {
   aceitoIp: text("aceito_ip"),
   aceitoAparelho: text("aceito_aparelho"),
   canceladoEm: ts("cancelado_em"),
-  /** Modelo e versão do texto (D335). Contrato antigo: mensal de marketing, versão 1. */
+  /** Modelo e versão do texto (D342). Contrato antigo: mensal de marketing, versão 1. */
   modelo: text("modelo", { enum: AGENCIA_CONTRATO_MODELOS }).notNull().default("MENSAL_MARKETING"),
   versaoModelo: integer("versao_modelo").notNull().default(1),
   /** AGENCIA: feito no painel. MASTER: trazido do Master com o aceite original preservado (texto, impressão digital e prova). */

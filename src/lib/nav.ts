@@ -204,7 +204,7 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
       { label: "Placar e metas", href: "/agencia/placar", icon: "Ticket", group: "Vendas" },
       { label: "Clientes", href: "/agencia/clientes", icon: "UsersRound", group: "Clientes", bottom: true },
       { label: "Produção", href: "/agencia/producao", icon: "LayoutGrid", group: "Clientes", bottom: true },
-      // D335: contratos de mensalidade e de projeto, com o que já foi pago (só administrador e financeiro).
+      // D342: contratos de mensalidade e de projeto, com o que já foi pago (só administrador e financeiro).
       { label: "Contratos", href: "/agencia/contratos", icon: "ReceiptText", group: "Clientes" },
       { label: "Financeiro", href: "/agencia/financeiro", icon: "Wallet", group: "Dinheiro" },
       { label: "Crescimento", href: "/agencia/crescimento", icon: "BarChart3", group: "Dinheiro" },

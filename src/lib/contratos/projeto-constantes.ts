@@ -1,4 +1,4 @@
-/** Produtos de projeto e meios de pagamento (D335). Sem dependência de servidor: usado também nos formulários. */
+/** Produtos de projeto e meios de pagamento (D342). Sem dependência de servidor: usado também nos formulários. */
 export const PRODUTOS_PROJETO = {
   LOJA_PRONTA_EXPRESS: { nome: "Loja Virtual Pronta Express", valorCents: 160_000, produtos: 40, banners: 8, prazoDias: 10 },
   MIGRACAO_PLATAFORMA: { nome: "Migração Nuvemshop → NextLevel", valorCents: 50_000, produtos: 40, banners: 8, prazoDias: 7 },

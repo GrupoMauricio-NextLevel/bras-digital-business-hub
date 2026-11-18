@@ -16,12 +16,12 @@ import { pendenciasDoContrato, secoesDoContrato, type DadosContratoAgencia } fro
 import { clienteDoPortal, urlDoPortal } from "./portal";
 
 /**
- * Contratos da agência com os clientes dela (D321, D335), sobre o motor dos contratos do Master (D276): a agência gera
+ * Contratos da agência com os clientes dela (D321, D342), sobre o motor dos contratos do Master (D276): a agência gera
  * pelo modelo (com os dados da ficha), envia e o cliente aceita no portal com o texto que viu (impressão digital igual).
  * O aceite guarda a prova, marca o onboarding e manda o PDF assinado por e-mail aos dois lados. Só administrador e
  * financeiro.
  *
- * Modelos (D335): a mensalidade de marketing (D321) e os PROJETOS com entrega ("Loja Virtual Pronta Express" e
+ * Modelos (D342): a mensalidade de marketing (D321) e os PROJETOS com entrega ("Loja Virtual Pronta Express" e
  * "Migração Nuvemshop → NextLevel"), com sinal e restante (ou à vista), cortesias e o que já foi pago. Cada parcela do
  * projeto vira uma cobrança avulsa ligada ao contrato. Contrato trazido do Master (origem MASTER) mantém o texto, a
  * impressão digital e a prova do aceite originais.
@@ -67,7 +67,7 @@ export const opcoesSchema = z.object({
 });
 
 const meioSchema = z.enum(["PIX", "TRANSFERENCIA", "DINHEIRO", "CARTAO", "MERCADO_PAGO", "OUTRO"]);
-/** Opções do contrato de projeto (D335). */
+/** Opções do contrato de projeto (D342). */
 export const projetoSchema = z.object({
   modelo: z.enum(["LOJA_PRONTA_EXPRESS", "MIGRACAO_PLATAFORMA"]),
   origem: z.string().trim().max(40).optional().nullable(),
@@ -211,7 +211,7 @@ export async function encerrarContratoDaAgencia(db: Database, actor: Actor, id: 
 }
 
 /**
- * Os dados da ficha mudaram (D335, "editar quando eu quiser"): contrato ENVIADO e ainda não aceito é refeito com os dados
+ * Os dados da ficha mudaram (D342, "editar quando eu quiser"): contrato ENVIADO e ainda não aceito é refeito com os dados
  * novos (o cliente lê o texto atualizado). Contrato aceito nunca muda: para isso existe o aditivo.
  */
 export async function regerarContratosPendentes(db: Database, agenciaId: string, clienteId: string) {
@@ -243,7 +243,7 @@ export async function contratosDoClienteNaAgencia(db: Database, actor: Actor, cl
 }
 
 // ---------------------------------------------------------------------------
-// Tela Contratos (D335): lista com o que já foi pago, detalhe, parcelas e e-mail
+// Tela Contratos (D342): lista com o que já foi pago, detalhe, parcelas e e-mail
 // ---------------------------------------------------------------------------
 export const FILTROS_CONTRATO = { todos: "Todos", aguardando: "Aguardando aceite", aceitos: "Aceitos", "a-receber": "Com parcela a receber", master: "Trazidos do Master", encerrados: "Encerrados e cancelados" } as const;
 export type FiltroContrato = keyof typeof FILTROS_CONTRATO;
