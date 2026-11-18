@@ -64,8 +64,8 @@ export function CommerceHome({ firstName, greeting, store, o, readiness, attenti
   const noPrev = o.salesDelta === undefined && o.countDelta === undefined;
   // Ícones 3D do dono (D329) nas ações rápidas; sem imagem, fica o ícone de traço.
   const QUICK: { href: string; label: string; icon: LucideIcon; img?: string }[] = [
-    { href: "/merchant/catalogo/new", label: "Novo produto", icon: Package },
-    { href: "/merchant/orders/new", label: "Novo pedido", icon: Plus, img: "/paineis/v1/pv-icone-novo-pedido.webp" },
+    { href: "/merchant/catalogo/new", label: "Novo produto", icon: Package, img: "/paineis/v1/pv-icone-novo-produto.webp" },
+    { href: "/merchant/orders/new", label: "Novo pedido", icon: Plus, img: "/paineis/v1/pv-icone-novo-pedido-sacola.webp" },
     { href: "/theme-editor", label: "Editar aparência", icon: Palette, img: "/paineis/v1/pv-icone-aparencia.webp" },
     { href: "/merchant/finance", label: "Financeiro", icon: Wallet, img: "/paineis/v1/pv-icone-financeiro.webp" },
   ];
