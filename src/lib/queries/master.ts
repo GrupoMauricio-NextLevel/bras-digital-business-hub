@@ -80,7 +80,7 @@ export async function listStoresWithPlan(filter: { q?: string; status?: string; 
 
 export async function listAllProducts() {
   const db = (await getDb());
-  return db.select({ product: products, supplierName: suppliers.name }).from(products).innerJoin(suppliers, eq(suppliers.id, products.supplierId)).orderBy(products.name);
+  return db.select({ product: products, supplierName: suppliers.name }).from(products).innerJoin(suppliers, eq(suppliers.id, products.supplierId)).where(ne(products.status, "DELETED")).orderBy(products.name);
 }
 
 export async function listThemes() {

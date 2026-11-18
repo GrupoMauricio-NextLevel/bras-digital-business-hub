@@ -4,7 +4,7 @@ import type { LucideIcon } from "lucide-react";
 import { ArrowDownRight, ArrowUpRight, Minus } from "lucide-react";
 import type { FamiliaVida } from "@/components/vida/cores";
 
-/** Ícones 3D das famílias (imagens do dono, D329), em `public/paineis/v1/`. Sem arquivo, fica o ícone de traço. */
+/** Ícones 3D das famílias (imagens do dono, D332), em `public/paineis/v1/`. Sem arquivo, fica o ícone de traço. */
 const ICONE_3D: Partial<Record<FamiliaVida, string>> = {
   dinheiro: "/paineis/v1/pv-icone-dinheiro.webp", pedidos: "/paineis/v1/pv-icone-pedidos.webp", clientes: "/paineis/v1/pv-icone-clientes.webp",
   visitas: "/paineis/v1/pv-icone-visitas.webp", crescimento: "/paineis/v1/pv-icone-crescimento.webp", festa: "/paineis/v1/pv-icone-festa.webp",
@@ -27,7 +27,7 @@ export function Variacao({ valor, base }: { valor: number | null | undefined; ba
 }
 
 /**
- * Cartão de número vivo (D328): família de cor por assunto, valor grande, variação e mini gráfico.
+ * Cartão de número vivo (D331): família de cor por assunto, valor grande, variação e mini gráfico.
  * `titulo` vai no aria-label quando o valor é compacto ("R$ 48,8 mil" → valor completo).
  */
 export function NumeroVivo({ familia, icone: Icone, rotulo, valor, valorCompleto, variacao, base, nota, serie = [], href, i = 0 }: {

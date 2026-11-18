@@ -50,7 +50,7 @@ export function CommerceHome({ firstName, greeting, store, o, readiness, attenti
   pulso?: React.ReactNode;
   /** NextLevel Business (NB1, D306): nome do gerenciador e se o negócio é site (sem vitrine de loja). Ausente = como antes. */
   negocio?: { nome: string; site: boolean };
-  /** Painéis com vida (D328): período do gráfico (7 ou 30 dias), visitas dos últimos 30 dias e o que vai ao pé da tela. */
+  /** Painéis com vida (D331): período do gráfico (7 ou 30 dias), visitas dos últimos 30 dias e o que vai ao pé da tela. */
   periodo?: Periodo; visitas30?: number | null; rodape?: React.ReactNode;
 }) {
   const ticket = o.last30Count > 0 ? Math.round(o.sales / o.last30Count) : null;
@@ -62,7 +62,7 @@ export function CommerceHome({ firstName, greeting, store, o, readiness, attenti
   const reqTotal = readiness ? readiness.items.length : 0;
   const stepsDone = o.onboarding.steps.filter((s) => s.done).length;
   const noPrev = o.salesDelta === undefined && o.countDelta === undefined;
-  // Ícones 3D do dono (D329) nas ações rápidas; sem imagem, fica o ícone de traço.
+  // Ícones 3D do dono (D332) nas ações rápidas; sem imagem, fica o ícone de traço.
   const QUICK: { href: string; label: string; icon: LucideIcon; img?: string }[] = [
     { href: "/merchant/catalogo/new", label: "Novo produto", icon: Package, img: "/paineis/v1/pv-icone-novo-produto.webp" },
     { href: "/merchant/orders/new", label: "Novo pedido", icon: Plus, img: "/paineis/v1/pv-icone-novo-pedido-sacola.webp" },
@@ -95,7 +95,7 @@ export function CommerceHome({ firstName, greeting, store, o, readiness, attenti
     <Link href="/merchant/orders/new" className={buttonVariants({ size: "lg" }) + " mt-5"}><Plus />Novo pedido</Link>
   </section>;
 
-  // Painéis com vida (D328): números do dia e do mês na primeira dobra, com cor por assunto e gráfico com a conclusão.
+  // Painéis com vida (D331): números do dia e do mês na primeira dobra, com cor por assunto e gráfico com a conclusão.
   const hoje = comparaHoje(o.daily);
   const serie = serieDoPeriodo(o.daily, o.prevDaily, periodo);
   const conv = visitas30 === null ? null : conversaoConfiavel(o.last30Count, visitas30);
@@ -131,9 +131,9 @@ export function CommerceHome({ firstName, greeting, store, o, readiness, attenti
   </section> : <section className="ds-card ds-enter p-5 sm:p-6" style={stagger(6)}><h2 className="text-base font-semibold">Fila do dia</h2><p className="mt-3 text-sm text-muted-foreground">Tudo em dia. Nenhuma pendência pedindo sua atenção agora.</p></section>;
 
   return <div className="mx-auto max-w-[1240px] space-y-5 sm:space-y-6">
-    {/* Abertura compacta (D328): saudação à esquerda, o número de hoje em destaque à direita. */}
+    {/* Abertura compacta (D331): saudação à esquerda, o número de hoje em destaque à direita. */}
     <section className="ds-hero ds-enter !py-5 px-5 sm:!py-6 sm:px-8">
-      {/* Fundo da abertura (D328, imagem do lote A): fitas de luz que somam ao vidro roxo (mistura "screen"). */}
+      {/* Fundo da abertura (D331, imagem do lote A): fitas de luz que somam ao vidro roxo (mistura "screen"). */}
       <span className="vida-abertura-img" aria-hidden><picture><source srcSet="/paineis/v1/pv-abertura-loja-escuro.avif" type="image/avif" /><img src="/paineis/v1/pv-abertura-loja-escuro.webp" alt="" width={1584} height={672} decoding="async" fetchPriority="high" /></picture></span>
       <div className="relative flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
         <div className="min-w-0">

@@ -35,7 +35,7 @@ export async function getMerchantOverview(store: Store) {
   const prevMargin = prev30.reduce((s, o) => s + (netSaleCents(o) - o.costTotalCents), 0);
   const pct = (cur: number, prev: number) => (prev > 0 ? ((cur - prev) / prev) * 100 : undefined);
   const daily = a.days.map((d) => ({ date: d.date, cents: d.salesCents }));
-  // Painéis com vida (D328): os 30 dias anteriores, para a linha tracejada do gráfico (mesmo contrato de venda).
+  // Painéis com vida (D331): os 30 dias anteriores, para a linha tracejada do gráfico (mesmo contrato de venda).
   const prevDaily = computeStoreAnalytics(all, [], now, 60).days.slice(0, 30).map((d) => ({ date: d.date, cents: d.salesCents }));
   const margin = a.marginCents;
   const pendingCentral = valid.filter((o) => o.customerPaymentStatus === "PAID" && o.centralPaymentStatus !== "PAID");

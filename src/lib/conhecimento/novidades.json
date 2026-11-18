@@ -1,17 +1,38 @@
 [
  {
-  "numero": 329,
+  "numero": 332,
   "frente": "E-commerce",
   "titulo": "Painéis com vida, rodada relâmpago: início do lojista com números em destaque, cores por assunto e gráfico de vendas",
   "data": "2026-11-17",
-  "resumo": "Pedido do dono: \"Pode seguir com as recomendações e faça a rodada relâmpago\" (antes da Black Friday). Com isso, as recomendações da seção A6 do prompt mestre (D328) passam a valer como padrão: canais só os reais, um convite de plano por…"
+  "resumo": "Pedido do dono: \"Pode seguir com as recomendações e faça a rodada relâmpago\" (antes da Black Friday). Com isso, as recomendações da seção A6 do prompt mestre (D331) passam a valer como padrão: canais só os reais, um convite de plano por…"
  },
  {
-  "numero": 328,
+  "numero": 331,
   "frente": "E-commerce",
   "titulo": "Painéis com vida: direção visual de todos os painéis e prompt mestre PV0 a PV10",
   "data": "2026-11-17",
   "resumo": "Pedido do dono (17/11/2026): vida nos painéis (cores, gráficos, números em destaque, imagem de fundo em blocos certos, efeitos e movimento) em todos os níveis, do Master ao cliente final, para aumentar a percepção de valor."
+ },
+ {
+  "numero": 330,
+  "frente": "E-commerce",
+  "titulo": "O carregamento da troca de página (logo girando) nunca mais fica preso na tela",
+  "data": "2026-11-18",
+  "resumo": "Pedido do dono (17 e 18/11): \"às vezes está ficando travado aqui em diversas páginas e não é problema com internet\"; \"continua travando, tanto em páginas públicas quanto em painéis internos; quero a resolução definitiva\" (prints da Caixa…"
+ },
+ {
+  "numero": 329,
+  "frente": "E-commerce",
+  "titulo": "Editor de temas no modo suporte e liberação de temas pagos pela equipe (cortesia ou pagamento por fora)",
+  "data": "2026-11-17",
+  "resumo": "Pedido do dono (print do editor agindo em nome da loja Vestiário das Lendas): \"o editor de aparência não permite editar, ele abre o painel\"; \"quero poder pelo Master instalar sem custo ou marcando no caixa o recebimento do pagamento manu…"
+ },
+ {
+  "numero": 328,
+  "frente": "E-commerce",
+  "titulo": "Cadastro de produto da loja: editar tudo, preço e status iguais na loja, grade de calçado e excluir",
+  "data": "2026-11-17",
+  "resumo": "Pedido do dono (print do celular agindo como cliente e relatos): \"não dá pra excluir uma foto no modo PC\", \"não dá pra editar a grade de tamanho de sapatos\", \"não dá pra excluir produtos, somente arquivar\", \"a edição está muito limitada\"…"
  },
  {
   "numero": 327,
@@ -257,26 +278,5 @@
   "titulo": "Caixa de e-mail da Hostinger: apelidos, respostas e contratos no domínio novo",
   "data": "2026-11-13",
   "resumo": "Plano do dono: e-mail da Hostinger (teste de 30 dias) com a caixa mauricio@nextlevelcommerce.com.br. Limites: 5 GB, 1.000 envios por dia, 5 apelidos e 5 encaminhamentos. O conector Hostinger Mail está ligado no Claude."
- },
- {
-  "numero": 288,
-  "frente": "E-commerce",
-  "titulo": "O nome da marca passa a ser \"NextLevel Commerce\"",
-  "data": "2026-11-13",
-  "resumo": "Decisão do dono: parar de usar \"NextLevel E-commerce\" e usar \"NextLevel Commerce\" em todo o sistema. O nome casa com o domínio nextlevelcommerce.com.br (D287)."
- },
- {
-  "numero": 287,
-  "frente": "Grupo",
-  "titulo": "Duas frentes e domínio novo no ar: nextlevelcommerce.com.br e nextlevelgroup.com.br",
-  "data": "2026-11-13",
-  "resumo": "Decisão do dono: por enquanto só duas frentes concretas."
- },
- {
-  "numero": 286,
-  "frente": "Grupo",
-  "titulo": "Código de segurança a cada entrada em todos os painéis",
-  "data": "2026-11-13",
-  "resumo": "Pedido do dono: um código de segurança em cada acesso a todos os painéis internos. Modelo de referência: o código do aplicativo autenticador ou, para quem não tem, por e-mail."
  }
 ]

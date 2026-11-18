@@ -189,7 +189,7 @@ const decls = (c: ThemeColors) => Object.entries(c).map(([k, v]) => `--ds-${came
 export const DATAVIZ_SERIES = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300"] as const;
 /** Degradê do botão do Agente (padrão Hostinger, D210): igual em todos os temas, lido como `--agente-*`. */
 export const AGENTE_DEGRADE = { fundo: "#0c0718", rosa: "#ff3fd1", lilas: "#b44cff", violeta: "#6a5cff", azul: "#3d8bff", coral: "#ff5a5a" } as const;
-/** Famílias de cor dos painéis com vida (D328): uma cor por assunto, claro e escuro, lidas como `--vida-*`. */
+/** Famílias de cor dos painéis com vida (D331): uma cor por assunto, claro e escuro, lidas como `--vida-*`. */
 export const CORES_VIDA = {
   dinheiro: { claro: "#1D5FD6", escuro: "#4D9BFF" },
   pedidos: { claro: "#0E7490", escuro: "#22D3EE" },

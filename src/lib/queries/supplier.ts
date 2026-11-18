@@ -52,7 +52,7 @@ export async function getSupplierProducts(owner: OwnerRef, filter: { q?: string;
 export async function getSupplierProduct(owner: OwnerRef, productId: string) {
   const db = (await getDb());
   const own = toOwner(owner);
-  const product = await db.query.products.findFirst({ where: and(eq(products.id, productId), ownedBy(products, own)) });
+  const product = await db.query.products.findFirst({ where: and(eq(products.id, productId), ownedBy(products, own), ne(products.status, "DELETED")) });
   if (!product) return null;
   const variants = await db.select({ variant: productVariants, inv: inventory }).from(productVariants).leftJoin(inventory, eq(inventory.variantId, productVariants.id)).where(eq(productVariants.productId, productId)).orderBy(productVariants.position);
   const packs = await db.select().from(productPacks).where(eq(productPacks.productId, productId));

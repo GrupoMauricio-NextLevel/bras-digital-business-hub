@@ -1,6 +1,6 @@
 # Imagens dos painéis com vida (pedido pronto para o gerador de imagens)
 
-> **Para que serve:** dar imagem com função aos painéis (abertura de cada painel, convite de próximo nível, "O que a NextLevel fez por você", calendário comercial, conquistas e estados vazios), como pede o prompt mestre `docs/prompts/paineis-com-vida-prompt-mestre.md` (seção B9, decisão D328).
+> **Para que serve:** dar imagem com função aos painéis (abertura de cada painel, convite de próximo nível, "O que a NextLevel fez por você", calendário comercial, conquistas e estados vazios), como pede o prompt mestre `docs/prompts/paineis-com-vida-prompt-mestre.md` (seção B9, decisão D331).
 > **Não precisa esperar as imagens:** os painéis funcionam com fundos feitos em código (degradê e grade). Quando um arquivo com o nome certo entra em `public/paineis/v1/`, a imagem aparece sozinha.
 > **Como usar:** abra um chat novo no GPT com geração de imagens (ou outra plataforma), cole **todo o bloco da seção 3** e diga "Comece pela PRIORIDADE 1". Salve cada imagem com o **nome exato**. Junte num ZIP por lote e me mande: eu converto, coloco na pasta, atualizo o manifesto e confiro nas telas.
 > **O que nunca vem do gerador:** fotos de produto (vêm da loja do cliente), fotos da equipe (usamos as fotos reais, `equipe-nextlevel-fotos-vida-marcas.md`) e o mapa do Brasil (é desenhado em código, com os dados).

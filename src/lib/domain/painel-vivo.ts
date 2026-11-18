@@ -1,5 +1,5 @@
 /**
- * Painéis com vida (D328, rodada relâmpago): regras puras dos números do início do lojista.
+ * Painéis com vida (D331, rodada relâmpago): regras puras dos números do início do lojista.
  * Recebem as séries diárias já calculadas pelo contrato único de venda (`computeStoreAnalytics`), então o número
  * daqui é sempre o mesmo da Análise. Nada de banco aqui; tudo testado em `tests/painel-vivo.test.ts`.
  */
@@ -68,7 +68,7 @@ export function miniSerie(dias: Dia[], n = 14): number[] {
   return ult.some((v) => v > 0) ? ult : [];
 }
 
-/** Conversão só com visitas suficientes (D328: 100 ou mais no período); abaixo disso, nula. */
+/** Conversão só com visitas suficientes (D331: 100 ou mais no período); abaixo disso, nula. */
 export function conversaoConfiavel(pedidosPagos: number, visitas: number, minimo = 100): number | null {
   if (visitas < minimo) return null;
   return Math.round((pedidosPagos / visitas) * 1000) / 10;

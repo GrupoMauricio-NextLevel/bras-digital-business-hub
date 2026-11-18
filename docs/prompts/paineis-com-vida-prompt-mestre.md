@@ -4,7 +4,7 @@
 >
 > - **Referência do dono:** `docs/melhorias/prints/2026-11-17-referencia-painel-com-vida.jpg` (painel escuro "NextLevel Commerce OS"; é uma imagem conceitual, não uma tela nossa).
 > - **Ponto de partida (capturas de hoje, demonstração local):** `docs/design/capturas/paineis-com-vida/` (diagnóstico no Apêndice 3).
-> - **Decisão:** D328 (a direção fica registrada; as fases dependem das respostas da seção A6).
+> - **Decisão:** D331 (a direção fica registrada; as fases dependem das respostas da seção A6).
 > - **Imagens:** o pedido pronto para o gerador de imagens está em `docs/prompts/imagens-paineis-com-vida-gpt.md`.
 > - **Como usar:** peça "desenvolver o prompt paineis-com-vida, fase PV1" (skill `desenvolver-prompt`) ou cole a **Parte B** numa sessão nova. Uma fase por vez, com print ao dono no fim de cada uma.
 > - **Relação com a reorganização dos menus** (`reorganizacao-paineis-por-persona.md`, D327): aquela proposta decide **onde** cada coisa fica (gavetas); esta decide **como** cada tela ganha vida. Quando as duas tocarem a mesma tela, entram juntas, numa publicação só.
@@ -171,7 +171,7 @@ Você é, ao mesmo tempo, engenheiro de produto, designer de interface e engenhe
 1. `CLAUDE.md` e `AGENTS.md`: pilha, comandos, regras, custo de montagem no Render, testes enxutos.
 2. **Este Next não é o que você conhece.** Leia em `node_modules/next/dist/docs/01-app/`: `02-guides/view-transitions.md` (morfose entre telas), `02-guides/streaming.md` (primeira dobra antes do resto), `02-guides/caching-without-cache-components.md` (o projeto **não** liga `cacheComponents`), `03-api-reference/04-functions/image-response.md` (cartões de conquista), `03-api-reference/04-functions/after.md`, `02-guides/progressive-web-apps.md` e `01-getting-started/12-images.md`.
 3. A Constituição (`docs/constituicao/00-CONSTITUICAO-ECOMMERCE.md`) nos artigos de dados, permissões e temas; `docs/constituicao/README.md` para os documentos de apoio.
-4. Decisões: D42 (direção "mesa do atacadista"), D155 (vidro e movimento), D193 ("Subida"), D200 ("Agora" do Master), D205 e D207 (aviso sonoro), D209 e D210 (topo e botão Agente), D222 a D225 (visual de tecnologia e abertura em vidro), D232 (roupa da Black), D238 (Banners da loja), D247 (uso do plano), D271 e D272 (bônus, missões, confete), D291 e D292 (tempo real e visitas), D304, D324 ("Meu negócio"), D326 (modo demonstração), D327 (gavetas) e **D328 (esta direção)**.
+4. Decisões: D42 (direção "mesa do atacadista"), D155 (vidro e movimento), D193 ("Subida"), D200 ("Agora" do Master), D205 e D207 (aviso sonoro), D209 e D210 (topo e botão Agente), D222 a D225 (visual de tecnologia e abertura em vidro), D232 (roupa da Black), D238 (Banners da loja), D247 (uso do plano), D271 e D272 (bônus, missões, confete), D291 e D292 (tempo real e visitas), D304, D324 ("Meu negócio"), D326 (modo demonstração), D327 (gavetas) e **D331 (esta direção)**.
 5. `docs/design/VIDRO-E-MOVIMENTO.md`, `docs/DESIGN-SYSTEM.md`, `docs/design/DIRECAO-VISUAL-V4.md` (a seção 3 passa a valer só para as telas de trabalho, ver A5) e `docs/prompts/reorganizacao-paineis-por-persona.md` (esqueleto de gavetas; este prompt é a camada visual dele).
 6. Skills do projeto: `painel-interno`, `qa-visual`, `desempenho`, `nova-migracao`, `publicar`, `levar-para-marca`. Se a skill `dataviz` estiver disponível na sessão, use o método dela para cores e gráficos.
 

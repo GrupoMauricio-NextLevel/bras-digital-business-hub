@@ -1,5 +1,5 @@
 /*
- * Painéis com vida (D328). Famílias de cor por assunto (valores em `src/design-system/themes.ts`), cartões de
+ * Painéis com vida (D331). Famílias de cor por assunto (valores em `src/design-system/themes.ts`), cartões de
  * número vivos, gráfico que se desenha e abertura compacta. Movimento só em transform, opacity e stroke-dashoffset;
  * "menos movimento" desliga tudo.
  */

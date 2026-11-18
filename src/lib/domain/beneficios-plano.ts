@@ -1,4 +1,4 @@
-import { and, eq, ne, sql } from "drizzle-orm";
+import { and, eq, notInArray, sql } from "drizzle-orm";
 import { z } from "zod";
 import type { Database } from "@/db/client";
 import { platformSettings, products, users } from "@/db/schema";
@@ -65,7 +65,7 @@ export type UsoDoPlano = { plano: PlanoBeneficio; nome: string; produtos: { usad
 export async function usoDoPlano(db: Database, storeId: string): Promise<UsoDoPlano> {
   const [plano, tabela, prodRows, genteRows] = await Promise.all([
     planoDaLoja(db, storeId), beneficiosPorPlano(db),
-    db.select({ n: sql<number>`count(*)::int` }).from(products).where(and(eq(products.storeId, storeId), ne(products.status, "ARCHIVED"))),
+    db.select({ n: sql<number>`count(*)::int` }).from(products).where(and(eq(products.storeId, storeId), notInArray(products.status, ["ARCHIVED", "DELETED"]))),
     db.select({ n: sql<number>`count(*)::int` }).from(users).where(and(eq(users.storeId, storeId), sql`${users.disabledAt} is null`)),
   ]);
   const b = tabela[plano];

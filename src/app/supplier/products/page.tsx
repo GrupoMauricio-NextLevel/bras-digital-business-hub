@@ -19,7 +19,7 @@ export default async function SupplierProducts() {
 /** Corpo compartilhado com a conta simples do lojista (`/merchant/catalogo`). */
 export async function ProductsBody({ supplierId, base = "/supplier/products", independent = false, commerce = false, ver }: { supplierId: OwnerRef; base?: string; independent?: boolean; commerce?: boolean; ver?: string }) {
   const { items, categories } = await getSupplierProducts(supplierId);
-  const rows: ProductRow[] = items.map((r) => ({ id: r.product.id, name: r.product.name, sku: r.product.sku, category: r.categoryName, images: r.product.images, sellsUnit: r.product.sellsUnit, sellsPack: r.product.sellsPack, distribution: r.product.distribution, costCents: r.product.costCents, suggestedPriceCents: r.product.suggestedPriceCents, status: r.product.status, available: r.available, onHand: r.onHand }));
+  const rows: ProductRow[] = items.map((r) => ({ id: r.product.id, name: r.product.name, sku: r.product.sku, category: r.categoryName, images: r.product.images, sellsUnit: r.product.sellsUnit, sellsPack: r.product.sellsPack, distribution: r.product.distribution, costCents: r.product.costCents, suggestedPriceCents: r.product.suggestedPriceCents, status: r.product.status as ProductRow["status"], available: r.available, onHand: r.onHand }));
   const active = rows.filter((r) => r.status === "ACTIVE").length;
   const draft = rows.filter((r) => r.status === "DRAFT").length;
   const low = rows.filter((r) => r.available > 0 && r.available < 10).length;

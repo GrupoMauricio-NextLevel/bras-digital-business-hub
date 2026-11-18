@@ -10,6 +10,8 @@ import { themeCardsFor } from "@/lib/themes/install";
 import { eq } from "drizzle-orm";
 import { financeInvoices, nextlevelPayments } from "@/db/schema";
 import { ThemeStore } from "./theme-store";
+import { LiberarTema } from "@/components/master/liberar-tema";
+import { temasParaLiberar } from "@/lib/themes/liberar-equipe";
 
 export default async function MerchantTemplatesPage({ searchParams }: { searchParams: Promise<{ pago?: string; ver?: string }> }) {
   const { pago, ver } = await searchParams;
@@ -29,6 +31,13 @@ export default async function MerchantTemplatesPage({ searchParams }: { searchPa
       {!(await perfilAtual(store.id)).pode.storefront ? <UpgradeCard feature="storefront" /> : (
         <>
           <Card className="ds-warm mb-6"><CardContent className="flex items-start gap-3 py-4 text-sm"><ShieldCheck className="ds-warm-title mt-0.5 size-4" aria-hidden /><div><span className="ds-warm-title font-semibold">Troque de tema sem perder nada.</span> <span className="text-muted-foreground">Produtos, clientes, pedidos e configurações ficam intactos. O tema só muda a apresentação, e o visual anterior fica no histórico para você voltar.</span></div></CardContent></Card>
+          {session.support?.act ? (
+            <Card className="mb-6 border-accent"><CardContent className="py-4">
+              <p className="text-sm font-semibold">Equipe NextLevel · liberar tema para {store.name}</p>
+              <p className="mb-3 mt-0.5 text-xs text-muted-foreground">Só aparece para a equipe no modo suporte. Libere sem custo ou registre o pagamento feito por fora (entra no caixa do Master); o cliente não paga nada aqui.</p>
+              <div className="max-w-xl">{await (async () => { const t = await temasParaLiberar(await getDb(), store.id); return <LiberarTema via="suporte" temas={t.temas} editorCompleto={t.editorCompleto} inicial={ver && t.temas.some((x) => x.key === ver) ? ver : undefined} />; })()}</div>
+            </CardContent></Card>
+          ) : null}
           <ThemeStore cards={await themeCardsFor(await getDb(), session.actor)} slug={store.slug} demo={isDemoMode()} returning={returning} autoPreview={ver && /^[a-z0-9-]{1,30}$/.test(ver) ? ver : undefined} />
         </>
       )}

@@ -1,10 +1,10 @@
 # Imagens dos painéis com vida (v1)
 
-Prompt de origem: `docs/prompts/imagens-paineis-com-vida-gpt.md` (D328). Geradas pelo dono no Gemini, lote 1 recebido em 17/11/2026. Formatos: `.avif` (qualidade 55) e `.webp` (qualidade 82); sem texto, logo ou rosto.
+Prompt de origem: `docs/prompts/imagens-paineis-com-vida-gpt.md` (D331). Geradas pelo dono no Gemini, lote 1 recebido em 17/11/2026. Formatos: `.avif` (qualidade 55) e `.webp` (qualidade 82); sem texto, logo ou rosto.
 
 | Arquivo | Onde aparece | Proporção | Situação |
 |---|---|---|---|
-| pv-abertura-loja-escuro | Fundo da abertura do "Meu negócio" do lojista (mistura "screen" sobre o vidro roxo) | 21:9 | **No painel** (D329) |
+| pv-abertura-loja-escuro | Fundo da abertura do "Meu negócio" do lojista (mistura "screen" sobre o vidro roxo) | 21:9 | **No painel** (D332) |
 | pv-abertura-loja-claro | Abertura do lojista quando a abertura ganhar versão clara | 21:9 | Guardada |
 | pv-abertura-master-escuro | Abertura do "Agora" do Master (estrela-guia, PV5) | 21:9 | Guardada |
 | pv-proximo-nivel-degraus-escuro / -claro | Convite de próximo nível (`ConviteProximoNivel`, PV3) e Jornada da loja | 1:1 | Guardada |

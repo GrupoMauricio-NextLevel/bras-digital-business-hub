@@ -99,7 +99,7 @@ export default async function MerchantHome({ searchParams }: { searchParams: Pro
   });
 
   const filaFinal = ehSite ? attention.filter((a) => extra.some((e) => e.key === a.key) && a.key !== "produtos") : attention;
-  // Painéis com vida (D328): uma faixa por vez no topo; a novidade vai para o pé da tela; visitas para a conversão.
+  // Painéis com vida (D331): uma faixa por vez no topo; a novidade vai para o pé da tela; visitas para a conversão.
   const visitas30 = commerce ? (await resumoDeVisitas(db, store.id, 30)).total : null;
   const rodapeNovidade = novidade ? <p className="text-sm text-muted-foreground"><span className="font-semibold text-foreground">Novidade:</span> {novidade.titulo}. <Link href="/merchant/novidades" className="font-medium underline underline-offset-2">Ver o que mudou</Link></p> : null;
   if (commerce) return <>{faixaContrato}{faixaPix}{boasVindas}<CommerceHome periodo={periodo} visitas30={visitas30} rodape={rodapeNovidade} negocio={negocio?.business ? { nome: NOME_GERENCIADOR.nome, site: ehSite } : undefined} firstName={session.user.name.split(" ")[0]!} greeting={greeting()} store={store} o={o} readiness={ehSite ? null : readiness} attention={filaFinal} pulso={<PulsoLoja pulso={pulso} semVendas className="mt-3" />} /><div className="sr-only"><AoVivo segundos={30} /></div>{benefits || survey ? <div className="mx-auto mt-6 max-w-[1240px]">{benefits ? <PainelBeneficios data={benefits} /> : null}{survey ? <QuestionarioPreco product={survey.product} /> : null}</div> : null}</>;

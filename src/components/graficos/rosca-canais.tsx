@@ -2,7 +2,7 @@ import { formatCompactBRL } from "@/lib/money";
 
 const CORES = ["var(--vida-dinheiro)", "var(--vida-pedidos)", "var(--vida-clientes)", "var(--vida-visitas)", "var(--ds-muted)"];
 
-/** Vendas por canal real (D328): rosca com até 4 canais + Outros e o total no meio. Sem venda, não aparece. */
+/** Vendas por canal real (D331): rosca com até 4 canais + Outros e o total no meio. Sem venda, não aparece. */
 export function RoscaCanais({ fatias, total }: { fatias: { nome: string; cents: number; pct: number }[]; total: number }) {
   if (!fatias.length) return null;
   const r = 52, c = 2 * Math.PI * r;

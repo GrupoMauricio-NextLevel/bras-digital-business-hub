@@ -4,7 +4,7 @@ import { diaMes, type Dia, type Periodo } from "@/lib/domain/painel-vivo";
 import { Variacao } from "@/components/vida/numero-vivo";
 
 /**
- * Vendas no tempo (D328): linha do período e, tracejada, a do período anterior; marcador do melhor dia; título com a
+ * Vendas no tempo (D331): linha do período e, tracejada, a do período anterior; marcador do melhor dia; título com a
  * conclusão; troca de período por link (sem JavaScript); tabela para leitor de tela. SVG próprio, cores dos tokens.
  */
 export function GraficoVendas({ titulo, atual, anterior, total, delta, melhor, periodo, hrefPeriodo }: {

@@ -8,7 +8,7 @@ function serie(fim: string, valores: number[]): Dia[] {
   return valores.map((cents, i) => ({ date: new Date(end - (valores.length - 1 - i) * 86_400_000).toISOString().slice(0, 10), cents }));
 }
 
-describe("painéis com vida (D328): regras do início do lojista", () => {
+describe("painéis com vida (D331): regras do início do lojista", () => {
   it("variação só com base para comparar", () => {
     expect(variacao(150, 100)).toBe(50);
     expect(variacao(90, 120)).toBe(-25);
@@ -83,7 +83,7 @@ function luminancia(hex: string) {
 }
 const contraste = (a: string, b: string) => { const [x, y] = [luminancia(a), luminancia(b)].sort((m, n) => n - m); return (x! + 0.05) / (y! + 0.05); };
 
-describe("famílias de cor dos painéis (D328)", () => {
+describe("famílias de cor dos painéis (D331)", () => {
   it("cada família tem contraste de elemento gráfico (3:1) sobre o fundo do seu tema", () => {
     for (const [nome, cor] of Object.entries(CORES_VIDA)) {
       expect(contraste(cor.claro, "#ffffff"), `${nome} no claro`).toBeGreaterThanOrEqual(3);
