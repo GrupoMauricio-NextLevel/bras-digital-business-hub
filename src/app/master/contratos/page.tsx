@@ -27,6 +27,7 @@ export default async function ContratosPage() {
   return (
     <>
       <PageHeader eyebrow="Comercial" title="Contratos" description="Crie o contrato da Loja Pronta Express, assine e envie. O cliente recebe um e-mail, entra com o login dele e aceita no painel. Com o aceite, a cópia assinada em PDF vai para os dois e-mails." />
+      <p className="mb-5 rounded-xl border border-border bg-surface-muted/60 px-4 py-3 text-sm">Contratos de <b>serviço</b> (Loja Virtual Pronta Express, migração) agora são feitos e acompanhados no <b>Painel da Agência</b>, em Contratos, com sinal, restante, cortesias e aditivos. Os aceitos aqui podem ser trazidos para lá sem novo aceite. Os contratos da plataforma continuam aqui.</p>
       {conferir.length > 0 && (
         <section role="status" className="mb-6 rounded-xl border-2 border-[#b45309] bg-[#fff7ed] p-4 text-sm text-[#431407]" aria-labelledby="conferir-t">
           <h2 id="conferir-t" className="mb-2 font-semibold">{conferir.length === 1 ? "1 Pix para conferir no banco" : `${conferir.length} Pix para conferir no banco`}</h2>
@@ -53,6 +54,7 @@ export default async function ContratosPage() {
                 </div>
                 <span className="flex items-center gap-2">
                   <Badge tone={s.tom}>{s.rotulo}</Badge>
+                  {c.transferidoEm ? <Badge tone="info">Transferido para o Painel da Agência</Badge> : null}
                   <Link className="text-sm underline" href={`/master/contratos/${c.id}/pdf`} target="_blank">PDF</Link>
                   {c.status === "ENVIADO" && pode && <CancelarContrato id={c.id} />}
                 </span>

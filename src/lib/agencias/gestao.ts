@@ -39,7 +39,7 @@ export async function placarDoMes(db: Database, actor: Actor, mes = hojeEmSaoPau
   const [publicadas, novos, pagas, eventos, equipe] = await Promise.all([
     db.select({ id: agenciaPecas.id }).from(agenciaPecas).where(and(eq(agenciaPecas.agenciaId, agencia.id), gte(agenciaPecas.publicadoEm, ini), lt(agenciaPecas.publicadoEm, fim))),
     db.select({ id: agenciaClientes.id }).from(agenciaClientes).where(and(eq(agenciaClientes.agenciaId, agencia.id), gte(agenciaClientes.inicioEm, ini), lt(agenciaClientes.inicioEm, fim))),
-    db.select({ v: agenciaFaturas.valorCents }).from(agenciaFaturas).where(and(eq(agenciaFaturas.agenciaId, agencia.id), eq(agenciaFaturas.competencia, m), eq(agenciaFaturas.situacao, "PAGA"))),
+    db.select({ v: agenciaFaturas.valorCents }).from(agenciaFaturas).where(and(eq(agenciaFaturas.agenciaId, agencia.id), eq(agenciaFaturas.competencia, m), eq(agenciaFaturas.situacao, "PAGA"), eq(agenciaFaturas.registradoNoMaster, false))),
     db.select({ autorId: agenciaPecaEventos.autorId, tipo: agenciaPecaEventos.tipo, mensagem: agenciaPecaEventos.mensagem }).from(agenciaPecaEventos).where(and(eq(agenciaPecaEventos.agenciaId, agencia.id), inArray(agenciaPecaEventos.tipo, ["ETAPA"]), gte(agenciaPecaEventos.createdAt, ini), lt(agenciaPecaEventos.createdAt, fim))),
     db.select({ id: users.id, nome: users.name, funcao: agenciaMembros.funcao }).from(agenciaMembros).innerJoin(users, eq(users.id, agenciaMembros.userId)).where(and(eq(agenciaMembros.agenciaId, agencia.id), isNull(users.disabledAt))),
   ]);
@@ -84,7 +84,7 @@ export async function crescimentoDaAgencia(db: Database, actor: Actor, hoje = ho
   const meses: string[] = []; let m = hoje.slice(0, 7); for (let i = 0; i < 6; i++) { meses.unshift(m); m = mesAnterior(m); }
   const [clientes, faturas] = await Promise.all([
     db.select({ inicioEm: agenciaClientes.inicioEm, encerradoEm: agenciaClientes.encerradoEm, createdAt: agenciaClientes.createdAt, valorMensalCents: agenciaClientes.valorMensalCents, situacao: agenciaClientes.situacao }).from(agenciaClientes).where(eq(agenciaClientes.agenciaId, agencia.id)),
-    db.select({ competencia: agenciaFaturas.competencia, valorCents: agenciaFaturas.valorCents, situacao: agenciaFaturas.situacao }).from(agenciaFaturas).where(and(eq(agenciaFaturas.agenciaId, agencia.id), ne(agenciaFaturas.situacao, "CANCELADA"))),
+    db.select({ competencia: agenciaFaturas.competencia, valorCents: agenciaFaturas.valorCents, situacao: agenciaFaturas.situacao }).from(agenciaFaturas).where(and(eq(agenciaFaturas.agenciaId, agencia.id), ne(agenciaFaturas.situacao, "CANCELADA"), eq(agenciaFaturas.registradoNoMaster, false))),
   ]);
   return serieDeCrescimento(clientes, meses).map((x) => ({ ...x, recebidoCents: faturas.filter((f) => f.competencia === x.mes && f.situacao === "PAGA").reduce((s, f) => s + f.valorCents, 0) }));
 }
@@ -107,7 +107,7 @@ export async function executivosDoMes(db: Database, actor: Actor, mes = hojeEmSa
   const [equipe, clientes, pagas] = await Promise.all([
     db.select({ id: users.id, nome: users.name, funcao: agenciaMembros.funcao, comissaoPct: agenciaMembros.comissaoPct }).from(agenciaMembros).innerJoin(users, eq(users.id, agenciaMembros.userId)).where(and(eq(agenciaMembros.agenciaId, agencia.id), isNull(users.disabledAt))).orderBy(asc(users.name)),
     db.select({ id: agenciaClientes.id, nome: agenciaClientes.nome, vendedorId: agenciaClientes.vendedorId, inicioEm: agenciaClientes.inicioEm }).from(agenciaClientes).where(eq(agenciaClientes.agenciaId, agencia.id)),
-    db.select({ clienteId: agenciaFaturas.clienteId, valorCents: agenciaFaturas.valorCents }).from(agenciaFaturas).where(and(eq(agenciaFaturas.agenciaId, agencia.id), eq(agenciaFaturas.competencia, m), eq(agenciaFaturas.situacao, "PAGA"))),
+    db.select({ clienteId: agenciaFaturas.clienteId, valorCents: agenciaFaturas.valorCents }).from(agenciaFaturas).where(and(eq(agenciaFaturas.agenciaId, agencia.id), eq(agenciaFaturas.competencia, m), eq(agenciaFaturas.situacao, "PAGA"), eq(agenciaFaturas.registradoNoMaster, false))),
   ]);
   const linhas = equipe.map((p) => {
     const meus = clientes.filter((c) => c.vendedorId === p.id);

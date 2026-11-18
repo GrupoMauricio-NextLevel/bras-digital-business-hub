@@ -81,7 +81,7 @@ export async function resultadoDoMes(db: Database, actor: Actor, mes: string) {
   const { membro } = await escopo(db, actor);
   const [despesas, faturas, clientes] = await Promise.all([
     db.select().from(agenciaDespesas).where(and(eq(agenciaDespesas.agenciaId, membro.agenciaId), eq(agenciaDespesas.competencia, mes))).orderBy(asc(agenciaDespesas.categoria), asc(agenciaDespesas.descricao)),
-    db.select().from(agenciaFaturas).where(and(eq(agenciaFaturas.agenciaId, membro.agenciaId), eq(agenciaFaturas.competencia, mes), ne(agenciaFaturas.situacao, "CANCELADA"))),
+    db.select().from(agenciaFaturas).where(and(eq(agenciaFaturas.agenciaId, membro.agenciaId), eq(agenciaFaturas.competencia, mes), ne(agenciaFaturas.situacao, "CANCELADA"), eq(agenciaFaturas.registradoNoMaster, false))),
     db.select({ id: agenciaClientes.id, nome: agenciaClientes.nome }).from(agenciaClientes).where(eq(agenciaClientes.agenciaId, membro.agenciaId)),
   ]);
   const faturado = faturas.reduce((s, f) => s + f.valorCents, 0);

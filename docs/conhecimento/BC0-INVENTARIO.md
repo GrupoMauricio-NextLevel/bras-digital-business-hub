@@ -68,6 +68,8 @@
 
 > **Carregamento que não trava (D330):** ao trocar de página, o logo girando no centro some quando a página nova chega, inclusive ao mudar de pasta, filtro ou aba, ao voltar no navegador ou ao clicar de novo; se algo der errado, some sozinho em até 6 segundos.
 
+> **Contratos da agência (D331):** no Painel da Agência, em Clientes → Contratos, saem contratos de mensalidade e de projeto (Loja Virtual Pronta Express e Migração Nuvemshop → NextLevel) com o que já foi pago, cortesias e prévia do texto; o cliente aceita no portal e recebe o PDF assinado por e-mail; parcelas viram cobranças com "Recebi por fora"; dá para fazer aditivo, encerrar e trazer contratos aceitos do Master sem novo aceite.
+
 > **Retorno do bônus (D275):** em Bônus e metas, cada campanha mostra lojas novas, receita nova por mês, custo, custo por loja e em quantos meses a margem paga o bônus (depois da comissão de 28%), com sugestão automática de ajuste e conferência com o extrato.
 > **Painel do executivo no celular (D274):** meta da semana, comissão e nível no topo; botões Nova venda, Registrar visita, Meu link e Mostrar a demonstração; agenda de retornos e testes acabando; ranking de visitas; argumentos de bolso. Missões da rua contam visitas e demonstrações; o dono define a meta semanal de cada executivo e vê o feed da equipe.
 > **Executivos de venda (D273):** equipe de rua cadastrada pelo dono; venda em dinheiro ou maquininha libera a loja na hora com recibo no WhatsApp; dinheiro entregue em 2 dias úteis (atraso trava novas vendas em dinheiro); prestação de contas no Master lança no caixa; aula "Executivos de venda" na trilha Parceiros.

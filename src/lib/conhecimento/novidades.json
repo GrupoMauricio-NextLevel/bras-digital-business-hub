@@ -1,5 +1,12 @@
 [
  {
+  "numero": 331,
+  "frente": "E-commerce",
+  "titulo": "Contratos da agência a 100%: projetos com entrega, parcelas, tela Contratos, aditivo, e-mail e contratos trazidos do Master",
+  "data": "2026-11-18",
+  "resumo": "Pedido do dono (18/11): migrar o contrato do Vestiário das Lendas do Master para o Painel da Agência; formalizar a Império Maia (Migração Nuvemshop → NextLevel, R$ 500, sinal de R$ 250 pago em 13/11 e saldo de R$ 250 em 18/11) e o Bazar…"
+ },
+ {
   "numero": 330,
   "frente": "E-commerce",
   "titulo": "O carregamento da troca de página (logo girando) nunca mais fica preso na tela",
@@ -271,12 +278,5 @@
   "titulo": "O nome da marca passa a ser \"NextLevel Commerce\"",
   "data": "2026-11-13",
   "resumo": "Decisão do dono: parar de usar \"NextLevel E-commerce\" e usar \"NextLevel Commerce\" em todo o sistema. O nome casa com o domínio nextlevelcommerce.com.br (D287)."
- },
- {
-  "numero": 287,
-  "frente": "Grupo",
-  "titulo": "Duas frentes e domínio novo no ar: nextlevelcommerce.com.br e nextlevelgroup.com.br",
-  "data": "2026-11-13",
-  "resumo": "Decisão do dono: por enquanto só duas frentes concretas."
  }
 ]

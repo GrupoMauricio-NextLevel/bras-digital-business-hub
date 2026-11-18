@@ -32,11 +32,13 @@ async function agencia(w = 1440) {
 
 {
   const { ctx, p } = await agencia();
-  await p.getByRole("button", { name: "Gerar contrato" }).click();
+  // D331: o contrato sai pela tela "Novo contrato" (mensalidade, projeto ou migração).
+  await p.getByRole("link", { name: "Novo contrato" }).first().click(); await p.waitForURL(/\/agencia\/contratos\/novo/); await p.waitForLoadState("networkidle");
+  await p.getByRole("radio", { name: /Mensalidade de marketing/ }).click();
   await p.getByRole("button", { name: "Ver prévia" }).click();
-  await p.getByLabel("Prévia do contrato").waitFor({ timeout: 20000 }).then(() => ok("prévia do contrato com o texto"), () => fail("prévia não apareceu"));
-  await conferir(p, "ficha com prévia");
-  await shot(p, "contrato-01-previa", p.locator("section", { has: p.getByRole("heading", { name: "Contrato", exact: true }) }));
+  await p.getByLabel("Texto do contrato").waitFor({ timeout: 20000 }).then(() => ok("prévia do contrato com o texto"), () => fail("prévia não apareceu"));
+  await conferir(p, "novo contrato com prévia");
+  await shot(p, "contrato-01-previa");
   await p.getByRole("button", { name: "Enviar ao cliente" }).click();
   await p.getByText(/enviado\. O cliente aceita pelo portal/).waitFor({ timeout: 20000 }).then(() => ok("contrato enviado"), () => fail("envio não respondeu"));
   await ctx.close();
@@ -67,7 +69,8 @@ async function agencia(w = 1440) {
   const { ctx, p } = await agencia(360);
   if (/Assinado/.test(await p.locator("main").innerText())) ok("ficha mostra o contrato assinado"); else fail("ficha não mostra assinado");
   await conferir(p, "ficha 360");
-  const href = await p.getByRole("link", { name: "PDF" }).first().getAttribute("href");
+  await p.locator("a", { hasText: /^AG-/ }).first().click(); await p.waitForURL(/\/agencia\/contratos\/agct_/); await p.waitForLoadState("networkidle");
+  const href = await p.getByRole("link", { name: "Baixar PDF" }).first().getAttribute("href");
   const r = await p.request.get(B + href);
   if (r.ok() && (r.headers()["content-type"] ?? "").includes("pdf")) ok("PDF baixa na agência"); else fail(`PDF na agência: ${r.status()}`);
   await ctx.close();

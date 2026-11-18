@@ -20,9 +20,7 @@ import { agencias } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { CopiarLinkPortal, ResponderSolicitacao } from "./portal-agencia";
 import { VerComoCliente } from "@/components/agencia/gestao-cliente";
-import { contratosDoClienteNaAgencia } from "@/lib/agencias/contratos";
-import { hojeEmSaoPaulo } from "@/lib/agencias/clientes";
-import { CancelarContrato, GerarContrato } from "./contrato-cliente";
+import { MODELO_ROTULO, contratosDoClienteNaAgencia } from "@/lib/agencias/contratos";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Ficha do cliente" };
@@ -47,7 +45,7 @@ export default async function FichaDoCliente({ params }: { params: Promise<{ id:
   const card = "ds-card p-5 sm:p-6";
   return (
     <>
-      <PageHeader backHref="/agencia/clientes" eyebrow="Cliente" title={c.nome} description={[c.segmento, c.pacote, inclusoTexto(c.incluso)].filter(Boolean).join(" · ") || undefined}
+      <PageHeader backHref="/agencia/clientes" eyebrow="Cliente" title={c.nome} actions={c.podeEditar || c.podeEditarContrato ? <div className="flex flex-wrap gap-2"><a href="#dados" className="ds-btn ds-btn--secondary">Editar dados</a>{c.podeEditarContrato ? <Link href={`/agencia/contratos/novo?cliente=${c.id}`} className="ds-btn">Novo contrato</Link> : null}</div> : undefined} description={[c.segmento, c.pacote, inclusoTexto(c.incluso)].filter(Boolean).join(" · ") || undefined}
         badge={<span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${c.situacao === "ATIVO" ? "bg-success-soft text-success" : "bg-surface-muted text-muted-foreground"}`}>{SITUACAO_CLIENTE_ROTULO[c.situacao]}</span>} />
       <div className="grid gap-4 lg:grid-cols-3">
         <section className={`${card} lg:col-span-2`} aria-labelledby="dados">
@@ -74,9 +72,9 @@ export default async function FichaDoCliente({ params }: { params: Promise<{ id:
           {c.podeEditarContrato ? (
             <section className={card} aria-labelledby="ctr">
               <h2 id="ctr" className="mb-1 text-base font-semibold">Contrato</h2>
-              <p className="mb-3 text-sm text-muted-foreground">Gerado com os dados da ficha. O cliente lê e aceita no portal; o PDF assinado vai por e-mail para os dois lados.</p>
-              {contratos.length ? <ul className="mb-3 divide-y divide-border text-sm">{contratos.map((k) => <li key={k.id} className="flex flex-wrap items-center justify-between gap-2 py-2"><span><b className="block">{k.numero}</b><span className="text-xs text-muted-foreground">{k.status === "ACEITO" ? `Aceito por ${k.aceitoNome} em ${k.aceitoEm!.slice(0, 10).split("-").reverse().join("/")}` : `Enviado em ${k.enviadoEm.slice(0, 10).split("-").reverse().join("/")}, esperando o aceite`}</span></span><span className="flex items-center gap-1"><span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${k.status === "ACEITO" ? "bg-success-soft text-success" : "bg-warning-soft text-warning"}`}>{k.status === "ACEITO" ? "Assinado" : "Aguardando"}</span><a href={`/agencia/contratos/${k.id}/pdf`} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center px-2 text-sm font-semibold text-link underline underline-offset-4">PDF</a>{k.status === "ENVIADO" ? <CancelarContrato id={k.id} /> : null}</span></li>)}</ul> : null}
-              {contratos.some((k) => k.status === "ENVIADO") ? null : <GerarContrato clienteId={c.id} hoje={hojeEmSaoPaulo()} />}
+              <p className="mb-3 text-sm text-muted-foreground">Mensalidade ou projeto (Loja Virtual Pronta Express, migração). O cliente aceita no portal e a cópia assinada vai por e-mail aos dois lados.</p>
+              {contratos.length ? <ul className="mb-3 divide-y divide-border text-sm">{contratos.map((k) => <li key={k.id}><Link href={`/agencia/contratos/${k.id}`} className="flex flex-wrap items-center justify-between gap-2 py-2 hover:underline"><span className="min-w-0"><b className="block">{k.numero}</b><span className="text-xs text-muted-foreground">{MODELO_ROTULO[k.modelo]} · {k.status === "ACEITO" ? `aceito por ${k.aceitoNome} em ${k.aceitoEm!.slice(0, 10).split("-").reverse().join("/")}` : k.status === "ENCERRADO" ? "encerrado" : `enviado em ${k.enviadoEm.slice(0, 10).split("-").reverse().join("/")}, esperando o aceite`}</span></span><span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${k.status === "ACEITO" ? "bg-success-soft text-success" : k.status === "ENCERRADO" ? "bg-surface-muted text-muted-foreground" : "bg-warning-soft text-warning"}`}>{k.status === "ACEITO" ? "Assinado" : k.status === "ENCERRADO" ? "Encerrado" : "Aguardando"}</span></Link></li>)}</ul> : null}
+              {contratos.some((k) => k.status === "ENVIADO") ? null : <Link href={`/agencia/contratos/novo?cliente=${c.id}`} className="ds-btn ds-btn--secondary">Novo contrato</Link>}
             </section>
           ) : null}
           <section className={card} aria-labelledby="portal">
