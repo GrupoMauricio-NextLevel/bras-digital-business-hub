@@ -1,0 +1,122 @@
+:root {
+  --stadium-bg: #060b17;
+  --stadium-surface: #101828;
+  --stadium-text: #f8fafc;
+  --stadium-muted: #94a3b8;
+  --stadium-primary: #06b6d4;
+  --stadium-on-primary: #082f49;
+  --stadium-accent: #22c55e;
+  --stadium-on-accent: #052e16;
+  --stadium-border: #1e293b;
+  --stadium-success: #16a34a;
+  --stadium-warning: #f59e0b;
+  --stadium-danger: #ef4444;
+  --stadium-overlay: rgba(2, 6, 23, 0.72);
+  --stadium-font-heading: var(--estadio-font-bebas), var(--estadio-font-barlow), sans-serif;
+  --stadium-font-body: var(--estadio-font-inter), var(--estadio-font-montserrat), sans-serif;
+  --stadium-font-cta: var(--estadio-font-oswald), var(--estadio-font-barlow), sans-serif;
+  --stadium-font-size-base: 16;
+  --stadium-line-height: 1.5;
+  --stadium-radius-sm: 8;
+  --stadium-radius-md: 14;
+  --stadium-radius-lg: 20;
+  --stadium-radius-pill: 999;
+  --stadium-shadow-soft: 0 14px 30px rgba(2, 6, 23, 0.18);
+  --stadium-shadow-medium: 0 18px 40px rgba(2, 6, 23, 0.28);
+  --stadium-shadow-strong: 0 20px 55px rgba(2, 6, 23, 0.36);
+  --stadium-shadow-glow: 0 0 0 1px rgba(34, 197, 94, 0.3), 0 0 30px rgba(6, 182, 212, 0.35);
+  --stadium-gradient: linear-gradient(135deg, #06b6d4 0%, #16a34a 48%, #22c55e 100%);
+  --stadium-noise-opacity: 0.09;
+  --stadium-focus-ring: 0 0 0 2px rgba(6, 182, 212, 0.55);
+}
+
+.stadium-scope {
+  color: var(--stadium-text);
+  font-family: var(--stadium-font-body);
+  line-height: var(--stadium-line-height);
+}
+
+.stadium-card {
+  border: 1px solid color-mix(in srgb, var(--stadium-border) 85%, transparent);
+  border-radius: calc(var(--stadium-radius-md) * 1px);
+  background: color-mix(in srgb, var(--stadium-surface) 94%, white 6%);
+  box-shadow: var(--stadium-shadow-soft);
+}
+
+.stadium-title {
+  font-family: var(--stadium-font-heading);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.stadium-premium-badge {
+  border-radius: calc(var(--stadium-radius-pill) * 1px);
+  border: 1px solid color-mix(in srgb, var(--stadium-accent) 35%, transparent);
+  background: color-mix(in srgb, var(--stadium-accent) 16%, transparent);
+  color: var(--stadium-accent);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 0.35rem 0.72rem;
+  text-transform: uppercase;
+}
+
+.stadium-btn {
+  border-radius: calc(var(--stadium-radius-sm) * 1px);
+  font-family: var(--stadium-font-cta);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition: transform 150ms ease, box-shadow 150ms ease, filter 150ms ease;
+}
+
+.stadium-btn-primary {
+  background: var(--stadium-gradient);
+  color: var(--stadium-on-primary);
+  box-shadow: var(--stadium-shadow-glow);
+}
+
+.stadium-btn-primary:hover {
+  filter: saturate(1.08);
+  transform: translateY(-1px);
+}
+
+.stadium-input,
+.stadium-select {
+  width: 100%;
+  border-radius: calc(var(--stadium-radius-sm) * 1px);
+  border: 1px solid color-mix(in srgb, var(--stadium-border) 80%, transparent);
+  background: color-mix(in srgb, var(--stadium-surface) 95%, white 5%);
+  color: var(--stadium-text);
+  padding: 0.6rem 0.75rem;
+  font-size: 0.95rem;
+}
+
+.stadium-input:focus,
+.stadium-select:focus,
+.stadium-btn:focus-visible {
+  outline: none;
+  box-shadow: var(--stadium-focus-ring);
+}
+
+.stadium-sticky-cta {
+  position: sticky;
+  bottom: 0;
+  z-index: 25;
+  display: flex;
+  gap: 0.75rem;
+  border-top: 1px solid color-mix(in srgb, var(--stadium-border) 82%, transparent);
+  backdrop-filter: blur(10px);
+  background: color-mix(in srgb, var(--stadium-surface) 84%, black 16%);
+  padding: 0.85rem 1rem;
+}
+
+.stadium-grid-premium {
+  display: grid;
+  gap: 1rem;
+}
+
+@media (min-width: 1024px) {
+  .stadium-grid-premium {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  }
+}

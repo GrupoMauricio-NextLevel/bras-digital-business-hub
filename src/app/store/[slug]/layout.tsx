@@ -35,6 +35,7 @@ import { kitBlackDaLoja } from "@/lib/domain/kit-black-loja";
 import { FaixaBlackLoja } from "@/components/storefront/faixa-black-loja";
 import { ldJson, shortDescription, storeOrigin } from "@/lib/storefront-seo";
 import { socialImage } from "@/lib/themes/pacotes";
+import { StadiumThemeProvider } from "@/theme-estadio/StadiumThemeProvider";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
@@ -56,6 +57,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     ...(integ.pwa ? { manifest: `/store/${slug}/manifest.webmanifest`, appleWebApp: { capable: true, title: sf.store.name } } : {}),
   };
 }
+
+export const dynamic = "force-dynamic";
 
 export default async function StoreLayout({ params, children }: { params: Promise<{ slug: string }>; children: React.ReactNode }) {
   const { slug } = await params;
@@ -111,7 +114,7 @@ export default async function StoreLayout({ params, children }: { params: Promis
   const menuSite = semLoja ? (await menuDoSite(await getDb(), sf.store.id)).map((m) => ({ label: m.label, href: `/store/${slug}/${m.slug}` })) : undefined;
   const ctx = { slug, base: `/store/${slug}`, store: sf.store, brandCode: brandByCode(org?.brand).code, categories: sf.categories, products, planned: {}, hero: undefined, globals, page: "home" as const, semLoja, menuSite };
   return (
-    <div style={vars} data-buttons={st.buttons} data-black={black ? "" : undefined} className="sf-root flex min-h-screen flex-col bg-white text-neutral-900">
+    <StadiumThemeProvider initialTokens={sf.store.themeSettings}><div style={vars} data-buttons={st.buttons} data-black={black ? "" : undefined} className="sf-root flex min-h-screen flex-col bg-white text-neutral-900">
       {showcase ? <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 bg-neutral-900 px-4 py-2 text-center text-xs text-white" data-showcase-banner><span>Loja de demonstração do tema <b>{showcase.name}</b> · produtos de exemplo, nada aqui é vendido.</span><a href={`/temas/${showcase.key}`} target="_top" className="rounded bg-white px-2.5 py-1 font-semibold text-neutral-900">{showcase.release !== "released" ? "Ver detalhes do tema" : "Quero este tema"}</a></div> : null}
       {previewing ? <div className="bg-amber-100 px-4 py-1.5 text-center text-xs text-amber-900">Pré-visualização: {semLoja ? "este site não está publicado" : "esta loja não está publicada"}. Apenas você vê. <Link href="/merchant/storefront" className="underline">Publicar</Link></div> : null}
       {preview ? <div className="bg-indigo-100 px-4 py-1.5 text-center text-xs text-indigo-900" data-preview-banner>Prévia do rascunho: o público ainda vê a versão publicada. <form action={exitThemePreviewAction} className="inline"><button className="underline">Sair da prévia</button></form></div> : null}
@@ -142,6 +145,6 @@ export default async function StoreLayout({ params, children }: { params: Promis
       <div className="border-t border-neutral-200 bg-neutral-50 py-4 text-neutral-500" data-nextlevel-footer>
         <div className="mx-auto flex max-w-6xl justify-center px-4"><NextLevelSignature compact product={productName} className="justify-center text-center" /></div>
       </div>
-    </div>
+    </div></StadiumThemeProvider>
   );
 }

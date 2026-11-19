@@ -2,7 +2,9 @@ import { verificacaoBuscadores } from "@/lib/seo/verificacao";
 import type { Metadata, Viewport } from "next";
 import { ogImageFor } from "@/lib/og-marca";
 import localFont from "next/font/local";
+import { Barlow_Condensed, Bebas_Neue, Inter, Montserrat, Oswald } from "next/font/google";
 import "./globals.css";
+import "@/theme-estadio/stadium.css";
 import { Toaster } from "@/components/ui/toaster";
 import { getBrand } from "@/lib/brand-server";
 import { brandCssVars } from "@/lib/brand-palette";
@@ -16,6 +18,12 @@ import { THEME_PREPAINT_SCRIPT, themeCss } from "@/design-system/themes";
 
 const display = localFont({ src: "./fonts/jakarta-latin.woff2", variable: "--nl-font-display", display: "swap", weight: "200 800" });
 const text = localFont({ src: "./fonts/inter-latin.woff2", variable: "--nl-font-text", display: "swap", weight: "400 700" });
+
+const estadioBarlow = Barlow_Condensed({ subsets: ["latin"], variable: "--estadio-font-barlow", weight: ["400", "600", "700"], display: "swap" });
+const estadioBebas = Bebas_Neue({ subsets: ["latin"], variable: "--estadio-font-bebas", weight: ["400"], display: "swap" });
+const estadioOswald = Oswald({ subsets: ["latin"], variable: "--estadio-font-oswald", weight: ["400", "500", "700"], display: "swap" });
+const estadioInter = Inter({ subsets: ["latin"], variable: "--estadio-font-inter", weight: ["400", "500", "600", "700"], display: "swap" });
+const estadioMontserrat = Montserrat({ subsets: ["latin"], variable: "--estadio-font-montserrat", weight: ["400", "500", "600", "700"], display: "swap" });
 
 /** Título, descrição e endereço-base vêm da marca do endereço acessado. */
 export async function generateMetadata(): Promise<Metadata> {
@@ -52,7 +60,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const brand = await getBrand();
   const themeKey = await getThemeKey();
   return (
-    <html lang="pt-BR" data-ds-theme={themeKey} className={`${display.variable} ${text.variable}`} suppressHydrationWarning>
+    <html lang="pt-BR" data-ds-theme={themeKey} className={`${display.variable} ${text.variable} ${estadioBarlow.variable} ${estadioBebas.variable} ${estadioOswald.variable} ${estadioInter.variable} ${estadioMontserrat.variable}`} suppressHydrationWarning>
       <head><script dangerouslySetInnerHTML={{ __html: THEME_PREPAINT_SCRIPT }} /><style dangerouslySetInnerHTML={{ __html: themeCss(themeKey) + brandCssVars(brand.code) }} /></head>
       <body>
         {children}
