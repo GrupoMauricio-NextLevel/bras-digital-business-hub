@@ -1,4 +1,4 @@
-param([int]$Port = 3100)
+﻿param([int]$Port = 3100)
 # Servidor de demonstração local para Windows (PowerShell). Equivale ao scripts/dev-demo.sh.
 # Uso (na pasta do projeto):  powershell -ExecutionPolicy Bypass -File scripts/dev-demo.ps1
 # Porta: padrão 3100; para uma segunda cópia use  -Port 3101
