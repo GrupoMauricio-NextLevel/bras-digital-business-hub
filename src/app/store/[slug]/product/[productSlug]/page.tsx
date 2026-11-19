@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import { StorePage } from "@/components/storefront/store-page";
 import { getDb } from "@/db/client";
 import { approvedReviews } from "@/lib/domain/reviews";
+import { escolherRelacionados } from "@/lib/domain/venda-junto";
 import { getStorefront, getStorefrontCatalog, toPublicProduct } from "@/lib/queries/storefront";
 import { ldJson, SCHEMA_AVAILABILITY, shortDescription, storeOrigin } from "@/lib/storefront-seo";
+import { ExampleProductPage } from "@/theme-estadio/ExampleProductPage";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string; productSlug: string }> }): Promise<Metadata> {
   const { slug, productSlug } = await params;
@@ -39,18 +40,19 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     },
     { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: sf.store.name, item: origin }, { "@type": "ListItem", position: 2, name: "Catálogo", item: `${origin}/catalog` }, { "@type": "ListItem", position: 3, name: pub.name, item: `${origin}/product/${pub.slug}` }] },
   ] : null;
+  if (!sf || !pub) return null;
+  const all = (await getStorefrontCatalog(sf.store.id)).map((c) => toPublicProduct(c));
+  const related = escolherRelacionados(all, pub, item?.storeProduct.relatedIds ?? [], 8);
+  const faq = [
+    { pergunta: "Qual é o prazo de envio?", resposta: "Seu pedido entra na fila de separação imediatamente após a aprovação do pagamento." },
+    { pergunta: "Posso personalizar nome e número?", resposta: "Sim. Use o personalizador da página para pré-visualizar antes de finalizar." },
+    { pergunta: "Como acompanho o pedido?", resposta: "Depois da compra, use a página de acompanhamento com o e-mail informado no checkout." },
+  ];
+
   return (
     <>
       {ld ? <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: ldJson(ld) }} /> : null}
-      <StorePage slug={slug} page="product" productSlug={productSlug} />
-      {reviews && reviews.count > 0 ? (
-        <section className="mx-auto max-w-3xl px-4 pb-12 sm:px-6" aria-label="Avaliações de clientes">
-          <h2 className="text-lg font-semibold">Avaliações de clientes <span className="text-sm font-normal text-neutral-500">· {reviews.avg.toFixed(1)}★ ({reviews.count})</span></h2>
-          <ul className="mt-3 divide-y divide-neutral-200 rounded-xl border border-neutral-200 text-sm">
-            {reviews.items.map((r) => <li key={r.id} className="px-4 py-3"><div className="font-medium">{r.author} · {"★".repeat(r.rating)}<span className="sr-only"> {r.rating} de 5</span></div>{r.body ? <p className="mt-1 text-neutral-600">{r.body}</p> : null}</li>)}
-          </ul>
-        </section>
-      ) : null}
+      <ExampleProductPage slug={slug} storeName={sf.store.name} product={pub} related={related} reviews={reviews} faq={faq} />
     </>
   );
 }

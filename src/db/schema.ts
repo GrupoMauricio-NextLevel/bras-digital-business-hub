@@ -118,6 +118,8 @@ export const stores = pgTable("stores", {
    * Google Ads, TikTok, Pinterest, chat) e chaves (loja no celular, maioridade). Nada secreto aqui.
    */
   integrations: jsonb("integrations").$type<import("@/lib/domain/integracoes-tipos").IntegracoesLoja>().notNull().default({}),
+  /** Aparência premium da vitrine (Tema Estádio): tokens visuais aplicados no layout público da loja. */
+  themeSettings: jsonb("theme_settings").$type<Record<string, unknown>>(),
   /** ERP da loja (Rodada C, D191): Tiny ou Omie; credencial só criptografada. */
   erpProvider: text("erp_provider", { enum: ["TINY", "OMIE"] }),
   erpTokenEnc: text("erp_token_enc"),
