@@ -58,12 +58,12 @@ function iso(daysAgo: number, hour = 10) {
 
 export async function seedDatabase(db: Database) {
   // --- Tenancy ---------------------------------------------------------------
-  const nlOrg = { id: newId("org"), name: "NextLevel Marketing Ltda.", slug: "nextlevel", type: "NEXTLEVEL" as const };
-  const supOrg = { id: newId("org"), name: "Central Sports", slug: "central-sports", type: "SUPPLIER" as const };
+  const nlOrg = { id: newId("org"), name: "NextLevel Marketing Ltda.", slug: "nextlevel", type: "NEXTLEVEL" as const, brand: "NEXTLEVEL" as const };
+  const supOrg = { id: newId("org"), name: "Central Sports", slug: "central-sports", type: "SUPPLIER" as const, brand: "NEXTLEVEL_COMMERCE" as const };
   const storeOrgs = [
-    { id: newId("org"), name: "Mantos Shop", slug: "mantos-shop", type: "MERCHANT" as const },
-    { id: newId("org"), name: "Arena 10", slug: "arena-10", type: "MERCHANT" as const },
-    { id: newId("org"), name: "Fut Classics", slug: "fut-classics", type: "MERCHANT" as const },
+    { id: newId("org"), name: "Mantos Shop", slug: "mantos-shop", type: "MERCHANT" as const, brand: "NEXTLEVEL_COMMERCE" as const },
+    { id: newId("org"), name: "Arena 10", slug: "arena-10", type: "MERCHANT" as const, brand: "NEXTLEVEL_COMMERCE" as const },
+    { id: newId("org"), name: "Fut Classics", slug: "fut-classics", type: "MERCHANT" as const, brand: "NEXTLEVEL_COMMERCE" as const },
   ];
   await db.insert(s.organizations).values([nlOrg, supOrg, ...storeOrgs]);
 

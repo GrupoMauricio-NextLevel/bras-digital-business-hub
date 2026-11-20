@@ -50,8 +50,8 @@ export async function seedShowcase(db: Database) {
   const masterActor: Actor = { userId: master.id, role: "NEXTLEVEL_MASTER", organizationId: master.organizationId, supplierId: null, storeId: null };
 
   // --- Tenancy ---------------------------------------------------------------
-  const supOrg = { id: newId("org"), name: "Mega Tron Comércio Eletrônico", slug: "mega-tron", type: "SUPPLIER" as const };
-  const memOrg = { id: newId("org"), name: "MRS Sports", slug: "mrs-sports", type: "MERCHANT" as const };
+  const supOrg = { id: newId("org"), name: "Mega Tron Comércio Eletrônico", slug: "mega-tron", type: "SUPPLIER" as const, brand: "NEXTLEVEL_COMMERCE" as const };
+  const memOrg = { id: newId("org"), name: "MRS Sports", slug: "mrs-sports", type: "MERCHANT" as const, brand: "NEXTLEVEL_COMMERCE" as const };
   await db.insert(s.organizations).values([supOrg, memOrg]);
   const supplierId = newId("sup");
   await db.insert(s.suppliers).values({ id: supplierId, organizationId: supOrg.id, name: "Mega Tron", slug: "megatron", businessModel: "SUPERDROP", platformFeePercent: 5, setupFeeCents: 0, city: "São Paulo", state: "SP", walletMpTokenEnc: null });
