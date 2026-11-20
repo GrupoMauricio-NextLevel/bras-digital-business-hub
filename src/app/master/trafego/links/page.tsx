@@ -5,7 +5,6 @@ import { PageHeader } from "@/components/app/page-header";
 import { Badge } from "@/components/ui/badge";
 import { HOLDING_CODE, brandByCode, type BrandCode } from "@/lib/brand";
 import { groupSiteUrl } from "@/lib/host-routing";
-import { negocioAberto } from "@/lib/negocios";
 import { FONTES_PADRAO, MEIOS_PADRAO, listarLinks } from "@/lib/domain/trafego/links";
 import { ROTULO_CANAL, ehCanalPago } from "@/lib/trafego/canal";
 import { diaDeBrasilia } from "@/lib/domain/visitas";
@@ -26,9 +25,8 @@ export default async function TrafegoPage() {
   const s = await requireRole("NEXTLEVEL_MASTER");
   const db = await getDb();
   const links = await listarLinks(db, s.actor);
-  const baseDe = (code: BrandCode) => (code === HOLDING_CODE ? groupSiteUrl() : brandByCode(code).baseUrl).replace(/\/$/, "");
-  const marcas = (["NEXTLEVEL_COMMERCE", HOLDING_CODE, "SUPERDROP", "BRAS_DIGITAL", "NEXTLEVEL_CARGAS"] as BrandCode[])
-    .filter((c) => c === "NEXTLEVEL_COMMERCE" || c === HOLDING_CODE || negocioAberto(c))
+  const baseDe = (code: string) => (code === HOLDING_CODE ? groupSiteUrl() : brandByCode(code).baseUrl).replace(/\/$/, "");
+  const marcas = (["NEXTLEVEL_COMMERCE", HOLDING_CODE] as BrandCode[])
     .map((c) => ({ code: c, nome: c === HOLDING_CODE ? "Grupo NextLevel (Soluções)" : brandByCode(c).name, base: baseDe(c) }));
   const linhas = await Promise.all(links.map(async (l) => {
     const curta = `${baseDe(l.brand)}/l/${l.codigo}`;

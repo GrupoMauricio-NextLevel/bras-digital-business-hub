@@ -6,15 +6,13 @@ import { NAV } from "@/lib/nav";
 
 /** D148: termos e privacidade do grupo em todas as marcas; endereço do grupo só com páginas do grupo; categorias do fornecedor no menu. */
 describe("termos e privacidade do grupo", () => {
-  it("abrem no endereço do grupo e na Cargas; o resto do Master continua indo para a entrada", () => {
+  it("abrem no endereço do grupo; o resto do Master continua indo para a entrada", () => {
     for (const p of ["/termos", "/privacidade", "/solucoes"]) expect(routeHost({ host: "master.nextlevelgroup.com.br", pathname: p }, {})).toEqual({ kind: "next" });
     expect(routeHost({ host: "master.nextlevelgroup.com.br", pathname: "/planos" }, {})).toEqual({ kind: "redirect", url: "/login" });
-    for (const p of ["/termos", "/privacidade"]) expect(routeHost({ host: "cargas.nextlevelgroup.com.br", pathname: p }, {})).toEqual({ kind: "next" });
-    expect(routeHost({ host: "cargas.nextlevelgroup.com.br", pathname: "/planos" }, {})).toEqual({ kind: "redirect", url: "/" });
   });
   it("um texto só para o grupo, com a marca no topo, sem promessa de ganho e com os links entre si", () => {
-    const t = renderToStaticMarkup(<GroupTerms marca="SuperDrop" />);
-    expect(t).toContain("Grupo NextLevel · SuperDrop");
+    const t = renderToStaticMarkup(<GroupTerms marca="NextLevel Commerce" />);
+    expect(t).toContain("Grupo NextLevel · NextLevel Commerce");
     expect(t).toContain("NextLevel Marketing Ltda.");
     expect(t).toContain("Não são promessa de venda");
     expect(t).toContain('href="/privacidade"');

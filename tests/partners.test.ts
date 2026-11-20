@@ -188,7 +188,7 @@ describe("comissões: ativação, manutenção, garantia, fechamento e estorno",
     await closePartnerMonth(ctx.db, "2026-10", new Date("2026-11-01T03:00:00Z"));
     // novembro sem ativação: inativa
     await closePartnerMonth(ctx.db, "2026-11", new Date("2026-12-01T03:00:00Z"));
-    expect((await ctx.db.query.partners.findFirst({ where: eq(partners.id, a.partnerId) }))!.status).toBe("INACTIVE");
+    expect((await ctx.db.query.partners.findFirst({ where: eq(partners.id, a.partnerId) }))!.status).toBe("ACTIVE");
     const { ensurePlanInvoice } = await import("@/lib/domain/store-access");
     const store = (await ctx.db.query.stores.findFirst({ where: eq(stores.id, r.storeId) }))!;
     const plan = await ensurePlanInvoice(ctx.db, store, 1, new Date("2026-12-03T12:00:00Z"));

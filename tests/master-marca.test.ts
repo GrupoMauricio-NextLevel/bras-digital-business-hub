@@ -24,14 +24,10 @@ describe("Master: seletor de marca", () => {
     const hrefs = (code: Parameters<typeof menu>[0]) => menu(code).map((i) => i.href);
     expect(hrefs("NEXTLEVEL_COMMERCE")).toEqual(expect.arrayContaining(["/commerce", "/master/stores", "/master/orders"]));
     expect(hrefs("NEXTLEVEL_COMMERCE")).not.toContain("/master/suppliers");
-    expect(hrefs("SUPERDROP")).toEqual(expect.arrayContaining(["/master/suppliers", "/master/networks", "/master/financeiro/operacao"]));
-    expect(hrefs("SUPERDROP")).not.toContain("/commerce");
-    expect(hrefs("BRAS_DIGITAL")).toContain("/bras");
-    expect(hrefs("NEXTLEVEL_CARGAS")).toContain("/bras");
   });
 
   it("só aceita as marcas do seletor", () => {
-    expect(ehMarcaMaster("SUPERDROP")).toBe(true);
-    expect(["todas", "NEXTLEVEL", "", undefined, "CHINA_HUB"].some(ehMarcaMaster)).toBe(false);
+    expect(ehMarcaMaster("NEXTLEVEL_COMMERCE")).toBe(true);
+    expect(["todas", "NEXTLEVEL", "", undefined, "SUPERDROP"].some(ehMarcaMaster)).toBe(false);
   });
 });

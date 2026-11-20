@@ -13,7 +13,7 @@ import { DEMO_PASSWORD } from "@/db/seed-constants";
 let ctx: Awaited<ReturnType<typeof freshDb>>;
 beforeEach(async () => { ctx = await freshDb(); });
 const commerce = () => brandByCode("NEXTLEVEL_COMMERCE");
-const superdrop = () => brandByCode("SUPERDROP");
+const nextlevel = () => brandByCode("NEXTLEVEL");
 
 async function lojaCommerce() {
   const r = await signupMember(ctx.db, { storeName: "Loja Ju", ownerName: "Juliana", email: "ju@x.teste", password: "senha-segura-1", taxId: "529.982.247-25", brand: "NEXTLEVEL_COMMERCE", independent: true, plan: "COMMERCE_START", cycle: "MONTHLY" });
@@ -85,7 +85,7 @@ describe("trocar de perfil e entrar em outra marca", () => {
     await linkProfile(ctx.db, ju.actor, { email: mantos.email, password: DEMO_PASSWORD, consent: true });
     const fresh = (await ctx.db.query.users.findFirst({ where: eq(users.id, mantos.id) }))!;
     expect((await profileForHost(ctx.db, fresh, commerce()))?.id).toBe(ju.user.id);
-    expect((await profileForHost(ctx.db, fresh, superdrop()))?.id).toBe(mantos.id);
+    expect((await profileForHost(ctx.db, fresh, nextlevel()))).toBeNull(); // marca sem perfil no grupo
   });
 
   it("a barra do ecossistema mostra a marca do outro perfil em 'Suas marcas' (nunca o SuperDrop dentro da Commerce, D164)", async () => {

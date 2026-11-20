@@ -40,11 +40,10 @@ describe("Commerce sem SuperDrop", () => {
     expect(readFileSync(join(process.cwd(), "src/app/master/stores/page.tsx"), "utf8")).toMatch(/r\.brand === "NEXTLEVEL_COMMERCE" \? <span[^>]*>—<\/span> : <StatusBadge value=\{r\.store\.offer\} \/>/);
   });
 
-  it("análise de vendas liberada na Commerce, sem cartão de oferta do SuperDrop (D170)", () => {
-    const perfil = (marca: "NEXTLEVEL_COMMERCE" | "SUPERDROP", offer: "STORE_SUBDOMAIN" | "STORE_OWN") => montarPerfil({ store: { id: "s", offer }, marca, modalidade: marca === "SUPERDROP" ? "NETWORK" : "INDEPENDENT", plano: null, tabela: TABELA_PADRAO, direitos: new Set() });
-    expect(perfil("NEXTLEVEL_COMMERCE", "STORE_SUBDOMAIN").pode.analytics).toBe(true);
-    expect(perfil("SUPERDROP", "STORE_SUBDOMAIN").pode.analytics).toBe(false);
-    expect(perfil("SUPERDROP", "STORE_OWN").pode.analytics).toBe(true);
+  it("análise de vendas liberada na Commerce (D170)", () => {
+    const perfil = (offer: "STORE_SUBDOMAIN" | "STORE_OWN") => montarPerfil({ store: { id: "s", offer }, marca: "NEXTLEVEL_COMMERCE", modalidade: "INDEPENDENT", plano: null, tabela: TABELA_PADRAO, direitos: new Set() });
+    expect(perfil("STORE_SUBDOMAIN").pode.analytics).toBe(true);
+    expect(perfil("STORE_OWN").pode.analytics).toBe(true);
     // A tela da Análise lê o perfil, não a oferta do SuperDrop (D172).
     expect(readFileSync(join(process.cwd(), "src/app/merchant/analytics/page.tsx"), "utf8")).toMatch(/perfil\.pode\.analytics/);
   });

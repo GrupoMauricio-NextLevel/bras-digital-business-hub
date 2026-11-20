@@ -8,17 +8,17 @@ let ctx: Awaited<ReturnType<typeof freshDb>>;
 beforeEach(async () => { ctx = await freshDb(); });
 
 describe("console independente da NextLevel Commerce", () => {
-  it("isola lojas e leads da Commerce e não mistura SuperDrop", async () => {
+  it("isola lojas e leads da Commerce e não mistura a holding NextLevel", async () => {
     await signupMember(ctx.db, {
       storeName: "Commerce One", ownerName: "Ana Commerce", email: "ana.commerce@example.com",
       password: "senha-segura-1", taxId: "111.444.777-35", brand: "NEXTLEVEL_COMMERCE", independent: true,
     } as never);
     await signupMember(ctx.db, {
-      storeName: "SuperDrop One", ownerName: "Bruno Drop", email: "bruno.drop@example.com",
-      password: "senha-segura-1", taxId: "111.444.777-35", brand: "SUPERDROP", independent: true,
+      storeName: "Holding One", ownerName: "Bruno Holding", email: "bruno.holding@example.com",
+      password: "senha-segura-1", taxId: "111.444.777-35", brand: "NEXTLEVEL", independent: true,
     } as never);
     await createBrandLead(ctx.db, { brand: "NEXTLEVEL_COMMERCE", name: "Lead Commerce", email: "commerce@lead.com", phone: "11999990000" } as never);
-    await createBrandLead(ctx.db, { brand: "SUPERDROP", name: "Lead Drop", email: "drop@lead.com", phone: "11999990001" } as never);
+    await createBrandLead(ctx.db, { brand: "NEXTLEVEL", name: "Lead Holding", email: "holding@lead.com", phone: "11999990001" } as never);
 
     const result = await getCommerceConsole(ctx.db, ctx.actors.master);
     expect(result.kpis.stores).toBe(1);

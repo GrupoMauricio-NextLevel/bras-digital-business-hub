@@ -1,4 +1,4 @@
-import { AlertTriangle, BarChart3, CalendarClock, Repeat, TrendingUp, Wallet } from "lucide-react";
+import { AlertTriangle, BarChart3, CalendarClock, Repeat, TrendingUp } from "lucide-react";
 import { getDb } from "@/db/client";
 import { requireRole } from "@/lib/require-session";
 import { corporateOverview } from "@/lib/domain/corporate-metrics";
@@ -7,7 +7,6 @@ import { OperationalPulse } from "@/components/app/operational-pulse";
 import { Card, CardContent } from "@/components/ui/card";
 import { formatBRL } from "@/lib/money";
 import { FinNav } from "./fin-nav";
-import { negocioAberto } from "@/lib/negocios";
 
 export const dynamic = "force-dynamic";
 
@@ -55,8 +54,8 @@ export default async function FinanceiroNextLevel() {
         ].map((k) => <Card key={k.l}><CardContent className="pt-5"><p className="text-xs text-muted-foreground">{k.l}</p><p className="mt-1 text-2xl font-bold tabular-nums">{k.v}</p><p className="text-xs text-muted-foreground">{k.h}</p></CardContent></Card>)}
       </div>
       <SectionTitle title="Composição do MRR" />
-      <div className={`mb-6 grid gap-4 ${negocioAberto("SUPERDROP") ? "sm:grid-cols-3" : ""}`}>
-        {[{ l: "Planos da Commerce", v: o.mrrParts.commerce, i: BarChart3, on: true }, { l: "Lojas SuperDrop pagas", v: o.mrrParts.superdropStores, i: Wallet, on: negocioAberto("SUPERDROP") }, { l: "Mensalidades de fornecedores", v: o.mrrParts.suppliers, i: Wallet, on: negocioAberto("SUPERDROP") }].filter((k) => k.on).map((k) => <Card key={k.l}><CardContent className="pt-5"><p className="text-xs text-muted-foreground">{k.l}</p><p className="mt-1 text-xl font-bold tabular-nums">{formatBRL(k.v)}</p></CardContent></Card>)}
+      <div className="mb-6 grid gap-4">
+        {[{ l: "Planos da Commerce", v: o.mrrParts.commerce, i: BarChart3, on: true }].filter((k) => k.on).map((k) => <Card key={k.l}><CardContent className="pt-5"><p className="text-xs text-muted-foreground">{k.l}</p><p className="mt-1 text-xl font-bold tabular-nums">{formatBRL(k.v)}</p></CardContent></Card>)}
       </div>
       <div className="grid gap-4 lg:grid-cols-2">
         <Bars title="Receita por produto (12 meses)" rows={o.byProduct} />

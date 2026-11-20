@@ -3,7 +3,7 @@ import { headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 import { eq } from "drizzle-orm";
 import { organizations } from "@/db/schema";
-import { brandByCode, brandOfHostStrict } from "@/lib/brand";
+import { brandByCode, brandOfHostStrict, defaultBrandCode, isBrandCode } from "@/lib/brand";
 import { storeOwnerBase } from "@/lib/host-routing";
 import { getDb } from "@/db/client";
 import { getStorefront, getStorefrontCatalog, getStorefrontGlobals, toPublicProduct } from "@/lib/queries/storefront";
@@ -67,7 +67,7 @@ export default async function StoreLayout({ params, children }: { params: Promis
   // Loja do SuperDrop aberta no endereço da Commerce (ou o contrário): vai para o endereço da marca dona, mesmo caminho (D149).
   const h = await headers();
   const path = h.get("x-nl-path");
-  const owner = path ? storeOwnerBase(brandOfHostStrict(h.get("x-forwarded-host") ?? h.get("host"))?.code, org?.brand ?? "SUPERDROP", !!sf.store.showcaseTheme) : null;
+  const owner = path ? storeOwnerBase(brandOfHostStrict(h.get("x-forwarded-host") ?? h.get("host"))?.code, isBrandCode(org?.brand) ? org.brand : defaultBrandCode(), !!sf.store.showcaseTheme) : null;
   if (owner) redirect(`${owner}${path}${h.get("x-nl-search") ?? ""}`);
   const showcase = sf.store.showcaseTheme ? THEME_BY_KEY[sf.store.showcaseTheme] ?? null : null;
   const previewing = !showcase && (!sf.store.publishedAt || sf.store.status !== "ACTIVE" || isBlocked(sf.store));

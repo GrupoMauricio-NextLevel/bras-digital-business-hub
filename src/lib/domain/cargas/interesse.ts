@@ -54,7 +54,7 @@ export async function registerCargasInterest(db: Database, raw: CargasInterestIn
     v.kind !== "IMPORTADORA" ? `RNTRC: ${v.rntrc ? "sim" : "não informado"} · Seguro de carga: ${v.insurance ? "sim" : "não informado"}` : null,
     v.message || null,
   ].filter(Boolean).join("\n");
-  const r = await createBrandLead(db, { brand: "NEXTLEVEL_CARGAS", name: v.name, email: v.email, phone: v.phone, storeName: v.company || undefined, segment: v.kind, message: detalhes.slice(0, 600), affiliateRef });
+  const r = await createBrandLead(db, { brand: "NEXTLEVEL_COMMERCE", name: v.name, email: v.email, phone: v.phone, storeName: v.company || undefined, segment: v.kind, message: detalhes.slice(0, 600), affiliateRef });
   await db.update(brandLeads).set({ needs: [...v.ufs.map((u) => `UF:${u}`), ...v.vehicles.map((x) => `VEICULO:${x}`)], attribution: { origem: "cargas-home" } }).where(eq(brandLeads.id, r.id));
   return r;
 }

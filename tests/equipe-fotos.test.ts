@@ -33,10 +33,9 @@ describe("acervo da equipe", () => {
       expect(`${s.titulo} ${s.texto}`).not.toMatch(/\d|ganh|garant|lucr|fatur/i);
       fotos.add(s.foto);
     }
-    // Marcas de produto com cara própria: Commerce, SuperDrop, Brás e Cargas não repetem a mesma foto.
-    expect(new Set(["NEXTLEVEL_COMMERCE", "SUPERDROP", "BRAS_DIGITAL", "NEXTLEVEL_CARGAS"].map((c) => secaoEquipeDaMarca(c as never, "X").foto)).size).toBe(4);
+    // Marcas de produto com cara própria: Commerce e NextLevel não repetem a mesma foto.
+    expect(new Set(["NEXTLEVEL_COMMERCE", "NEXTLEVEL"].map((c) => secaoEquipeDaMarca(c as never, "X").foto)).size).toBe(2);
     expect(secaoEquipeDaMarca("NEXTLEVEL_COMMERCE", "NextLevel Commerce").texto).toMatch(/^A NextLevel Commerce é desenvolvida/);
-    expect(secaoEquipeDaMarca("SUPERDROP", "SuperDrop").texto).toMatch(/^O SuperDrop é desenvolvido/);
   });
 
   it("a equipe nunca entra nas lojas dos lojistas nem nos temas", () => {

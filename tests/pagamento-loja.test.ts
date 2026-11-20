@@ -14,10 +14,8 @@ async function corpoEnviado(maxParcelas?: number) {
 describe("formas de pagamento da loja (D178)", () => {
   it("só a Commerce aceita cartão, em até 6x", () => {
     expect(lojaAceitaCartao("NEXTLEVEL_COMMERCE")).toBe(true);
-    expect(lojaAceitaCartao("SUPERDROP")).toBe(false);
     expect(lojaAceitaCartao(null)).toBe(false);
     expect(parcelasDaLoja("NEXTLEVEL_COMMERCE")).toBe(6);
-    expect(parcelasDaLoja("SUPERDROP")).toBeUndefined();
     expect(MAX_PARCELAS_LOJA).toBe(6);
   });
 
@@ -28,8 +26,8 @@ describe("formas de pagamento da loja (D178)", () => {
     expect(r.parcelas).toBe(6);
   });
 
-  it("SuperDrop: a preferência continua só Pix (cartão excluído, sem parcelas)", async () => {
-    const r = await corpoEnviado(parcelasDaLoja("SUPERDROP"));
+  it("Commerce: a preferência continua só Pix quando a loja não aceita cartão", async () => {
+    const r = await corpoEnviado(parcelasDaLoja(null));
     expect(r.excluidos).toEqual(expect.arrayContaining(["credit_card", "debit_card", "ticket", "atm", "prepaid_card", "account_money"]));
     expect(r.parcelas).toBeUndefined();
   });

@@ -13,23 +13,19 @@ export type QaArea = { key: string; label: string; host: BrandCode; kind: QaKind
 export const QA_AREAS: QaArea[] = [
   { key: "master", label: "Master", host: "NEXTLEVEL", kind: "PAINEL", access: "Direto, com o seu login de dono." },
   { key: "commerce-admin", label: "Admin Commerce", host: "NEXTLEVEL", kind: "PAINEL", access: "Direto, com o seu login de dono." },
-  { key: "estudio-bras", label: "Estúdio Brás", host: "NEXTLEVEL", kind: "PAINEL", access: "Direto, com o seu login de dono." },
   { key: "fornecedor", label: "Fornecedor", host: "NEXTLEVEL", kind: "PAINEL", access: "Modo suporte: em Clientes e suporte, entre como um fornecedor." },
   { key: "expedicao", label: "Expedição", host: "NEXTLEVEL", kind: "PAINEL", access: "Modo suporte: entre como alguém da expedição." },
-  { key: "lojista", label: "Lojista", host: "NEXTLEVEL", kind: "PAINEL", access: "Modo suporte: entre como um lojista (SuperDrop ou Commerce; o painel muda conforme a loja)." },
+  { key: "lojista", label: "Lojista", host: "NEXTLEVEL", kind: "PAINEL", access: "Modo suporte: entre como um lojista da Commerce." },
   { key: "parceiro", label: "Parceiro", host: "NEXTLEVEL", kind: "PAINEL", access: "Modo suporte: entre como um parceiro." },
-  { key: "membro-bras", label: "Membro Brás", host: "NEXTLEVEL", kind: "PAINEL", access: "Modo suporte: entre como um membro da Brás." },
-  { key: "importadora", label: "Importadora", host: "NEXTLEVEL", kind: "PAINEL", access: "Modo suporte: entre como alguém de uma importadora." },
-  { key: "transportadora", label: "Transportadora", host: "NEXTLEVEL", kind: "PAINEL", access: "Modo suporte: entre como uma transportadora ou ônibus." },
   { key: "conta", label: "Conta", host: "NEXTLEVEL", kind: "PAINEL", access: "Qualquer pessoa logada." },
-  { key: "vitrines", label: "Vitrines das lojas", host: "SUPERDROP", kind: "PUBLICA", access: "Sem login. Informe o endereço de uma loja no exemplo." },
-  { key: "publicas", label: "Páginas públicas", host: "SUPERDROP", kind: "PUBLICA", access: "Sem login. Abra em cada marca pelo seletor de domínio." },
-  { key: "privadas", label: "Links privados", host: "SUPERDROP", kind: "PRIVADA", access: "Só com o link enviado (código no endereço): cole um link real no exemplo." },
+  { key: "vitrines", label: "Vitrines das lojas", host: "NEXTLEVEL_COMMERCE", kind: "PUBLICA", access: "Sem login. Informe o endereço de uma loja no exemplo." },
+  { key: "publicas", label: "Páginas públicas", host: "NEXTLEVEL_COMMERCE", kind: "PUBLICA", access: "Sem login. Abra em cada marca pelo seletor de domínio." },
+  { key: "privadas", label: "Links privados", host: "NEXTLEVEL_COMMERCE", kind: "PRIVADA", access: "Só com o link enviado (código no endereço): cole um link real no exemplo." },
   { key: "demo", label: "Só na demonstração", host: "NEXTLEVEL", kind: "DEMO", access: "Existe só no ambiente de demonstração." },
 ];
 const AREA = Object.fromEntries(QA_AREAS.map((a) => [a.key, a])) as Record<string, QaArea>;
 
-const PRIVATE = [/^\/balcao(-club)?\//, /^\/motorista\//, /^\/redefinir-senha\//, /^\/d\//, /^\/loja-nextlevel\/pedido\//, /^\/store\/\[slug\]\/(proposta|order)\//];
+const PRIVATE = [/^\/redefinir-senha\//, /^\/d\//, /^\/loja-nextlevel\/pedido\//, /^\/store\/\[slug\]\/(proposta|order)\//];
 const under = (r: string, p: string) => r === p || r.startsWith(`${p}/`);
 
 /** Área de um endereço (o mais específico vence). */
@@ -38,14 +34,10 @@ export function areaOf(route: string): QaArea {
   if (PRIVATE.some((re) => re.test(route))) return AREA.privadas!;
   if (under(route, "/master")) return AREA.master!;
   if (under(route, "/commerce")) return AREA["commerce-admin"]!;
-  if (under(route, "/bras")) return AREA["estudio-bras"]!;
   if (under(route, "/supplier/dispatch")) return AREA.expedicao!;
   if (under(route, "/supplier")) return AREA.fornecedor!;
   if (under(route, "/merchant") || under(route, "/theme-editor")) return AREA.lojista!;
   if (under(route, "/partner")) return AREA.parceiro!;
-  if (under(route, "/meu-bras")) return AREA["membro-bras"]!;
-  if (under(route, "/importadora")) return AREA.importadora!;
-  if (under(route, "/transportadora")) return AREA.transportadora!;
   if (under(route, "/account")) return AREA.conta!;
   if (under(route, "/store") || under(route, "/f")) return AREA.vitrines!;
   return AREA.publicas!;

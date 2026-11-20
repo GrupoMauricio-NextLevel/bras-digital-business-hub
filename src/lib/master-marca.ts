@@ -7,9 +7,6 @@ import type { BrandCode } from "@/lib/brand";
 export const MASTER_MARCA_COOKIE = "nl-master-marca";
 export const MASTER_MARCAS = [
   { code: "NEXTLEVEL_COMMERCE", nome: "Commerce" },
-  { code: "SUPERDROP", nome: "SuperDrop" },
-  { code: "BRAS_DIGITAL", nome: "Brás Digital Club" },
-  { code: "NEXTLEVEL_CARGAS", nome: "Cargas" },
 ] as const satisfies readonly { code: BrandCode; nome: string }[];
 export type MarcaMaster = (typeof MASTER_MARCAS)[number]["code"];
 export const ehMarcaMaster = (v: unknown): v is MarcaMaster => MASTER_MARCAS.some((m) => m.code === v);

@@ -14,9 +14,9 @@ import { describeRoutes, routeFromFile } from "../src/lib/qualidade/rotas";
 import { MAP_HOSTS, MAP_HOST_LABEL, cellState, followChain, expectedAt, isMenuRoute, misplaced, sectionOf, type CellState, type MapHost } from "../src/lib/qualidade/mapa";
 
 const BASES: Record<MapHost, string> = process.env.MAPA_BASES ? JSON.parse(process.env.MAPA_BASES) : {
-  NEXTLEVEL: "http://127.0.0.3:3300", SUPERDROP: "http://localhost:3300", NEXTLEVEL_COMMERCE: "http://127.0.0.2:3300", BRAS_DIGITAL: "http://127.0.0.1:3300", NEXTLEVEL_CARGAS: "http://127.0.0.4:3300",
+  NEXTLEVEL: "http://127.0.0.3:3300", NEXTLEVEL_COMMERCE: "http://127.0.0.2:3300",
 };
-const PROD: Record<MapHost, string> = { NEXTLEVEL: "master.nextlevelgroup.com.br", SUPERDROP: "superdrop.com.br", NEXTLEVEL_COMMERCE: "lojas.nextlevelgroup.com.br", BRAS_DIGITAL: "bras.nextlevelgroup.com.br", NEXTLEVEL_CARGAS: "cargas.nextlevelgroup.com.br" };
+const PROD: Record<MapHost, string> = { NEXTLEVEL: "master.nextlevelgroup.com.br", NEXTLEVEL_COMMERCE: "lojas.nextlevelgroup.com.br" };
 const SAMPLE: Record<string, string> = {
   "/store/[slug]": "/store/mrs-sports", "/store/[slug]/catalog": "/store/mrs-sports/catalog", "/store/[slug]/cart": "/store/mrs-sports/cart", "/store/[slug]/checkout": "/store/mrs-sports/checkout",
   "/store/[slug]/acompanhar": "/store/mrs-sports/acompanhar", "/f/[slug]": "/f/mantosshop", "/solucoes/[slug]": "/solucoes/commerce-pro", "/temas/[key]": "/temas/lume",

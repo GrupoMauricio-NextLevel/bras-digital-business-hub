@@ -200,7 +200,7 @@ export async function listSignupSuppliers(db: Database) {
   const closed = closedCommerceBrandCodes();
   const rows = await db.select({ slug: suppliers.slug, name: suppliers.name, status: suppliers.status, brand: organizations.brand }).from(suppliers)
     .innerJoin(organizations, eq(organizations.id, suppliers.organizationId)).where(eq(suppliers.hidden, false));
-  return rows.filter((r) => (r.status === "ACTIVE" || r.status === "WARNING") && !closed.includes(r.brand)).map((r) => ({ slug: r.slug, name: r.name }));
+  return rows.filter((r) => (r.status === "ACTIVE" || r.status === "WARNING") && !closed.some((c) => c === r.brand)).map((r) => ({ slug: r.slug, name: r.name }));
 }
 
 /** Dias inteiros de teste que restam (arredonda para cima; zero quando não há teste ou já acabou). */

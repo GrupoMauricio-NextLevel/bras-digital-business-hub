@@ -3,11 +3,10 @@
  * Vale para portais e painéis; o tema das lojas dos lojistas é do lojista e não passa por aqui.
  * Cada combinação de leitura é conferida em `tests/brand-palette.test.ts` (WCAG AA).
  */
-import { BDC } from "@/lib/marcas/bras-digital-club";
 import { CAPA, NL } from "@/lib/marcas/nextlevel";
 import { EC } from "@/lib/marcas/nextlevel-ecommerce";
 
-export type PaletteCode = "NEXTLEVEL_COMMERCE" | "SUPERDROP" | "BRAS_DIGITAL" | "CREATORS_HUB" | "CHINA_HUB" | "NEXTLEVEL" | "NEXTLEVEL_CARGAS";
+export type PaletteCode = "NEXTLEVEL_COMMERCE" | "NEXTLEVEL";
 
 export type PaletteMode = {
   /** Fundo geral. */
@@ -22,10 +21,6 @@ export type PaletteMode = {
 export type BrandPalette = { light: PaletteMode; dark: PaletteMode; support: string; /** Marca pensada primeiro para o modo escuro (Hub Creators). */ darkFirst: boolean };
 
 /** Sistema de cores v2 (decisão D79; cores de assinatura do pacote de marcas, D152): neutros navy/off-white compartilhados; sinal = cor de assinatura da marca; apoio = amarelo do grupo. */
-const NEU = { light: { paper: "#F4F1E9", ink: "#101B34" }, dark: { paper: "#0B1427", ink: "#F4F1E9" } } as const;
-const pal = (l: [string, string], d: [string, string], support = "#F5BC00"): BrandPalette => ({
-  light: { ...NEU.light, signal: l[0], signalText: l[1] }, dark: { ...NEU.dark, signal: d[0], signalText: d[1] }, support, darkFirst: false,
-});
 export const PALETTES: Record<PaletteCode, BrandPalette> = {
   // NextLevel Commerce v1 (D163): azul de ação como sinal; no escuro, o azul do pacote com o link claro como texto.
   NEXTLEVEL_COMMERCE: {
@@ -33,17 +28,6 @@ export const PALETTES: Record<PaletteCode, BrandPalette> = {
     dark: { paper: EC.escuro.surface, ink: EC.cores.gelo, signal: EC.escuro.action, signalText: EC.escuro.link },
     support: EC.cores.ciano, darkFirst: false,
   },
-  SUPERDROP: pal(["#2D9E3B", "#03721D"], ["#62C268", "#62C268"]),
-  // Brás Digital Club (D158): azul elétrico como sinal; no escuro, o azul de ação claro do pacote (legível como texto).
-  BRAS_DIGITAL: {
-    light: { paper: BDC.cores.offWhite, ink: BDC.cores.navy, signal: BDC.claro.action, signalText: BDC.claro.action },
-    dark: { paper: BDC.escuro.surface, ink: BDC.cores.offWhite, signal: BDC.claro.action, signalText: BDC.escuro.actionHover },
-    support: BDC.cores.ciano, darkFirst: false,
-  },
-  CREATORS_HUB: pal(["#BA327B", "#9E2567"], ["#F975B5", "#F975B5"]),
-  CHINA_HUB: pal(["#008085", "#006B70"], ["#3BBEC5", "#3BBEC5"]),
-  // NextLevel Cargas (D108): índigo de rota, distinto do azul da Commerce e do laranja da Brás.
-  NEXTLEVEL_CARGAS: pal(["#4B4FD8", "#3A3DBE"], ["#9EA2FF", "#9EA2FF"]),
   // NextLevel marca-mãe e Master (D198): roxo de ação da capa como sinal; o turquesa do pacote v2 segue como apoio.
   NEXTLEVEL: {
     light: { paper: CAPA.claro.canvas, ink: CAPA.claro.ink, signal: CAPA.claro.acao, signalText: CAPA.claro.link },

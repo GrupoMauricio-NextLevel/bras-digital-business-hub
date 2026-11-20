@@ -19,7 +19,6 @@ export const dynamic = "force-dynamic";
 
 /** Página de cada marca no Master: saúde do negócio, quem precisa de atenção e atalhos (Grupo → Marca → Cliente). */
 const MARCAS = {
-  superdrop: { code: "SUPERDROP", ctx: PRODUCT_CONTEXTS.superdrop, links: [["Lojas da marca", "/master/stores?marca=SUPERDROP"], ["Fornecedores", "/master/suppliers"], ["Pedidos", "/master/orders"], ["Clientes e suporte", "/master/clientes?marca=SUPERDROP"], ["Parceiros", "/master/partners"], ["Planos", "/master/plans"]] },
   commerce: { code: "NEXTLEVEL_COMMERCE", ctx: PRODUCT_CONTEXTS.commerce, links: [["Console Commerce", "/commerce"], ["Lojas Commerce", "/commerce/stores"], ["Vendas", "/commerce/orders"], ["Interessados", "/commerce/leads"], ["Clientes e suporte", "/master/clientes?marca=NEXTLEVEL_COMMERCE"], ["Planos", "/commerce/plans"]] },
 } as const;
 

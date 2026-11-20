@@ -54,15 +54,12 @@ describe("imagens da auditoria geral", () => {
     expect(FotoOpcional({ marca: "nextlevel", nome: "nl-solucoes-hero", alt: "x" })).not.toBeNull();
   });
 
-  it("faixa do e-mail: endereço completo da própria marca; Brás e Cargas sem faixa", () => {
+  it("faixa do e-mail: endereço completo da própria marca", () => {
     const all = brandsFrom({});
-    expect(emailTopFor(all.SUPERDROP)).toBe(`${all.SUPERDROP.baseUrl}/portal/superdrop/v3/sd-email-topo.jpg`);
     expect(emailTopFor(all.NEXTLEVEL_COMMERCE)).toMatch(/\/portal\/commerce\/v3\/cm-email-topo\.jpg$/);
-    expect(emailTopFor(all.BRAS_DIGITAL)).toBeNull();
-    expect(emailTopFor(all.NEXTLEVEL_CARGAS)).toBeNull();
-    const html = renderHtml({ subject: "Oi", text: "t" }, all.SUPERDROP);
+    expect(emailTopFor(all.NEXTLEVEL)).toMatch(/\/portal\/nextlevel\/v3\/nl-email-topo\.jpg$/);
+    const html = renderHtml({ subject: "Oi", text: "t" }, all.NEXTLEVEL_COMMERCE);
     expect(html).toContain('<img src="https://');
     expect(html).toContain('alt=""');
-    expect(renderHtml({ subject: "Oi", text: "t" }, all.BRAS_DIGITAL)).not.toContain("<img");
   });
 });

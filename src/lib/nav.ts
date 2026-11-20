@@ -55,17 +55,13 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
       { label: "NextLevel Commerce", href: "/commerce", icon: "Globe", group: "Plataformas", onlyBrand: "NEXTLEVEL_COMMERCE", marcas: ["NEXTLEVEL_COMMERCE"] },
       { label: "Dashboard", href: "/master", icon: "LayoutDashboard", exact: true, group: "Operação" },
       { label: "Clientes e suporte", href: "/master/clientes", icon: "LifeBuoy", group: "Operação" },
-      { label: "Fornecedores", href: "/master/suppliers", icon: "Factory", group: "Rede", needs: "dropship", marcas: ["SUPERDROP"] },
-      { label: "Redes", href: "/master/networks", icon: "Network", group: "Rede", needs: "dropship", marcas: ["SUPERDROP"] },
-      { label: "Lojas", href: "/master/stores", icon: "Store", group: "Rede", marcas: ["NEXTLEVEL_COMMERCE", "SUPERDROP"] },
-      { label: "Catálogo", href: "/master/catalog", icon: "Package", group: "Rede", needs: "dropship", marcas: ["SUPERDROP"] },
-      { label: "Pedidos", href: "/master/orders", icon: "ShoppingCart", group: "Operação", marcas: ["NEXTLEVEL_COMMERCE", "SUPERDROP"] },
+      { label: "Lojas", href: "/master/stores", icon: "Store", group: "Rede", marcas: ["NEXTLEVEL_COMMERCE"] },
+      { label: "Pedidos", href: "/master/orders", icon: "ShoppingCart", group: "Operação", marcas: ["NEXTLEVEL_COMMERCE"] },
       { label: "Resumo do dia", href: "/master/summary", icon: "LayoutDashboard", group: "Operação", soTodas: true },
       { label: "Erros do sistema", href: "/master/errors", icon: "Settings", group: "Operação", soTodas: true },
       { label: "Integridade dos dados", href: "/master/integridade", icon: "Settings", group: "Operação", soTodas: true },
       { label: "Central de qualidade", href: "/master/qualidade", icon: "PackageCheck", group: "Operação", soTodas: true },
       { label: "CRM Loja NextLevel", href: "/master/crm", icon: "Inbox", group: "Operação", soTodas: true },
-      { label: "Brás Digital Club", href: "/bras", icon: "Boxes", group: "Plataformas", marcas: ["BRAS_DIGITAL", "NEXTLEVEL_CARGAS"] },
       { label: "Parceiros", href: "/master/partners", icon: "UsersRound", group: "Negócio", needs: "partners" },
       { label: "Agências", href: "/master/agencias", icon: "Network", group: "Negócio", soTodas: true },
       { label: "Escritório virtual", href: "/master/office", icon: "Landmark", group: "Negócio", soTodas: true },
@@ -73,16 +69,13 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
       { label: "Torre do Ecossistema", href: "/master/ecossistema", icon: "Network", group: "Negócio", soTodas: true },
       { label: "Equipe do Master", href: "/master/equipe", icon: "UsersRound", group: "Negócio", soTodas: true },
       { label: "Financeiro NextLevel", href: "/master/financeiro", icon: "Landmark", group: "Negócio" },
-      { label: "Financeiro SuperDrop", href: "/master/financeiro/operacao", icon: "Wallet", group: "Negócio", needs: "dropship", marcas: ["SUPERDROP"] },
-      { label: "Templates", href: "/master/templates", icon: "LayoutTemplate", group: "Negócio", marcas: ["NEXTLEVEL_COMMERCE", "SUPERDROP"] },
-      { label: "Planos", href: "/master/plans", icon: "CreditCard", group: "Negócio", marcas: ["SUPERDROP"] },
+      { label: "Templates", href: "/master/templates", icon: "LayoutTemplate", group: "Negócio", marcas: ["NEXTLEVEL_COMMERCE"] },
 
       { label: "Configurações", href: "/master/settings", icon: "Settings", group: "Negócio", soTodas: true },
     ],
     quick: [
-      { label: "Novo fornecedor", href: "/master/suppliers/new", icon: "Factory" },
-      { label: "Fechar competência", href: "/master/financeiro/operacao?tab=invoices", icon: "Wallet" },
-      { label: "Simulador de ganhos", href: "/master/financeiro/operacao?tab=simulator", icon: "BarChart3" },
+      { label: "Fechar competência", href: "/master/financeiro?tab=invoices", icon: "Wallet" },
+      { label: "Simulador de ganhos", href: "/master/financeiro?tab=simulator", icon: "BarChart3" },
     ],
   },
   SUPPLIER_ADMIN: {
@@ -159,34 +152,14 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
   BRAS_MEMBER: {
     base: "/meu-bras",
     label: "Membro Brás Digital Club",
-    items: [
-      { label: "Início", href: "/meu-bras", icon: "Home", exact: true, group: "Meu Brás" },
-      // Rede aberta (D160): importadoras, distribuidores e atacadistas aprovados, por categoria e polo.
-      { label: "Fornecedores", href: "/meu-bras/fornecedores", icon: "Factory", group: "Meu Brás" },
-      { label: "Descobertas", href: "/meu-bras/videos", icon: "LayoutGrid", group: "Meu Brás" },
-      { label: "Meus pedidos", href: "/meu-bras/pedidos", icon: "ReceiptText", group: "Meu Brás" },
-      { label: "Fretes", href: "/meu-bras/fretes", icon: "Truck", group: "Meu Brás" },
-      { label: "Indique e ganhe", href: "/meu-bras/club", icon: "Ticket", group: "Meu Brás" },
-      { label: "Meu Contador", href: "/meu-bras/meu-contador", icon: "ReceiptText", group: "Meu Brás" },
-      { label: "Suporte", href: "/meu-bras/suporte", icon: "LifeBuoy", group: "Meu Brás" },
-      { label: "Meu perfil", href: "/meu-bras/perfil", icon: "UsersRound", group: "Conta" },
-      { label: "Minha empresa", href: "/meu-bras/empresa", icon: "Settings", group: "Conta" },
-    ],
+    items: [],
     quick: [],
   },
   // Painel da importadora parceira da Brás (D110): login próprio, só a própria importadora.
   BRAS_IMPORTER: {
     base: "/importadora",
     label: "Importadora Brás Digital Club",
-    items: [
-      { label: "Hoje", href: "/importadora", icon: "Home", exact: true, group: "Operação", bottom: true },
-      { label: "Pedidos", href: "/importadora/pedidos", icon: "Inbox", group: "Operação", bottom: true },
-      { label: "Transportadoras", href: "/importadora/transportadoras", icon: "Truck", group: "Operação" },
-      { label: "Indique e ganhe", href: "/importadora/indicacoes", icon: "Ticket", group: "Conta" },
-      { label: "Produtos e caixas", href: "/importadora/produtos", icon: "Package", group: "Catálogo", bottom: true },
-      { label: "Estoque", href: "/importadora/estoque", icon: "Boxes", group: "Catálogo" },
-      { label: "Galpões, equipe e ficha", href: "/importadora/galpoes", icon: "Factory", group: "Conta" },
-    ],
+    items: [],
     quick: [],
   },
   // Painel da Agência (D313, D325), reorganizado em gavetas (D327): cada gaveta responde uma pergunta do dia, na ordem do dia.
@@ -220,15 +193,7 @@ export const NAV: Record<Role, { base: string; label: string; items: NavItem[]; 
   CARRIER: {
     base: "/transportadora",
     label: "Transportadora NextLevel Cargas",
-    items: [
-      { label: "Hoje", href: "/transportadora", icon: "Home", exact: true, group: "Cargas", bottom: true },
-      { label: "Cargas", href: "/transportadora/cargas", icon: "Truck", group: "Cargas", bottom: true },
-      { label: "Rotas e viagens", href: "/transportadora/rotas", icon: "Clock", group: "Cargas" },
-      { label: "Importadoras na rede", href: "/transportadora/importadoras", icon: "Store", group: "Cargas" },
-      { label: "Indique e ganhe", href: "/transportadora/indicacoes", icon: "Ticket", group: "Conta" },
-      { label: "Extrato", href: "/transportadora/extrato", icon: "ReceiptText", group: "Financeiro", bottom: true },
-      { label: "Perfil e motorista", href: "/transportadora/perfil", icon: "Settings", group: "Conta" },
-    ],
+    items: [],
     quick: [],
   },
   AFFILIATE: {
@@ -418,23 +383,7 @@ export const COMMERCE_ADMIN_NAV: NavItem[] = [
 ];
 
 /** Estúdio da Brás Digital (D92): área do Master com menu, nome e cor da Brás. */
-export const BRAS_ADMIN_NAV: NavItem[] = [
-  { label: "Visão geral", href: "/bras/visao", icon: "LayoutDashboard", group: "Operação" },
-  { label: "Pedidos", href: "/bras", icon: "Inbox", exact: true, group: "Operação", bottom: true },
-  { label: "Comissões", href: "/bras/comissoes", icon: "HandCoins", group: "Operação" },
-  { label: "Atendimento", href: "/bras/atendimento", icon: "LifeBuoy", group: "Operação" },
-  { label: "Descobertas", href: "/bras/descobertas", icon: "LayoutGrid", group: "Catálogo", bottom: true },
-  { label: "Importadoras", href: "/bras/importadoras", icon: "Factory", group: "Catálogo" },
-  { label: "Pauta de conteúdo", href: "/bras/pauta", icon: "Megaphone", group: "Catálogo" },
-  { label: "Transportadoras (Cargas)", href: "/bras/transportadoras", icon: "Truck", group: "Catálogo" },
-  { label: "Ônibus de excursão", href: "/bras/excursao", icon: "Truck", group: "Catálogo" },
-  { label: "Empresas do grupo", href: "/bras/grupo", icon: "Landmark", group: "Configuração" },
-  { label: "Indicações e pontos", href: "/bras/club", icon: "Ticket", group: "Pessoas" },
-  { label: "Meu Contador", href: "/bras/meu-contador", icon: "ReceiptText", group: "Operação" },
-  { label: "Membros", href: "/bras/membros", icon: "Users", group: "Pessoas", bottom: true },
-  { label: "Acesso e planos", href: "/bras/acesso", icon: "Lock", group: "Pessoas" },
-  { label: "Planos e regras", href: "/bras/regras", icon: "Settings", group: "Configuração" },
-];
+export const BRAS_ADMIN_NAV: NavItem[] = [];
 
 /** Menu da marca do endereço: tira o que a marca não usa (ex.: fornecedores e redes na NextLevel Commerce) e o que é de outra marca. */
 /** Menu do Master filtrado pela marca escolhida no seletor (R2). Sem marca = tudo. Itens sem `marcas` são comuns. */

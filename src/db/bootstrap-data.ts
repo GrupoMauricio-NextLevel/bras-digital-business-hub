@@ -6,11 +6,9 @@ import { seedDatabase } from "./seed";
 import { seedShowcase } from "./showcase";
 import { seedCommerceDemo } from "./commerce-demo";
 import { seedCommerceRichDemo } from "./commerce-demo-rich";
-import { applyLaunchBranding, seedDemoPartner, seedDemoSuppliers } from "./demo-suppliers";
+import { applyLaunchBranding, seedDemoPartner } from "./demo-suppliers";
 import { syncThemeCatalog } from "@/lib/themes/catalog";
-import { seedDemoCargas } from "./demo-cargas";
 import { seedDemoAgencia } from "./demo-agencia";
-import { seedDemoBras } from "./demo-bras";
 import { seedDemoFamily } from "./demo-familia";
 import { turnEverythingOnInDemo } from "./demo-ligar-tudo";
 import { ensureShowcaseStores } from "@/lib/themes/showcase";
@@ -33,7 +31,7 @@ export async function bootstrapDatabase(db: Database, opts: BootstrapOptions): P
 
   if (opts.seedDemo) {
     if (orgCount === 0) {
-      await seedDatabase(db); await seedShowcase(db); await seedDemoSuppliers(db);
+      await seedDatabase(db); await seedShowcase(db);
       // Marca de banco de demonstração (D144): só um banco com esta marca pode ser apagado pelo "Recomeçar do zero".
       await db.insert(platformSettings).values({ key: DEMO_MARKER_KEY, value: { createdAt: new Date().toISOString() } }).onConflictDoNothing();
       log.push("seed de demonstração aplicado (inclui a vitrine Mega Tron / MRS Sports e as páginas Alpha Outfit e MantosShop)");
@@ -43,9 +41,7 @@ export async function bootstrapDatabase(db: Database, opts: BootstrapOptions): P
     if (await seedCommerceDemo(db)) log.push("conta de demonstração da Commerce criada (lojista@commerce.demo)");
     if (await seedCommerceRichDemo(db)) log.push("loja de teste completa da Commerce criada (completo@commerce.demo)");
     await seedDemoPartner(db);
-    if (await seedDemoCargas(db)) log.push("transportadoras fictícias de demonstração (Ouro, Prata e Bronze) criadas");
     if (await seedDemoAgencia(db)) log.push("agência fictícia de demonstração criada (agencia@agencia.demo)");
-    if (await seedDemoBras(db, (m) => log.push(m))) log.push("ambiente de gravação: Brás, transportadora, ônibus, Club, Meu Contador e equipe do Master");
     for (const l of await ensureShowcaseStores(db)) log.push(l);
     const family = await seedDemoFamily(db);
     if (family.length) log.push(`perfis da família criados (${family.length}): Samuel e Danielle`);

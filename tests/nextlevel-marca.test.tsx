@@ -61,12 +61,10 @@ describe("NextLevel v2: identidade", () => {
     expect(contrastRatio("#FFFFFF", l.primary)).toBeGreaterThanOrEqual(4.5);
     // Produtos seguem com a cor de assinatura e o amarelo do grupo como destaque (não foram recoloridos).
     expect([themeColors("commerce", "light").primary, themeColors("superdrop", "light").primary, themeColors("cargas", "light").primary]).toEqual(["#294CDC", "#118728", "#4B4FD8"]);
-    expect(themeColors("superdrop", "light").accent).toBe("#F5BC00");
-    expect(themeColors("bras", "light").primary).toBe("#315CFF");
-    for (const k of ["commerce", "superdrop", "bras", "cargas"] as const) expect(themeCss(k).split("}").filter((r) => r.includes(`data-ds-theme="${k}"`)).join("}")).not.toContain(NL.claro.action);
+    expect(themeColors("nextlevel", "light").primary).toBe("#673DE6");
+    for (const k of ["commerce", "nextlevel"] as const) expect(themeCss(k).split("}").filter((r) => r.includes(`data-ds-theme="${k}"`)).join("}")).not.toContain(NL.claro.action);
     expect(nlCssVars()).toContain("--nlg-marinho:#070F22");
     expect(paletteOf("NEXTLEVEL").light.signal).toBe(CAPA.claro.acao);
-    expect(paletteOf("SUPERDROP").light.signal).toBe("#2D9E3B");
   });
 
   it("ícones: NextLevel e marcas sem favicon próprio usam os da marca-mãe v2; SuperDrop, Commerce e Brás seguem com os delas", () => {

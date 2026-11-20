@@ -1,4 +1,3 @@
-import { negocioAberto } from "@/lib/negocios";
 import { EC_TECH } from "@/components/portal/commerce/fontes-ec";
 import { FaixaBlack } from "@/components/black/faixa-black";
 import { blackAgora } from "@/lib/domain/campanha-black";
@@ -39,7 +38,7 @@ export default async function PortalLayout({ children }: { children: React.React
   const [solucoes, lojaNl] = await Promise.all([groupLink("/solucoes"), groupLink("/loja-nextlevel")]);
   const nav: PublicNavItem[] = brand.soon ? [] : holding
     // D219: no ecossistema público só entram as marcas já liberadas (as mesmas abertas no Master); as outras ficam bloqueadas até serem concluídas.
-    ? [{ href: "/solucoes", label: "Soluções" }, ...(negocioAberto("BRAS_DIGITAL") ? [{ href: "/club", label: "Club" }] : []), ...(negocioAberto("SUPERDROP") ? [{ href: `${site("SUPERDROP")}/`, label: "SuperDrop" }] : []), { href: `${site("NEXTLEVEL_COMMERCE")}/`, label: "Commerce" }, ...(negocioAberto("BRAS_DIGITAL") && brandByCode("BRAS_DIGITAL").live ? [{ href: `${site("BRAS_DIGITAL")}/`, label: "Brás Digital Club" }] : []), ...(negocioAberto("NEXTLEVEL_CARGAS") ? [{ href: `${site("NEXTLEVEL_CARGAS")}/`, label: "Cargas" }] : [])]
+    ? [{ href: "/solucoes", label: "Soluções" }, { href: `${site("NEXTLEVEL_COMMERCE")}/`, label: "Commerce" }]
     : cargas
     ? [{ href: "/#beneficios", label: "Para transportadoras" }, { href: "/#importadoras", label: "Para importadoras" }, { href: "/#como-funciona", label: "Como funciona" }, { href: "/#planos", label: "Planos" }, { href: "/#duvidas", label: "Dúvidas" }]
     : closed

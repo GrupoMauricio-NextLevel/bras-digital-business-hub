@@ -231,7 +231,7 @@ export async function SuperDropHomeV4({ faq, solucoes, previa = false }: { faq: 
       </section>
 
       {/* 7b. Quem está por trás (D179): equipe real na sede. */}
-      <SecaoEquipe code="SUPERDROP" nomeDaMarca="SuperDrop" className="bg-surface text-foreground">
+      <SecaoEquipe code="NEXTLEVEL_COMMERCE" nomeDaMarca="SuperDrop" className="bg-surface text-foreground">
         <Link className="text-link underline underline-offset-4" href={solucoes}>Conheça o Grupo NextLevel</Link>
       </SecaoEquipe>
 

@@ -19,7 +19,7 @@ export default async function CadastroParceiro({ searchParams }: { searchParams:
   const ec = brand.code === "NEXTLEVEL_COMMERCE";
   const perfil = (PERFIL_LISTA as readonly string[]).includes(pedido ?? "") ? (pedido as PerfilCaptacao) : "criador";
   return (
-    <PartnerShell tech={brand.code === "NEXTLEVEL_COMMERCE"} photo={brand.code === "SUPERDROP" ? { src: "/portal/superdrop/v3/pa-parceiros-hero.webp", position: "50% 35%" } : undefined} program={`Parceiros ${brand.name}`} title="Crie sua conta de parceiro" intro={ec ? "Cadastro gratuito em 4 passos. O seu link fica pronto assim que você entrar." : "Cadastro gratuito. Seus links e cupons ficam prontos assim que você entrar."}>
+    <PartnerShell tech={brand.code === "NEXTLEVEL_COMMERCE"} program={`Parceiros ${brand.name}`} title="Crie sua conta de parceiro" intro={ec ? "Cadastro gratuito em 4 passos. O seu link fica pronto assim que você entrar." : "Cadastro gratuito. Seus links e cupons ficam prontos assim que você entrar."}>
       {ec ? <CandidaturaEc termsVersion={s.termsVersion} inicial={perfil} /> : <PartnerSignupForm termsVersion={s.termsVersion} />}
       <p className="mt-8 text-sm text-body">Já é parceiro? <Link href="/parceiros/entrar" className="font-semibold text-foreground underline underline-offset-2">Entrar</Link></p>
     </PartnerShell>

@@ -57,8 +57,8 @@ describe("central de aplicativos", () => {
     expect(on.map((a) => `${a.nome} ${a.descricao}`).join(" ")).not.toMatch(/garant|lucro certo|ganhe/i);
   });
 
-  it("novidades da Commerce trazem as ondas novas; o SuperDrop não vê as que não tem", () => {
+  it("novidades da Commerce trazem as ondas novas; a marca-mãe não vê as que não tem", () => {
     expect(novidadesDa("NEXTLEVEL_COMMERCE").map((n) => n.titulo)).toContain("Migrar e anunciar");
-    expect(novidadesDa("SUPERDROP").map((n) => n.titulo)).not.toContain("Migrar e anunciar");
+    expect(novidadesDa("NEXTLEVEL").map((n) => n.titulo)).not.toContain("Migrar e anunciar");
   });
 });

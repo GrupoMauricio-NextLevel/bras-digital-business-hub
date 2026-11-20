@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { Factory, LifeBuoy, Store, UsersRound } from "lucide-react";
+import { LifeBuoy, Store, UsersRound } from "lucide-react";
 import { PageHeader } from "@/components/app/page-header";
 import { OperationalPulse } from "@/components/app/operational-pulse";
 import { DataTable } from "@/components/app/data-table";
@@ -8,7 +8,7 @@ import { EmptyState } from "@/components/app/empty-state";
 import { Badge } from "@/components/ui/badge";
 import { SupportEnterButton } from "@/components/support/support-enter";
 import { getDb } from "@/db/client";
-import { negocioAberto, negociosAbertos } from "@/lib/negocios";
+import { negociosAbertos } from "@/lib/negocios";
 import { requireRole } from "@/lib/require-session";
 import { CLIENT_ROLE_LABEL, listClients, listSupportHistory } from "@/lib/domain/support";
 import { brandByCode, isBrandCode } from "@/lib/brand";
@@ -33,7 +33,6 @@ export default async function ClientesPage({ searchParams }: { searchParams: Pro
       <PageHeader eyebrow="Suporte" title="Clientes" description={`Encontre qualquer cliente ${abertos.length > 1 ? "dos negócios abertos" : `da ${abertos[0]?.nome ?? "plataforma"}`} e veja o painel exatamente como ele vê, em modo suporte registrado.`} />
       <OperationalPulse className="mb-5" items={[
         { label: "Lojistas", value: count("STORE_OWNER"), icon: Store, tone: "neutral", hint: "donos e equipes de loja" },
-        ...(negocioAberto("SUPERDROP") ? [{ label: "Fornecedores", value: count("SUPPLIER_ADMIN") + count("SUPPLIER_DISPATCH"), icon: Factory, tone: "neutral" as const, hint: "gestão e expedição" }] : []),
         { label: "Parceiros", value: count("AFFILIATE"), icon: UsersRound, tone: "neutral", hint: "programa de parceiros" },
         { label: "Com alerta", value: rows.filter((r) => r.alerts.length).length, icon: LifeBuoy, tone: rows.some((r) => r.alerts.length) ? "warning" : "success", hint: "suspensos, pendentes ou encerrados" },
       ]} />
@@ -41,7 +40,7 @@ export default async function ClientesPage({ searchParams }: { searchParams: Pro
         <FilterBar>
           <SearchInput placeholder="Nome, e-mail, loja ou fornecedor…" />
           {abertos.length > 1 ? <FilterChips param="marca" allLabel={marca && !sp.marca ? `Só ${brandByCode(marca).name}` : "Todos os negócios"} options={[{ value: "todas", label: "Todos os negócios" }, ...abertos.map((n) => ({ value: n.code, label: n.nome }))]} /> : null}
-          <FilterChips param="papel" allLabel="Todos os papéis" options={Object.entries(CLIENT_ROLE_LABEL).filter(([value]) => negocioAberto("SUPERDROP") || !value.startsWith("SUPPLIER")).map(([value, label]) => ({ value, label }))} />
+          <FilterChips param="papel" allLabel="Todos os papéis" options={Object.entries(CLIENT_ROLE_LABEL).filter(([value]) => !value.startsWith("SUPPLIER")).map(([value, label]) => ({ value, label }))} />
         </FilterBar>
       </Suspense>
       <DataTable

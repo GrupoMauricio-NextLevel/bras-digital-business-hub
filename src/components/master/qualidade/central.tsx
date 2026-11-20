@@ -29,7 +29,7 @@ const FILTERS: { key: Filter; label: string }[] = [
   { key: "todas", label: "Todas" }, { key: "pendentes", label: "Pendentes" }, { key: "testadas", label: "Testadas" }, { key: "aprovadas", label: "Aprovadas" },
   { key: "concluidas", label: "Testadas e aprovadas" }, { key: "problema", label: "Com problema" }, { key: "falta", label: "Falta algo (imagem, texto…)" }, { key: "falhou", label: "Falhou na checagem" },
 ];
-const HOSTS: { key: "auto" | BrandCode; label: string }[] = [{ key: "auto", label: "Automático (pela área)" }, { key: "NEXTLEVEL", label: "Master" }, { key: "SUPERDROP", label: "SuperDrop" }, { key: "NEXTLEVEL_COMMERCE", label: "Commerce" }];
+const HOSTS: { key: "auto" | BrandCode; label: string }[] = [{ key: "auto", label: "Automático (pela área)" }, { key: "NEXTLEVEL", label: "Master" }, { key: "NEXTLEVEL_COMMERCE", label: "Commerce" }];
 const AREA = Object.fromEntries(QA_AREAS.map((a) => [a.key, a])) as Record<string, QaArea>;
 const KPI = "grid min-w-0 content-start gap-1 rounded-xl border border-border bg-surface p-2.5 sm:p-3";
 /** Legenda dos números: some no celular para a área de trabalho aparecer logo. */

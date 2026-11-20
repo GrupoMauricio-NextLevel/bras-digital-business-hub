@@ -12,7 +12,7 @@ import { rateLimit } from "@/lib/rate-limit";
 export async function cargasInterestAction(input: CargasInterestInput) {
   return runAction(async () => {
     const brand = await getBrand();
-    if (brand.code !== "NEXTLEVEL_CARGAS") throw new DomainError("BRAND", "Cadastro disponível no endereço da NextLevel Cargas.");
+    if ((brand.code as string) !== "NEXTLEVEL_CARGAS") throw new DomainError("BRAND", "Cadastro disponível no endereço da NextLevel Cargas.");
     const ip = (await headers()).get("x-forwarded-for")?.split(",")[0]?.trim() ?? "0.0.0.0";
     if (!rateLimit(`cargas:${ip}`, 6, 60 * 60_000)) throw new DomainError("RATE_LIMIT", "Muitas tentativas. Tente de novo em alguns minutos.");
     const ref = (await cookies()).get("nl-ref")?.value;

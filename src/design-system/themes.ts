@@ -99,8 +99,7 @@ export const THEME_INPUTS: Record<ThemeKey, ThemeInput> = {
 
 /** Marca do sistema (código de `src/lib/brand.ts`) → tema. Marca desconhecida cai na holding. */
 export const THEME_FOR_BRAND: Record<string, ThemeKey> = {
-  NEXTLEVEL: "nextlevel", NEXTLEVEL_COMMERCE: "commerce", SUPERDROP: "superdrop",
-  BRAS_DIGITAL: "bras", CREATORS_HUB: "creators", CHINA_HUB: "china", NEXTLEVEL_CARGAS: "cargas",
+  NEXTLEVEL: "nextlevel", NEXTLEVEL_COMMERCE: "commerce",
 };
 export const themeKeyForBrand = (code: string | null | undefined): ThemeKey => THEME_FOR_BRAND[code ?? ""] ?? "nextlevel";
 

@@ -28,13 +28,13 @@ describe("mapa das telas", () => {
   it("classifica por área, dá nome e preenche o exemplo", () => {
     expect(areaOf("/supplier/dispatch/print").key).toBe("expedicao");
     expect(areaOf("/supplier/orders").key).toBe("fornecedor");
-    expect(areaOf("/balcao/[token]").key).toBe("privadas");
+    expect(areaOf("/redefinir-senha/[token]").key).toBe("privadas");
     expect(areaOf("/store/[slug]/cart").key).toBe("vitrines");
     expect(areaOf("/faq").key).toBe("publicas");
     expect(areaOf("/gravacao").key).toBe("demo");
     expect(labelOf("/master/clientes")).toBe("Clientes e suporte");
-    expect(hostOf("/termos")).toBe("SUPERDROP"); // termos do grupo em todas as marcas (D148)
-    expect(hostOf("/faq")).toBe("SUPERDROP");
+    expect(hostOf("/termos")).toBe("NEXTLEVEL_COMMERCE"); // termos do grupo em todas as marcas (D148)
+    expect(hostOf("/faq")).toBe("NEXTLEVEL_COMMERCE");
     expect(labelOf("/master/financeiro/precos")).toBe("Preços do grupo");
     expect(fillRoute("/store/[slug]/product/[productSlug]", "mantos-shop/camisa-azul")).toBe("/store/mantos-shop/product/camisa-azul");
     expect(fillRoute("/store/[slug]", "https://superdrop.com.br/store/arena-10?x=1")).toBe("/store/arena-10?x=1");
@@ -78,19 +78,19 @@ describe("marcação das telas", () => {
 
 describe("checagens", () => {
   it("domínios: no ar, fora do ar e 'responde mas não é o sistema'", async () => {
-    const env = { BRAND_DOMAINS_SUPERDROP: "superdrop.com.br", RENDER_GIT_COMMIT: "abc1234def" } as Record<string, string>;
+    const env = { BRAND_DOMAINS_NEXTLEVEL_COMMERCE: "nextlevelcommerce.com.br", BRAND_DOMAINS_NEXTLEVEL: "master.nextlevelgroup.com.br", RENDER_GIT_COMMIT: "abc1234def" } as Record<string, string>;
     const targets = domainTargets(env);
-    expect(targets.some((t) => t.origin === "https://superdrop.com.br")).toBe(true);
+    expect(targets.some((t) => t.origin === "https://nextlevelcommerce.com.br")).toBe(true);
     const fake = async (url: string) => {
-      if (url.startsWith("https://superdrop.com.br")) return new Response(JSON.stringify({ ok: true, version: "abc1234", migration: "0066" }), { status: 200 });
-      if (url.startsWith("https://chinahubglobal")) return new Response("<html>parado</html>", { status: 200 });
+      if (url.startsWith("https://nextlevelcommerce.com.br")) return new Response(JSON.stringify({ ok: true, version: "abc1234", migration: "0066" }), { status: 200 });
+      if (url.startsWith("https://master.nextlevelgroup.com.br")) return new Response("<html>parado</html>", { status: 200 });
       throw new Error("sem conexão");
     };
     const r = await checkDomains(ctx.db, ctx.actors.master, fake, env);
-    const sd = r.results.find((x) => x.key === "https://superdrop.com.br")!;
+    const sd = r.results.find((x) => x.key === "https://nextlevelcommerce.com.br")!;
     expect(sd.ok).toBe(true);
     expect(sd.detail).toContain("versão abc1234");
-    expect(r.results.find((x) => x.key.includes("chinahubglobal"))!.detail).toContain("não é o sistema");
+    expect(r.results.find((x) => x.key.includes("master.nextlevelgroup.com.br"))!.detail).toContain("não é o sistema");
     expect(r.failed).toBeGreaterThan(0);
     expect((await ctx.db.select().from(qaRuns)).length).toBe(1);
   });

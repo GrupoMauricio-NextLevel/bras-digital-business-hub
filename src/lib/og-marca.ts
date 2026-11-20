@@ -7,13 +7,10 @@ import type { Brand, BrandCode } from "@/lib/brand";
  * o nome, a frase e a cor da marca (`/og/<marca>.png`). Nunca a arte de outra marca (antes, todo endereço usava a do SuperDrop).
  */
 const ARTE: Partial<Record<BrandCode, string[]>> = {
-  SUPERDROP: ["portal/superdrop/v3/sd-og-portal.jpg", "portal/superdrop/v3/sd-og-portal.png", "og/superdrop.png"],
   // NextLevel Commerce (D163): logo Prisma escura do pacote sobre o marinho (a arte v3 tinha a logo antiga).
   NEXTLEVEL_COMMERCE: ["marcas/nextlevel-ecommerce/og-1200x630.jpg"],
   // NextLevel v2 (D161): cartão social do pacote da marca (achatado sobre o marinho; o PNG original tem transparência).
   NEXTLEVEL: ["marcas/nextlevel/v2/social/og-nextlevel-1200x630.jpg"],
-  // Brás Digital Club (D158): peça 3D do pacote com a logo escura com slogan (gerada dos arquivos oficiais).
-  BRAS_DIGITAL: ["marcas/bras-digital-club/og-1200x630.jpg"],
 };
 
 export function ogImageFor(brand: Pick<Brand, "code" | "name">): { url: string; width: number; height: number; alt: string } {

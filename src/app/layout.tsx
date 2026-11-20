@@ -8,9 +8,8 @@ import { getBrand } from "@/lib/brand-server";
 import { brandCssVars } from "@/lib/brand-palette";
 import { getThemeKey } from "@/lib/theme-server";
 import { brandIcons } from "@/components/brand/brand-logo";
-import { BDC, BDC_ICONES } from "@/lib/marcas/bras-digital-club";
-import { NL, NL_ICONES } from "@/lib/marcas/nextlevel";
 import { EC, EC_ICONES } from "@/lib/marcas/nextlevel-ecommerce";
+import { NL, NL_ICONES } from "@/lib/marcas/nextlevel";
 import { robotsForBrandPortal } from "@/lib/bras/visibility";
 import { THEME_PREPAINT_SCRIPT, themeCss } from "@/design-system/themes";
 
@@ -25,8 +24,6 @@ export async function generateMetadata(): Promise<Metadata> {
     title: { default: brand.name, template: `%s · ${brand.name}` },
     description: `${brand.name}: ${brand.description} Plataforma da NextLevel Marketing.`,
     icons: brandIcons(brand.code),
-    // Brás Digital Club (D158) e NextLevel v2 (D161): manifesto com os ícones 192/512 do pacote. As outras marcas seguem sem manifesto.
-    ...(brand.code === BDC.code ? { manifest: BDC_ICONES.manifest, twitter: { card: "summary_large_image", title: brand.name, description: BDC.tagline, images: [ogImageFor(brand).url] } } : {}),
     ...(brand.code === EC.code ? { manifest: EC_ICONES.manifest } : {}),
     ...(brand.code === NL.code ? { manifest: NL_ICONES.manifest, twitter: { card: "summary_large_image", title: `${NL.name} · ${NL.supportLine.toLowerCase().replace(/^\w/, (c) => c.toUpperCase())}`, description: NL.tagline, images: [ogImageFor(brand).url] } } : {}),
     // Prévia de link da própria marca (antes um arquivo único com a arte do SuperDrop valia para todos os endereços).
@@ -38,10 +35,9 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-/** Cor da barra do navegador: a do grupo; a Brás Digital Club e a NextLevel v2 usam o marinho delas nos dois modos. */
+/** Cor da barra do navegador: a do grupo; a NextLevel v2 usa o marinho dela nos dois modos. */
 export async function generateViewport(): Promise<Viewport> {
   const brand = await getBrand();
-  if (brand.code === BDC.code) return { width: "device-width", initialScale: 1, themeColor: BDC.cores.navy };
   if (brand.code === NL.code) return { width: "device-width", initialScale: 1, themeColor: NL.cores.marinho };
   if (brand.code === EC.code) return { width: "device-width", initialScale: 1, themeColor: [{ media: "(prefers-color-scheme: light)", color: EC.cores.gelo }, { media: "(prefers-color-scheme: dark)", color: EC.cores.marinho }] };
   return { width: "device-width", initialScale: 1, themeColor: [{ media: "(prefers-color-scheme: light)", color: "#F4F1E9" }, { media: "(prefers-color-scheme: dark)", color: "#0B1427" }] };

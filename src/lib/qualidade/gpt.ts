@@ -13,7 +13,7 @@ export type ImageBrand = "superdrop" | "commerce" | "bras" | "nextlevel";
 export type ImageRequest = { file: string; brand: ImageBrand; ratio: string; scene: string; where: string };
 
 export const imageBrandOf = (host: BrandCode): ImageBrand =>
-  host === "SUPERDROP" ? "superdrop" : host === "NEXTLEVEL_COMMERCE" ? "commerce" : host === "BRAS_DIGITAL" ? "bras" : "nextlevel";
+  host === "NEXTLEVEL_COMMERCE" ? "commerce" : "nextlevel";
 
 const ACCENT: Record<ImageBrand, string> = {
   superdrop: "VERDE (#2D9E3B)",

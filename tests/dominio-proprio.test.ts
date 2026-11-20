@@ -34,8 +34,6 @@ describe("domínio próprio: regras puras", () => {
     const tabela = { ...TABELA_PADRAO, COMMERCE_START: TABELA_PADRAO.COMMERCE_START.filter((f) => f !== "customDomain") };
     const p = montarPerfil({ store: { id: "s", offer: "STORE_SUBDOMAIN" }, marca: "NEXTLEVEL_COMMERCE", modalidade: "INDEPENDENT", plano: { productKey: "COMMERCE_START", status: "active" }, tabela, direitos: new Set() });
     expect(p.pode.customDomain).toBe(true);
-    const sd = montarPerfil({ store: { id: "s", offer: "STORE_SUBDOMAIN" }, marca: "SUPERDROP", modalidade: "INDEPENDENT", plano: null, tabela, direitos: new Set() });
-    expect(sd.pode.customDomain).toBe(false); // SuperDrop sem mudança
   });
 });
 

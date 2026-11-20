@@ -2,7 +2,7 @@ import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { groupLinkFor } from "@/lib/host-routing";
 import { MASTER_MARCA_COOKIE, ehMarcaMaster, marcasAtivasNoMaster, type MarcaMaster } from "@/lib/master-marca";
-import { HOLDING_CODE, brandByCode, brandForHost, brandOfHostStrict, brandPreviewAllowed, isBrandCode, type Brand, type BrandCode } from "@/lib/brand";
+import { HOLDING_CODE, brandForHost, brandOfHostStrict, brandPreviewAllowed, isBrandCode, type Brand, type BrandCode } from "@/lib/brand";
 
 /** Cookie do modo prévia: `/lojas` liga a NextLevel Commerce num endereço que ainda não é dela. Só na demonstração (D149). */
 export const BRAND_PREVIEW_COOKIE = "nl-brand";
@@ -17,8 +17,6 @@ export async function groupLink(path: string): Promise<string> {
 export async function getBrand(): Promise<Brand> {
   const h = await headers();
   const brand = brandForHost(h.get("x-forwarded-host") ?? h.get("host"));
-  // Só o endereço da marca padrão aceita a prévia; o endereço próprio de cada marca sempre manda.
-  if (brand.code === "SUPERDROP" && brandPreviewAllowed() && (await cookies()).get(BRAND_PREVIEW_COOKIE)?.value === "NEXTLEVEL_COMMERCE") return brandByCode("NEXTLEVEL_COMMERCE");
   return brand;
 }
 

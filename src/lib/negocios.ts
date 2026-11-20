@@ -16,11 +16,6 @@ export type Negocio = { code: BrandCode; nome: string; sigla: string; descritor:
 export const NEGOCIOS: Negocio[] = [
   { code: "NEXTLEVEL_COMMERCE", nome: "Commerce", sigla: "E", descritor: "Lojas virtuais", ctx: "commerce", temArea: true },
   { code: "NEXTLEVEL", nome: "Soluções", sigla: "So", descritor: "Agência de marketing e soluções", ctx: "master", temArea: false },
-  { code: "SUPERDROP", nome: "SuperDrop", sigla: "S", descritor: "Distribuição e dropshipping", ctx: "superdrop", temArea: true },
-  { code: "BRAS_DIGITAL", nome: "Brás Digital Club", sigla: "B", descritor: "Atacado B2B", ctx: "bras", temArea: true },
-  { code: "NEXTLEVEL_CARGAS", nome: "Cargas", sigla: "C", descritor: "Transporte e coletas", ctx: "cargas", temArea: true },
-  { code: "CREATORS_HUB", nome: "Creators", sigla: "Cr", descritor: "Creators e social commerce", ctx: "creators", temArea: false },
-  { code: "CHINA_HUB", nome: "China Hub", sigla: "CH", descritor: "Brasil e China", ctx: "china", temArea: false },
 ];
 
 /** O próximo negócio a entrar no Master (decisão do dono, 2026-10-29): a NextLevel Soluções. */

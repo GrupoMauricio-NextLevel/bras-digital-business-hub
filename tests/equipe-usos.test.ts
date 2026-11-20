@@ -45,7 +45,7 @@ describe("textos em nome do CEO", () => {
   it("sem número, sem promessa de ganho, uma frase por marca", () => {
     const textos = [...CARTA_DO_FUNDADOR, ...BRAND_CODES.map(fraseDoCeo)];
     for (const t of textos) expect(t, t).not.toMatch(/\d|ganh|lucr|garant|fatur|renda|milion|rico/i);
-    expect(new Set(["NEXTLEVEL_COMMERCE", "SUPERDROP", "BRAS_DIGITAL", "NEXTLEVEL_CARGAS"].map((c) => fraseDoCeo(c as never))).size).toBe(4);
+    expect(new Set(["NEXTLEVEL_COMMERCE", "NEXTLEVEL"].map((c) => fraseDoCeo(c as never))).size).toBe(2);
   });
 
   it("recado de boas-vindas: 14 primeiros dias e só até a primeira venda paga", () => {

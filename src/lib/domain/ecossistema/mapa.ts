@@ -1,6 +1,6 @@
 import { and, count, desc, eq, isNull, ne } from "drizzle-orm";
 import type { Database } from "@/db/client";
-import { bdMembers, errorEvents, orders, organizations, qaRuns, stores, trCarriers, users } from "@/db/schema";
+import { errorEvents, orders, organizations, qaRuns, stores, users } from "@/db/schema";
 import { brandsFrom, type BrandCode } from "@/lib/brand";
 import { SALE_SUM, SALE_WHERE } from "@/lib/queries/master";
 import { requireMasterFn, type Actor } from "../access";
@@ -29,14 +29,13 @@ export type MapaEcossistema = {
   motor: { errosAbertos: number; ultimaConferencia: string | null };
 };
 
-/** Ordem do foco 60/25/15 (D174): Commerce, SuperDrop, Brás, Cargas; depois as que estão em preparação. */
-export const ORDEM_MARCAS = ["NEXTLEVEL_COMMERCE", "SUPERDROP", "BRAS_DIGITAL", "NEXTLEVEL_CARGAS", "CREATORS_HUB", "CHINA_HUB"] as const satisfies readonly BrandCode[];
+/** Ordem do foco: a Commerce, a marca em produção. */
+export const ORDEM_MARCAS = ["NEXTLEVEL_COMMERCE"] as const satisfies readonly BrandCode[];
 const ROTULO_PAPEL: Record<string, string> = {
   STORE_OWNER: "Lojistas e equipe", SUPPLIER_ADMIN: "Fornecedores", SUPPLIER_DISPATCH: "Expedição", AFFILIATE: "Parceiros",
-  BRAS_MEMBER: "Membros", BRAS_IMPORTER: "Importadoras", CARRIER: "Transportadoras e ônibus",
 };
 const HREF: Partial<Record<BrandCode, string>> = {
-  NEXTLEVEL_COMMERCE: "/commerce", SUPERDROP: "/master/stores?marca=SUPERDROP", BRAS_DIGITAL: "/bras", NEXTLEVEL_CARGAS: "/bras/transportadoras",
+  NEXTLEVEL_COMMERCE: "/commerce",
 };
 const DIA = 86_400_000;
 
@@ -59,12 +58,10 @@ const origem = (url: string) => { try { return new URL(url).origin; } catch { re
 export async function mapaDoEcossistema(db: Database, actor: Actor, agora = new Date(), env: Record<string, string | undefined> = process.env): Promise<MapaEcossistema> {
   requireMasterFn(actor, ["COMERCIAL"]);
   const brands = brandsFrom(env);
-  const [lojas, vendas, papeis, membros, transportadoras, [dominios], erros, presenca] = await Promise.all([
+  const [lojas, vendas, papeis, [dominios], erros, presenca] = await Promise.all([
     db.select({ brand: organizations.brand, n: count() }).from(stores).innerJoin(organizations, eq(organizations.id, stores.organizationId)).where(isNull(stores.showcaseTheme)).groupBy(organizations.brand),
     db.select({ brand: organizations.brand, n: count(), gmv: SALE_SUM() }).from(orders).innerJoin(stores, eq(stores.id, orders.storeId)).innerJoin(organizations, eq(organizations.id, stores.organizationId)).where(SALE_WHERE()).groupBy(organizations.brand),
     db.select({ brand: organizations.brand, role: users.role, n: count() }).from(users).innerJoin(organizations, eq(organizations.id, users.organizationId)).where(and(isNull(users.disabledAt), ne(users.role, "NEXTLEVEL_MASTER"))).groupBy(organizations.brand, users.role),
-    db.select({ n: count() }).from(bdMembers),
-    db.select({ n: count() }).from(trCarriers),
     db.select().from(qaRuns).where(eq(qaRuns.kind, "DOMINIOS")).orderBy(desc(qaRuns.createdAt)).limit(1),
     db.select({ route: errorEvents.route, context: errorEvents.context }).from(errorEvents).where(isNull(errorEvents.resolvedAt)),
     presenceByDocument(db),
@@ -76,16 +73,16 @@ export async function mapaDoEcossistema(db: Database, actor: Actor, agora = new 
   const marcas = ORDEM_MARCAS.map((code): NoMarca => {
     const b = brands[code];
     const noAr = b.live && !b.soon;
-    const clientes = code === "BRAS_DIGITAL" ? membros[0]?.n ?? 0 : code === "NEXTLEVEL_CARGAS" ? transportadoras[0]?.n ?? 0 : porMarca(lojas, code).reduce((s, r) => s + r.n, 0);
-    const v = code === "NEXTLEVEL_COMMERCE" || code === "SUPERDROP" ? porMarca(vendas, code).reduce((s, r) => ({ pedidos: s.pedidos + r.n, gmv: s.gmv + Number(r.gmv) }), { pedidos: 0, gmv: 0 }) : null;
+    const clientes = porMarca(lojas, code).reduce((s, r) => s + r.n, 0);
+    const v = code === "NEXTLEVEL_COMMERCE" ? porMarca(vendas, code).reduce((s, r) => ({ pedidos: s.pedidos + r.n, gmv: s.gmv + Number(r.gmv) }), { pedidos: 0, gmv: 0 }) : null;
     const r = resultado.get(origem(b.baseUrl));
     const site: SiteMarca = r ? { ok: r.ok, quando: dominios!.createdAt, detalhe: r.ok ? null : r.detail } : { ok: null, quando: null, detalhe: null };
     // Erro aberto "da marca": rota de painel ou contexto que cite a marca (só contagem).
-    const chave = code === "NEXTLEVEL_COMMERCE" ? /\/commerce|e-?commerce/i : code === "SUPERDROP" ? /superdrop|\/supplier/i : code === "BRAS_DIGITAL" ? /\/bras|\/meu-bras|\/importadora|\/balcao/i : code === "NEXTLEVEL_CARGAS" ? /\/transportadora|\/motorista|cargas/i : null;
+    const chave = code === "NEXTLEVEL_COMMERCE" ? /\/commerce|e-?commerce/i : null;
     const errosAbertos = chave ? erros.filter((e) => chave.test(e.route) || chave.test(e.context ?? "")).length : 0;
     return {
       code, nome: b.name, cor: b.accentColor, endereco: b.baseUrl, noAr, clientes,
-      rotuloClientes: code === "BRAS_DIGITAL" ? "membros" : code === "NEXTLEVEL_CARGAS" ? "transportadoras" : "lojas",
+      rotuloClientes: "lojas",
       vendas: v,
       usuariosPorPapel: porMarca(papeis, code).map((p) => ({ papel: p.role, rotulo: ROTULO_PAPEL[p.role] ?? p.role, n: p.n })).sort((a, z) => z.n - a.n),
       site, saude: saudeDaMarca({ noAr, site, errosAbertos, clientes, vendas: v ? v.pedidos : null }, agora),

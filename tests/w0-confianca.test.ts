@@ -140,7 +140,7 @@ describe("verificação em duas etapas", () => {
 describe("o que mudou", () => {
   it("cada marca vê só as novidades dela", () => {
     const ec = novidadesDa("NEXTLEVEL_COMMERCE").map((n) => n.titulo);
-    const sd = novidadesDa("SUPERDROP").map((n) => n.titulo);
+    const sd = novidadesDa("NEXTLEVEL").map((n) => n.titulo);
     expect(ec).toContain("Cartão em até 6 vezes na sua loja");
     expect(sd).not.toContain("Cartão em até 6 vezes na sua loja");
     expect(sd).toContain("Veja a conta da sua taxa");

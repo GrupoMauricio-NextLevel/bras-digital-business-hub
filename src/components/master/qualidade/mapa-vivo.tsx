@@ -23,7 +23,7 @@ const SHOW: { key: Show; label: string }[] = [
   { key: "tudo", label: "Tudo" }, { key: "fora", label: "Fora do lugar" }, { key: "falhou", label: "Erro ao abrir" },
   { key: "sem", label: "Ainda não checado" }, { key: "problema", label: "Marcado com problema" }, { key: "pendentes", label: "Falta testar ou aprovar" },
 ];
-const SHORT: Record<MapHost, string> = { NEXTLEVEL: "MA", SUPERDROP: "SD", NEXTLEVEL_COMMERCE: "CM", BRAS_DIGITAL: "BD", NEXTLEVEL_CARGAS: "CG" };
+const SHORT: Record<MapHost, string> = { NEXTLEVEL: "MA", NEXTLEVEL_COMMERCE: "CM" };
 const TONE: Record<CellState, string> = {
   ABRE: "border-success text-success", LOGIN: "border-border text-muted-foreground", INICIO: "border-info text-info", OUTRO: "border-info text-info",
   "404": "border-danger text-danger", ERRO: "border-danger text-danger",
@@ -154,7 +154,7 @@ function PageRow({ p, hostUrls, pathOf, onSave }: { p: TreePage; hostUrls: Recor
   const path = pathOf(p.route);
   const why = new Map<string, string[]>();
   for (const h of MAP_HOSTS) { const m = p.cells[h]?.misplaced; if (m) why.set(m, [...(why.get(m) ?? []), MAP_HOST_LABEL[h]]); }
-  const home: MapHost = p.kind === "PAINEL" ? "NEXTLEVEL" : (MAP_HOSTS.find((h) => p.cells[h]?.state === "ABRE") ?? "SUPERDROP");
+  const home: MapHost = p.kind === "PAINEL" ? "NEXTLEVEL" : (MAP_HOSTS.find((h) => p.cells[h]?.state === "ABRE") ?? "NEXTLEVEL_COMMERCE");
   const toggle = (k: keyof Patch) => onSave(p.route, { [k]: !p[k] });
   return (
     <li className="grid gap-2 p-2.5 text-sm lg:grid-cols-[minmax(0,1fr)_auto_auto] lg:items-center">

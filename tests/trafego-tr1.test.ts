@@ -141,9 +141,8 @@ describe("links rastreados", () => {
     expect(montarDestino(l, new URLSearchParams("gclid=<script>"))).toBe("/?utm_source=meta&utm_medium=pago&utm_campaign=2026-12-x");
   });
 
-  it("/l/ abre em todos os endereços de marca, como /r/ e /c/", () => {
+  it("/l/ abre nos endereços de marca, como /r/ e /c/", () => {
     expect(routeHost({ host: "superdrop.com.br", pathname: "/l/bio" }, {})).toEqual({ kind: "next" });
-    expect(routeHost({ host: "cargas.nextlevelgroup.com.br", pathname: "/l/bio" }, {})).toEqual({ kind: "next" });
     expect(routeHost({ host: "nextlevelgroup.com.br", pathname: "/l/bio" }, { GROUP_SITE_URL: "https://nextlevelgroup.com.br" })).toEqual({ kind: "next" });
   });
 });

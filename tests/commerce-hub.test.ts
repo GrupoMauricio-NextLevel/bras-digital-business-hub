@@ -13,7 +13,7 @@ describe("hub da marca no Master", () => {
   it("conta só as lojas e interessados da marca, e separa conta simples", async () => {
     await signupMember(ctx.db, { storeName: "Moda Brás", ownerName: "Maria Souza", email: "maria@modabras.com.br", password: "senha-segura-1", taxId: CPF, brand: "NEXTLEVEL_COMMERCE", independent: true } as never);
     await createBrandLead(ctx.db, { brand: "NEXTLEVEL_COMMERCE", name: "João Lojista", email: "joao@x.com.br", phone: "11958784061" } as never);
-    await createBrandLead(ctx.db, { brand: "SUPERDROP", name: "Outro", email: "o@x.com.br", phone: "11958784061" } as never);
+    await createBrandLead(ctx.db, { brand: "NEXTLEVEL", name: "Outro", email: "o@x.com.br", phone: "11958784061" } as never);
     const hub = await getBrandHub(ctx.db, ctx.actors.master, "NEXTLEVEL_COMMERCE", env);
     expect(hub.kpis.stores).toBe(1); expect(hub.kpis.independent).toBe(1);
     // D90: cliente novo da Commerce entra na oferta de entrada (3 dias grátis), não direto no bloqueio.

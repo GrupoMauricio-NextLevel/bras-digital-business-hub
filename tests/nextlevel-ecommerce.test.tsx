@@ -44,9 +44,8 @@ describe("NextLevel Commerce", () => {
     const l = themeColors("commerce", "light"), d = themeColors("commerce", "dark");
     expect([l.primary, l.ink, l.canvas, d.canvas, d.primary, d.ring]).toEqual([EC.claro.action, EC.cores.marinho, EC.claro.surfaceMuted, EC.escuro.surface, EC.escuro.action, EC.escuro.focus]);
     for (const c of [l, d]) for (const [a, b, min] of READABLE_PAIRS) expect(contrastRatio(c[a], c[b]), `${a}/${b}`).toBeGreaterThanOrEqual(min);
-    expect(themeColors("superdrop", "light").primary).toBe("#118728");
     expect(themeColors("nextlevel", "light").primary).toBe("#673DE6"); // roxo da capa (D198)
-    for (const k of ["superdrop", "bras", "nextlevel", "cargas"] as const) expect(themeCss(k).split("}").filter((r) => r.includes(`data-ds-theme="${k}"`)).join("}")).not.toContain(EC.claro.action);
-    expect(paletteOf("SUPERDROP").light.signal).toBe("#2D9E3B");
+    for (const k of ["nextlevel"] as const) expect(themeCss(k).split("}").filter((r) => r.includes(`data-ds-theme="${k}"`)).join("}")).not.toContain(EC.claro.action);
+    expect(paletteOf("NEXTLEVEL_COMMERCE").light.signal).toBe(EC.claro.action);
   });
 });

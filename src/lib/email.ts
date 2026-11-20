@@ -11,7 +11,7 @@ import { timeoutSignal } from "@/lib/http-timeout";
 import { statSync } from "node:fs";
 import { join } from "node:path";
 
-export type EmailInput = { kind: string; to: string; subject: string; text: string; cta?: { label: string; url: string }; /** Assina com nome e foto do CEO (D179). */ ceo?: boolean; dedupeKey?: string; /** Marca do remetente; sem ela vale a marca padrão. */ brand?: BrandCode | null; /** Anexos (D276: cópia do contrato aceito). O conteúdo vai em base64 e não é guardado no registro de e-mails. */ attachments?: { filename: string; contentBase64: string }[] };
+export type EmailInput = { kind: string; to: string; subject: string; text: string; cta?: { label: string; url: string }; /** Assina com nome e foto do CEO (D179). */ ceo?: boolean; dedupeKey?: string; /** Marca do remetente; sem ela vale a marca padrão. */ brand?: string | null; /** Anexos (D276: cópia do contrato aceito). O conteúdo vai em base64 e não é guardado no registro de e-mails. */ attachments?: { filename: string; contentBase64: string }[] };
 
 /** Troca {marca} pelo nome da marca (os modelos de texto não trazem nome fixo). */
 const brandize = (t: string, b: Brand) => t.replaceAll("{marca}", b.name);
@@ -23,11 +23,10 @@ const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replac
 export type GroupFooter = { segments: { name: string; color: string }[] };
 const groupFooterHtml = (g: GroupFooter) => `<tr><td style="padding:14px 24px 0"><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>${g.segments.map((s) => `<td style="height:6px;background:${s.color}"></td>`).join("")}</tr></table><p style="margin:10px 0 0;font-size:13px;color:#374151">Grupo NextLevel: ${g.segments.map((s) => esc(s.name)).join(" · ")}.</p></td></tr>`;
 /**
- * Faixa no topo do e-mail (lote E da auditoria de imagens, 1200×300 em JPG: e-mail não lê AVIF). Só SuperDrop, Commerce e
+ * Faixa no topo do e-mail (lote E da auditoria de imagens, 1200×300 em JPG: e-mail não lê AVIF). Só Commerce e
  * NextLevel têm faixa; sem o arquivo no servidor, o e-mail sai como antes (só a barra com o nome da marca).
  */
 const EMAIL_TOPO: Partial<Record<BrandCode, string>> = {
-  SUPERDROP: "portal/superdrop/v3/sd-email-topo.jpg",
   NEXTLEVEL_COMMERCE: "portal/commerce/v3/cm-email-topo.jpg",
   NEXTLEVEL: "portal/nextlevel/v3/nl-email-topo.jpg",
 };
@@ -94,9 +93,9 @@ export async function sendEmail(db: Database, m: EmailInput, fetchImpl: typeof f
 }
 
 /** Destinatários por tenant: donos da loja, administradores do fornecedor ou o parceiro. */
-export async function recipientsOf(db: Database, t: { storeId?: string | null; supplierId?: string | null; partnerId?: string | null }): Promise<{ email: string; brand: BrandCode }[]> {
-  const out = new Map<string, BrandCode>();
-  const add = (rows: { email: string; brand: BrandCode }[]) => { for (const r of rows) out.set(r.email, r.brand); };
+export async function recipientsOf(db: Database, t: { storeId?: string | null; supplierId?: string | null; partnerId?: string | null }): Promise<{ email: string; brand: string }[]> {
+  const out = new Map<string, string>();
+  const add = (rows: { email: string; brand: string }[]) => { for (const r of rows) out.set(r.email, r.brand); };
   const cols = { email: users.email, brand: organizations.brand };
   if (t.storeId) add(await db.select(cols).from(users).innerJoin(organizations, eq(organizations.id, users.organizationId)).where(and(eq(users.storeId, t.storeId), eq(users.role, "STORE_OWNER"))));
   else if (t.supplierId) add(await db.select(cols).from(users).innerJoin(organizations, eq(organizations.id, users.organizationId)).where(and(eq(users.supplierId, t.supplierId), inArray(users.role, ["SUPPLIER_ADMIN"]))));
@@ -105,7 +104,7 @@ export async function recipientsOf(db: Database, t: { storeId?: string | null; s
 }
 
 /** Marca da organização de um usuário (para e-mails que não vêm de um cadastro na hora). */
-export async function brandOfUser(db: Database, userId: string): Promise<BrandCode> {
+export async function brandOfUser(db: Database, userId: string): Promise<string> {
   const r = await db.select({ brand: organizations.brand, role: users.role }).from(users).innerJoin(organizations, eq(organizations.id, users.organizationId)).where(eq(users.id, userId)).limit(1);
   // Equipe do Master assina como o grupo (D285).
   if (r[0]?.role === "NEXTLEVEL_MASTER") return "NEXTLEVEL";
@@ -120,7 +119,7 @@ export async function notifyTenant(db: Database, t: Parameters<typeof recipients
 }
 
 /** Endereço público: APP_URL (se definido, vale para tudo) ou o da marca informada. */
-const app = (b?: BrandCode | null) => (process.env.APP_URL ?? process.env.URL ?? brandByCode(b).baseUrl).replace(/\/$/, "");
+const app = (b?: string | null) => (process.env.APP_URL ?? process.env.URL ?? brandByCode(b).baseUrl).replace(/\/$/, "");
 const brl = (c: number) => (c / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 const sign = "\n\n— Equipe NextLevel";
 

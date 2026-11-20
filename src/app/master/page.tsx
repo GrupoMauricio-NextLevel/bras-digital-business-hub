@@ -27,16 +27,15 @@ export default async function MasterDashboard() {
   // Master trancado na Commerce (D200): a primeira tela é a "Agora".
   if ((await marcaDoMaster()) === "NEXTLEVEL_COMMERCE") redirect("/master/agora");
   const db = await getDb();
-  const [overview, orders, snap, sdStores, cmStores] = await Promise.all([
+  const [overview, orders, snap, cmStores] = await Promise.all([
     getPlatformOverview(),
     listOrdersForActor(db, session.actor, { limit: 6 }),
     loadTowerSnapshot(db),
-    listStoresWithPlan({ marca: "SUPERDROP" }),
     listStoresWithPlan({ marca: "NEXTLEVEL_COMMERCE" }),
   ]);
   // Cada cartão de negócio mostra só os números daquela marca (mesma conta da página da marca e da lista de lojas).
   const brandNumbers = (rows: Awaited<ReturnType<typeof listStoresWithPlan>>) => ({ gmv: rows.reduce((s, r) => s + r.gmv, 0), sales: rows.reduce((s, r) => s + r.orderCount, 0), stores: rows.length, active: rows.filter((r) => r.store.status === "ACTIVE").length });
-  const sd = brandNumbers(sdStores), cm = brandNumbers(cmStores);
+  const cm = brandNumbers(cmStores);
   const alerts = buildAlerts(snap);
   const urgent = alerts.filter((a) => a.severity === "danger").length;
   const firstName = session.user.name.split(" ")[0];
@@ -54,19 +53,11 @@ export default async function MasterDashboard() {
       <section className="mb-6" aria-labelledby="business-title">
         <SectionTitle title="Seus negócios" description="Cada negócio mantém sua operação e seu contexto." action={<Link href="/master/mapa" className="text-sm font-semibold text-link underline">Ver o mapa do ecossistema</Link>} />
         <div className="grid gap-3">
-        <BusinessPortal product={PRODUCT_CONTEXTS.superdrop} attention={alerts.length ? alerts.length + " situação(ões) na operação" : "Operação sem alertas críticos"} metrics={[
-          { label: "Vendas pagas", value: formatCompactBRL(sd.gmv) },
-          { label: "Pedidos pagos", value: sd.sales },
-          { label: "Lojas", value: `${sd.active} de ${sd.stores} no ar` },
-        ]} />
         <BusinessPortal product={PRODUCT_CONTEXTS.commerce} metrics={[
           { label: "Vendas pagas", value: formatCompactBRL(cm.gmv) },
           { label: "Pedidos pagos", value: cm.sales },
           { label: "Lojas", value: `${cm.active} de ${cm.stores} no ar` },
         ]} />
-        <BusinessPortal product={PRODUCT_CONTEXTS.bras} metrics={[{ label: "Modelo", value: "B2B" }, { label: "Mercado", value: "Atacado" }, { label: "Estado", value: "Preparação" }]} />
-        <BusinessPortal product={PRODUCT_CONTEXTS.creators} metrics={[{ label: "Modelo", value: "Creators" }, { label: "Canal", value: "Social" }, { label: "Estado", value: "Preparação" }]} />
-        <BusinessPortal product={PRODUCT_CONTEXTS.china} metrics={[{ label: "Modelo", value: "Cross-border" }, { label: "Mercado", value: "Brasil ↔ China" }, { label: "Estado", value: "Preparação" }]} />
               </div>
       </section>
       <div className="ds-grid ds-grid--main mb-6">

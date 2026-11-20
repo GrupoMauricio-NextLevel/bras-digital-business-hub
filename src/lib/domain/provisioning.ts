@@ -94,7 +94,7 @@ export async function createStore(db: Database, supplierId: string | null, raw: 
   const email = input.ownerEmail.toLowerCase();
   await ensureEmailFree(db, email);
   let network: typeof networks.$inferSelect | undefined;
-  let brand = input.brand ?? defaultBrandCode();
+  let brand: string = input.brand ?? defaultBrandCode();
   if (supplierId) {
     network = await db.query.networks.findFirst({ where: eq(networks.supplierId, supplierId) });
     const supplierOrg = await db.query.suppliers.findFirst({ where: eq(suppliers.id, supplierId) }).then((sp) => sp ? db.query.organizations.findFirst({ where: eq(organizations.id, sp.organizationId) }) : null);
@@ -109,7 +109,7 @@ export async function createStore(db: Database, supplierId: string | null, raw: 
   await db.transaction(async (tx) => {
     slug = await uniqueSlug(tx, input.slug ?? input.name, "stores");
     const orgId = newId("org");
-    await tx.insert(organizations).values({ id: orgId, name: input.name, slug: await uniqueSlug(tx, input.name, "organizations"), type: "MERCHANT", brand });
+    await tx.insert(organizations).values({ id: orgId, name: input.name, slug: await uniqueSlug(tx, input.name, "organizations"), type: "MERCHANT", brand: brand as (typeof organizations.$inferInsert)["brand"] });
     await tx.insert(stores).values({ id: storeId, organizationId: orgId, networkId: network?.id ?? null, name: input.name, slug, offer: input.offer, formato: input.formato, status: "PENDING_PAYMENT", tagline: input.tagline, whatsapp: input.whatsapp, logoText: input.name.split(" ").map((p) => p[0]).join("").slice(0, 3).toUpperCase() });
     await tx.insert(users).values({ id: newId("usr"), name: input.ownerName, email, role: "STORE_OWNER", organizationId: orgId, storeId, passwordHash: hashPassword(temporaryPassword), mustChangePassword: true });
     const plan = (await tx.select().from(plans).where(eq(plans.key, input.offer)).limit(1))[0] ?? (await tx.select().from(plans).orderBy(plans.priceCents).limit(1))[0];

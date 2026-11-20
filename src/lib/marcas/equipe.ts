@@ -47,12 +47,6 @@ export function secaoEquipeDaMarca(code: BrandCode, nomeDaMarca: string): SecaoE
   switch (code) {
     case "NEXTLEVEL_COMMERCE":
       return { foto: "eq-loja-com-cliente", titulo: "Gente de verdade por trás da sua loja.", texto: `A ${feita} Se preferir não montar sozinho, a equipe monta a loja com você.` };
-    case "SUPERDROP":
-      return { foto: "eq-boas-vindas", titulo: "Gente de verdade do outro lado.", texto: `O ${nomeDaMarca} é desenvolvido e operado pela NextLevel Marketing, com equipe própria na nossa sede em São Paulo.` };
-    case "BRAS_DIGITAL":
-      return { foto: "eq-gravacao", titulo: "Quem faz o Club, de perto.", texto: `O ${nomeDaMarca} é desenvolvido e operado pela NextLevel Marketing, com equipe própria e estúdio de gravação na nossa sede em São Paulo.` };
-    case "NEXTLEVEL_CARGAS":
-      return { foto: "eq-reuniao-mesa", titulo: "Uma equipe acompanhando cada carga.", texto: `A ${feita}` };
     default:
       return { foto: "eq-mauricio-escritorio", titulo: "Um grupo com casa, equipe e dono.", texto: "A NextLevel Marketing Ltda. desenvolve e opera todas as marcas do grupo, com equipe própria na nossa sede em São Paulo." };
   }

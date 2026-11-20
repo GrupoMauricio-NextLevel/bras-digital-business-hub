@@ -2,7 +2,7 @@ import { and, desc, eq, gte, sql } from "drizzle-orm";
 import { z } from "zod";
 import type { Database } from "@/db/client";
 import { linksCliquesDiarios, linksRastreados } from "@/db/schema";
-import { BRAND_CODES, type BrandCode } from "@/lib/brand";
+import { BRAND_CODES } from "@/lib/brand";
 import { newId } from "@/lib/ids";
 import { canalDe, CLICK_IDS, type Canal } from "@/lib/trafego/canal";
 import { type Actor, requireMasterFn } from "../access";
@@ -140,7 +140,7 @@ export async function cliquesPorDia(db: Database, actor: Actor, id: string, dias
  * Os identificadores de clique que a Meta/Google puseram no endereço (fbclid, gclid...) seguem junto, para o proxy guardar.
  * Link inexistente ou desligado: null (a rota leva à página inicial). Nunca lança.
  */
-export async function resolverClique(db: Database, codigoBruto: string, req: { robo: boolean; busca?: URLSearchParams }, agora = new Date()): Promise<{ brand: BrandCode; caminho: string } | null> {
+export async function resolverClique(db: Database, codigoBruto: string, req: { robo: boolean; busca?: URLSearchParams }, agora = new Date()): Promise<{ brand: string; caminho: string } | null> {
   try {
     const codigo = codigoBruto.toLowerCase();
     if (!CODIGO.test(codigo)) return null;

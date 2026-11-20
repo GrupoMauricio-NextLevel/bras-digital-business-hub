@@ -3,12 +3,10 @@ import type { Database } from "@/db/client";
 import { experiments } from "@/db/schema";
 import { brandsFrom } from "@/lib/brand";
 import { finFlag } from "@/lib/finance/flags";
-import { brasPanelsEnabled } from "@/lib/bras/panels";
 import { requireMasterFn, type Actor } from "./access";
 import { launchRoadmap } from "./precos/roteiro";
 import { getProposal } from "./precos/proposta";
 import { getNextLevelMp } from "./nextlevel-billing";
-import { getExcursionRules } from "./cargas/regras-excursao";
 import { SUGESTOES, revisaoDesligados, type RegistroDecisao, type Sugestao } from "./revisao-desligados";
 
 /**
@@ -28,15 +26,15 @@ const set = (env: Record<string, string | undefined>, k: string) => !!env[k]?.tr
 
 export async function readyButOff(db: Database, actor: Actor, env: Record<string, string | undefined> = process.env, now = new Date()): Promise<OffGroup[]> {
   requireMasterFn(actor, []);
-  const [roadmap, proposal, mp, excursion, [running]] = await Promise.all([
-    launchRoadmap(db, actor, now), getProposal(db), getNextLevelMp(db), getExcursionRules(db),
+  const [roadmap, proposal, mp, [running]] = await Promise.all([
+    launchRoadmap(db, actor, now), getProposal(db), getNextLevelMp(db),
     db.select({ n: count() }).from(experiments).where(eq(experiments.status, "RODANDO")),
   ]);
   const brands = brandsFrom(env);
   const runningN = running?.n ?? 0;
   const emailOn = set(env, "RESEND_API_KEY") && set(env, "EMAIL_FROM");
   const supportOn = true; // D181: canal oficial no código (WhatsApp e e-mail); o Render pode trocar
-  const offices = (["SUPERDROP", "NEXTLEVEL_COMMERCE"] as const).filter((c) => brands[c].officeUrl);
+  const offices = (["NEXTLEVEL_COMMERCE"] as const).filter((c) => brands[c].officeUrl);
 
   return [
     {
@@ -50,8 +48,6 @@ export async function readyButOff(db: Database, actor: Actor, env: Record<string
       items: [
         { key: "mp-nextlevel", title: "Conta Mercado Pago da NextLevel", state: on(mp.connected), detail: mp.connected ? `Conectada${mp.isTest ? " (conta de TESTE: troque pela de produção antes de vender)" : ""}.` : "Sem conta conectada: as cobranças da NextLevel (planos, temas, serviços) não conseguem gerar Pix.", how: { kind: "tela", href: "/master/settings" } },
         { key: "pagarme", title: "Pagar.me como segundo gateway", state: on(finFlag("FIN_PAGARME", env)), detail: finFlag("FIN_PAGARME", env) ? "Ligado: produtos marcados no catálogo cobram pelo Pagar.me." : "Desligado: tudo cobra pelo Mercado Pago.", how: { kind: "render", vars: ["FIN_PAGARME=true"] } },
-        { key: "excursao-taxa", title: "Taxa da NextLevel nos fardos da Excursão", state: on(excursion.fee.charging), detail: excursion.fee.charging ? "Cobrança ligada: a taxa entra na fatura mensal de cada ônibus." : "Calculada e mostrada, mas nada é cobrado dos ônibus.", how: { kind: "tela", href: "/bras/excursao" } },
-        { key: "excursao-pix", title: "Pix do frete do ônibus na conta do dono do ônibus", state: on(excursion.pixOnline), detail: excursion.pixOnline ? "Ligado: o cliente paga o frete por Pix direto na conta Mercado Pago de cada ônibus." : "Desligado: cliente e ônibus combinam o pagamento entre eles.", how: { kind: "tela", href: "/bras/excursao" } },
         { key: "experimentos", title: "Experimentos de preço rodando", state: on(runningN > 0), detail: runningN ? `${runningN} experimento(s) rodando agora.` : "Nenhum experimento rodando.", how: { kind: "tela", href: "/master/financeiro/experimentos" } },
         { key: "proposta", title: "Proposta de preços do grupo", state: proposal.status === "APROVADA" ? "LIGADO" : "DESLIGADO", detail: proposal.status === "APROVADA" ? "Aprovada (registro da decisão; os preços só mudam na porta de entrada ou no catálogo)." : "Em rascunho: aprovar registra a decisão, não muda preço sozinho.", how: { kind: "tela", href: "/master/financeiro/proposta" } },
       ],
@@ -61,12 +57,10 @@ export async function readyButOff(db: Database, actor: Actor, env: Record<string
       hint: "Ligam-se em Render → serviço → Environment. Cada mudança publica de novo em 3 a 6 minutos.",
       items: [
         { key: "cadastro-commerce", title: "Cadastro aberto da NextLevel Commerce", state: on(brands.NEXTLEVEL_COMMERCE.signupOpen), detail: brands.NEXTLEVEL_COMMERCE.signupOpen ? "Qualquer pessoa cria a loja Commerce pelo site." : "Fechado: o site leva a “Quero minha loja” (contato).", how: { kind: "render", vars: ["BRAND_SIGNUP_NEXTLEVEL_COMMERCE=true"] } },
-        { key: "parceiros-commerce", title: "Programa de Parceiros na Commerce", state: on(brands.NEXTLEVEL_COMMERCE.partnersOpen), detail: brands.NEXTLEVEL_COMMERCE.partnersOpen ? "Aberto também no endereço da Commerce." : "Aberto só no SuperDrop.", how: { kind: "render", vars: ["BRAND_PARTNERS_NEXTLEVEL_COMMERCE=true"] } },
-        { key: "bras-publico", title: "Brás Digital Club aberto ao público", state: on(brands.BRAS_DIGITAL.live), detail: brands.BRAS_DIGITAL.live ? "Página pública e cadastro grátis com CNPJ no ar." : "Página “em breve” com lista de espera.", how: { kind: "render", vars: ["BRAND_SIGNUP_BRAS_DIGITAL=true"] } },
-        { key: "bras-paineis", title: "Painéis da Brás (Balcão, importadora, Club no balcão)", state: on(brasPanelsEnabled(env)), detail: brasPanelsEnabled(env) ? "Ligados." : "Desligados: só o Master vê uma prévia.", how: { kind: "render", vars: ["BRAS_PANELS=true"] } },
+        { key: "parceiros-commerce", title: "Programa de Parceiros na Commerce", state: on(brands.NEXTLEVEL_COMMERCE.partnersOpen), detail: brands.NEXTLEVEL_COMMERCE.partnersOpen ? "Aberto no endereço da Commerce." : "Fechado: o programa de parceiros não aparece.", how: { kind: "render", vars: ["BRAND_PARTNERS_NEXTLEVEL_COMMERCE=true"] } },
         { key: "site-grupo", title: "Site do grupo no endereço próprio (nextlevelgroup.com.br)", state: on(set(env, "GROUP_SITE_URL")), detail: set(env, "GROUP_SITE_URL") ? "Ligado: Soluções e Loja NextLevel abrem no endereço do grupo." : "Soluções e Loja NextLevel moram por ora em master.nextlevelgroup.com.br. Precisa do domínio verificado no Render antes (Fase 3).", how: { kind: "render", vars: ["GROUP_SITE_URL=https://nextlevelgroup.com.br", "BRAND_DOMAINS_NEXTLEVEL"] } },
-        { key: "master-exclusivo", title: "Painéis da equipe só no endereço do Master", state: env.MASTER_HOST_ONLY === "false" ? "DESLIGADO" : "LIGADO", detail: env.MASTER_HOST_ONLY === "false" ? "Desligado: o Master também abre nos endereços das marcas." : "Ligado (padrão desde D149): Master, Admin Commerce e Estúdio Brás só abrem em master.nextlevelgroup.com.br.", how: { kind: "render", vars: ["MASTER_HOST_ONLY=false (só para desligar)"] } },
-        { key: "escritorio", title: "Endereço só dos painéis (ex.: office.superdrop.com.br)", state: offices.length === 2 ? "LIGADO" : offices.length ? "PARCIAL" : "DESLIGADO", detail: offices.length ? `Ligado em: ${offices.map((c) => brands[c].name).join(", ")}.` : "Painéis no mesmo endereço do site. Precisa do domínio verificado no Render antes.", how: { kind: "render", vars: ["BRAND_OFFICE_SUPERDROP", "BRAND_OFFICE_NEXTLEVEL_COMMERCE"] } },
+        { key: "master-exclusivo", title: "Painéis da equipe só no endereço do Master", state: env.MASTER_HOST_ONLY === "false" ? "DESLIGADO" : "LIGADO", detail: env.MASTER_HOST_ONLY === "false" ? "Desligado: o Master também abre nos endereços das marcas." : "Ligado (padrão desde D149): Master e Admin Commerce só abrem em master.nextlevelgroup.com.br.", how: { kind: "render", vars: ["MASTER_HOST_ONLY=false (só para desligar)"] } },
+        { key: "escritorio", title: "Endereço só dos painéis (ex.: office.nextlevelcommerce.com.br)", state: offices.length === 1 ? "LIGADO" : "DESLIGADO", detail: offices.length ? `Ligado em: ${offices.map((c) => brands[c].name).join(", ")}.` : "Painéis no mesmo endereço do site. Precisa do domínio verificado no Render antes.", how: { kind: "render", vars: ["BRAND_OFFICE_NEXTLEVEL_COMMERCE"] } },
       ],
     },
     {

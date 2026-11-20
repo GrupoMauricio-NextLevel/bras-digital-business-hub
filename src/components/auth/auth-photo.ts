@@ -14,17 +14,12 @@ import { NL_PECAS_3D } from "@/lib/marcas/nextlevel";
  */
 export type AuthPhoto = { src: string; alt: string; position: string };
 const LOGIN_PHOTOS: Partial<Record<BrandCode, AuthPhoto[]>> = {
-  SUPERDROP: [
-    { src: "/portal/superdrop/v3/sd-login-lateral.webp", alt: "", position: "50% 45%" },
-    { src: "/portal/superdrop/v3/sd-lojista-home-office.webp", alt: "", position: "60% 45%" },
-  ],
   // Home imersiva (D165): o mesmo ateliê da jornada, à noite, com o notebook aceso.
   NEXTLEVEL_COMMERCE: [
     { src: "/portal/nextlevel-ecommerce/v1/home/ec-entrar-1400.webp", alt: "", position: "62% 50%" },
     { src: "/portal/commerce/v3/cm-login-lateral.webp", alt: "", position: "50% 45%" },
     { src: "/portal/commerce/v3/cm-dono-gestao.webp", alt: "", position: "48% 40%" },
   ],
-  BRAS_DIGITAL: [{ src: "/portal/bras/v3/bd-cadastro-lateral.webp", alt: "", position: "50% 40%" }],
   // Marca v2 (D161): a peça 3D "vidro óptico" do pacote (vidro e metal ficam na autenticação e nos momentos institucionais).
   NEXTLEVEL: [{ src: `${NL_PECAS_3D[0]}-1600.webp`, alt: "", position: "50% 55%" }],
 };

@@ -7,9 +7,9 @@ import { areaOf, labelOf, type QaKind } from "./rotas";
  * "onde cada página deve morar" já decididas pelo dono (12/10/2026). Arquivo puro: serve o servidor, a tela e o script da Fase 1.
  * Regras de painéis e páginas do grupo: D149 (proposta aceita). O que ainda não foi decidido fica "a definir", nunca inventado.
  */
-export const MAP_HOSTS = ["NEXTLEVEL", "SUPERDROP", "NEXTLEVEL_COMMERCE", "BRAS_DIGITAL", "NEXTLEVEL_CARGAS"] as const;
+export const MAP_HOSTS = ["NEXTLEVEL", "NEXTLEVEL_COMMERCE"] as const;
 export type MapHost = (typeof MAP_HOSTS)[number];
-export const MAP_HOST_LABEL: Record<MapHost, string> = { NEXTLEVEL: "Master", SUPERDROP: "SuperDrop", NEXTLEVEL_COMMERCE: "Commerce", BRAS_DIGITAL: "Brás", NEXTLEVEL_CARGAS: "Cargas" };
+export const MAP_HOST_LABEL: Record<MapHost, string> = { NEXTLEVEL: "Master", NEXTLEVEL_COMMERCE: "Commerce" };
 export const cellKey = (route: string, host: string) => `${route}@${host}`;
 
 // ---- Seguir um endereço até o fim -------------------------------------------------------------------------------------
@@ -61,11 +61,10 @@ const GROUP_LEGAL = ["/termos", "/privacidade"];
 const under = (r: string, p: string) => r === p || r.startsWith(`${p}/`);
 
 // Painéis (D149, recomendação aceita pelo dono): os da equipe só no Master; os dos clientes no endereço da marca deles (e no Master, para o suporte).
-const TEAM_PANELS = ["/master", "/commerce", "/bras"];
+const TEAM_PANELS = ["/master", "/commerce"];
 const CLIENT_PANEL_HOME: { prefix: string; hosts: MapHost[] }[] = [
-  { prefix: "/meu-bras", hosts: ["BRAS_DIGITAL"] }, { prefix: "/importadora", hosts: ["BRAS_DIGITAL"] }, { prefix: "/transportadora", hosts: ["NEXTLEVEL_CARGAS"] },
-  { prefix: "/merchant", hosts: ["SUPERDROP", "NEXTLEVEL_COMMERCE"] }, { prefix: "/supplier", hosts: ["SUPERDROP", "NEXTLEVEL_COMMERCE"] },
-  { prefix: "/partner", hosts: ["SUPERDROP", "NEXTLEVEL_COMMERCE"] }, { prefix: "/theme-editor", hosts: ["SUPERDROP", "NEXTLEVEL_COMMERCE"] },
+  { prefix: "/merchant", hosts: ["NEXTLEVEL_COMMERCE"] }, { prefix: "/supplier", hosts: ["NEXTLEVEL_COMMERCE"] },
+  { prefix: "/partner", hosts: ["NEXTLEVEL_COMMERCE"] }, { prefix: "/theme-editor", hosts: ["NEXTLEVEL_COMMERCE"] },
 ];
 
 function panelExpect(route: string, host: MapHost): Expect {

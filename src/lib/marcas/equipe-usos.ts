@@ -91,9 +91,6 @@ export const CARTA_DO_FUNDADOR = [
 export function fraseDoCeo(code: BrandCode): string {
   switch (code) {
     case "NEXTLEVEL_COMMERCE": return "Sua marca merece uma loja à altura. A gente cuida da tecnologia para você cuidar do que mais importa: o seu cliente.";
-    case "SUPERDROP": return "Vender sem estoque é um jeito real de começar. A gente cuida da estrutura para você focar em vender.";
-    case "BRAS_DIGITAL": return "O Brás tem tudo para crescer online. Nossa parte é aproximar quem compra de quem produz.";
-    case "NEXTLEVEL_CARGAS": return "Toda carga leva o trabalho de alguém. Por isso a gente acompanha cada uma de perto.";
     default: return "Tecnologia e gente de verdade, do mesmo lado de quem empreende.";
   }
 }

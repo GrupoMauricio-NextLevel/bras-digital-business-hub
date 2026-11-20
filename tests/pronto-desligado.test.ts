@@ -4,7 +4,6 @@ import { freshDb } from "./setup";
 import { users } from "@/db/schema";
 import { actorFromUser } from "@/lib/domain/access";
 import { createMasterMember } from "@/lib/domain/equipe-master";
-import { saveExcursionRules } from "@/lib/domain/cargas/regras-excursao";
 import { readyButOff, type OffGroup } from "@/lib/domain/qualidade-desligados";
 
 /** D145: aba "Pronto e desligado" — o que está no ar esperando o dono ligar, com o estado de agora e onde ligar. */
@@ -20,20 +19,19 @@ describe("pronto e desligado", () => {
     expect(roteiro.map((i) => i.step)).toEqual([1, 2, 3, 4, 5]);
     expect(roteiro.filter((i) => i.next)).toHaveLength(1);
     expect(roteiro.every((i) => i.state === "DESLIGADO")).toBe(true);
-    for (const k of ["excursao-pix", "excursao-taxa", "pagarme", "cadastro-commerce", "bras-paineis", "email", "escritorio"]) expect(item(g, k).state, k).toBe("DESLIGADO");
-    expect(item(g, "bras-paineis").how).toEqual({ kind: "render", vars: ["BRAS_PANELS=true"] });
-    expect(item(g, "excursao-pix").how).toEqual({ kind: "tela", href: "/bras/excursao" });
+    for (const k of ["pagarme", "cadastro-commerce", "email", "escritorio"]) expect(item(g, k).state, k).toBe("DESLIGADO");
+    expect(item(g, "parceiros-commerce").state).toBe("LIGADO"); // D220: programa de parceiros aberto por padrão
+    expect(item(g, "parceiros-commerce").how).toEqual({ kind: "render", vars: ["BRAND_PARTNERS_NEXTLEVEL_COMMERCE=true"] });
+    expect(item(g, "pagarme").how).toEqual({ kind: "render", vars: ["FIN_PAGARME=true"] });
   });
 
-  it("acompanha o que o dono liga (regras no Master e chaves do Render), sem mostrar nenhum valor de segredo", async () => {
-    await saveExcursionRules(ctx.db, ctx.actors.master, { pixOnline: true });
-    const env = { BRAS_PANELS: "true", BRAND_SIGNUP_NEXTLEVEL_COMMERCE: "true", RESEND_API_KEY: "re_segredo_123", EMAIL_FROM: "contato@exemplo.com", BRAND_OFFICE_SUPERDROP: "https://office.superdrop.com.br" };
+  it("acompanha o que o dono liga (chaves do Render), sem mostrar nenhum valor de segredo", async () => {
+    const env = { BRAND_PARTNERS_NEXTLEVEL_COMMERCE: "true", BRAND_SIGNUP_NEXTLEVEL_COMMERCE: "true", RESEND_API_KEY: "re_segredo_123", EMAIL_FROM: "contato@exemplo.com", BRAND_OFFICE_NEXTLEVEL_COMMERCE: "https://office.nextlevelgroup.com.br" };
     const g = await readyButOff(ctx.db, ctx.actors.master, env);
-    expect(item(g, "excursao-pix").state).toBe("LIGADO");
-    expect(item(g, "bras-paineis").state).toBe("LIGADO");
+    expect(item(g, "parceiros-commerce").state).toBe("LIGADO");
     expect(item(g, "cadastro-commerce").state).toBe("LIGADO");
     expect(item(g, "email").state).toBe("LIGADO");
-    expect(item(g, "escritorio").state).toBe("PARCIAL");
+    expect(item(g, "escritorio").state).toBe("LIGADO");
     const json = JSON.stringify(g);
     for (const secret of ["re_segredo_123", "contato@exemplo.com"]) expect(json).not.toContain(secret);
   });

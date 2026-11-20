@@ -13,7 +13,7 @@ function trava(permitida: string | null, destino: string) {
   const pasta = mkdtempSync(join(tmpdir(), "trava-"));
   execFileSync("git", ["init", "-q"], { cwd: pasta });
   if (permitida) execFileSync("git", ["config", "nextlevel.branchPermitida", permitida], { cwd: pasta });
-  const gancho = readFileSync(".githooks/pre-push", "utf8");
+  const gancho = readFileSync(".githooks/pre-push", "utf8").replace(/\r\n/g, "\n");
   const trecho = gancho.slice(0, gancho.indexOf("\nfi\n") + 4) + "echo LIBERADO\n";
   const script = join(pasta, "trava.sh");
   writeFileSync(script, trecho);
