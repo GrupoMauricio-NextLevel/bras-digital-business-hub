@@ -13,7 +13,6 @@ export const SINONIMOS: Partial<Record<CatalogFamily, string[]>> = {
   MARKETING: ["anúncio", "anúncios", "tráfego", "tráfego pago", "instagram", "facebook", "tiktok", "google", "mercado livre", "redes sociais", "conteúdo", "vender mais", "divulgar"],
   CONSULTORIA: ["consultoria", "auditoria", "não vendo", "vender mais", "diagnóstico", "crescer", "estratégia"],
   WHITE_LABEL: ["white label", "minha marca", "agência", "revender a plataforma", "minha própria plataforma", "parceiro"],
-  SUPERDROP: ["sem estoque", "dropshipping", "dropship", "revenda", "revender", "fornecedor"],
 };
 
 /** Termos de busca normalizados (sem acento, minúsculos), para comparar "migracao" com "migração". */

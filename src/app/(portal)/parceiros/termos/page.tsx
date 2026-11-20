@@ -18,7 +18,7 @@ export default async function TermosParceiros() {
       <h1 className="font-[family-name:var(--nl-font-display)] text-3xl font-extrabold tracking-tight">Termos do Programa de Parceiros</h1>
       <p className="text-sm text-muted-foreground">Versão {s.termsVersion}. Programa operado pela NextLevel Marketing Ltda. Este texto é um modelo de partida e deve passar por revisão jurídica e contábil antes do lançamento público.</p>
       <h2 className="text-xl font-bold">1. O programa</h2>
-      <p>O parceiro indica lojistas para assinar planos SuperDrop e recebe comissão sobre os pagamentos efetivamente realizados por esses clientes. O programa cobre apenas a venda de planos; não há comissão sobre frete, taxa por pedido, serviços da Loja NextLevel, temas ou qualquer venda dos clientes indicados.</p>
+      <p>O parceiro indica lojistas para assinar planos da NextLevel Commerce e recebe comissão sobre os pagamentos efetivamente realizados por esses clientes. O programa cobre apenas a venda de planos; não há comissão sobre frete, taxa por pedido, serviços da Loja NextLevel, temas ou qualquer venda dos clientes indicados.</p>
       <h2 className="text-xl font-bold">2. Ativação e meta mensal</h2>
       <p>Ativação é a loja indicada que paga o primeiro pagamento (setup e primeira mensalidade). O cadastro é gratuito enquanto o parceiro fizer {s.monthlyGoal} ativação(ões) por mês civil. Sem ativação, o cadastro fica inativo: links e cupons são pausados e a reativação custa {formatBRL(s.inactiveFeeCents)} por mês. Inativo, o parceiro continua recebendo a manutenção dos clientes já indicados.</p>
       <h2 className="text-xl font-bold">3. Comissões</h2>

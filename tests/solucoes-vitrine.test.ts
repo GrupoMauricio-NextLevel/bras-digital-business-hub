@@ -10,7 +10,7 @@ import { finFlag } from "@/lib/finance/flags";
 async function vitrine(oferta: Parameters<typeof projetarVitrine>[0]["oferta"] = null) {
   const { db } = await freshDb();
   const [itens, journey] = await Promise.all([listCatalog(db), getJourneyConfig(db)]);
-  return { itens, v: projetarVitrine({ itens, fases: journey.phases, oferta, link: (p) => `${p}${p.includes("?") ? "&" : "?"}ref=X`, commerce: { base: "https://cm.test", signupOpen: true }, superdrop: { base: "https://sd.test", tagline: "Sua loja sem estoque" } }) };
+  return { itens, v: projetarVitrine({ itens, fases: journey.phases, oferta, link: (p) => `${p}${p.includes("?") ? "&" : "?"}ref=X`, commerce: { base: "https://cm.test", signupOpen: true } }) };
 }
 
 describe("vitrine de Soluções", () => {
@@ -25,7 +25,7 @@ describe("vitrine de Soluções", () => {
     const enterprise = v.itens.find((i) => i.key === "COMMERCE_ENTERPRISE")!;
     expect(enterprise.preco.tipo).toBe("CONSULTA");
     expect(enterprise.contratar.href).toBe("#diagnostico");
-    expect(v.familias.find((f) => f.key === "SUPERDROP")!.itens[0]!.contratar.href).toBe("https://sd.test/?ref=X");
+    expect(v.familias.map((f) => f.key)).not.toContain("SUPERDROP");
     expect(v.temas.every((t) => t.precoCents > 0 && t.demoHref.startsWith("https://cm.test/demo/"))).toBe(true);
   });
 
@@ -51,7 +51,7 @@ describe("vitrine de Soluções", () => {
     const { v } = await vitrine();
     expect(filtrarPorIntencao(v.busca, "nuvemshop").map((i) => i.grupo)).toContain("Migração");
     expect(filtrarPorIntencao(v.busca, "anuncio instagram").every((i) => i.grupo === "Marketing")).toBe(true);
-    expect(filtrarPorIntencao(v.busca, "sem estoque")[0]!.rotulo).toBe("SuperDrop");
+    expect(filtrarPorIntencao(v.busca, "sem estoque")).toEqual([]);
     expect(filtrarPorIntencao(v.busca, "x")).toEqual([]);
   });
 

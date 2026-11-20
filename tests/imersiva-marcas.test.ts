@@ -5,7 +5,6 @@ import { acervoCompleto, acervoEmEspera } from "@/lib/imersiva/acervo";
 import { EC_HOME_ACERVO } from "@/lib/marcas/ecommerce-home-imagens";
 import { BD_HOME_FOTOS } from "@/lib/marcas/bras-home-imagens";
 import { CG_HOME_FOTOS } from "@/lib/marcas/cargas-home-imagens";
-import { SD_HOME_FOTOS } from "@/lib/marcas/superdrop-home-imagens";
 
 const ler = (rel: string) => readFileSync(join(process.cwd(), rel), "utf8");
 
@@ -29,7 +28,6 @@ describe("jornada imersiva com fotos em produção", () => {
   it.each([
     ["bd", BD_HOME_FOTOS, "src/components/portal/bras/imersiva.tsx"],
     ["cg", CG_HOME_FOTOS, "src/components/portal/cargas/imersiva.tsx"],
-    ["sd", SD_HOME_FOTOS, "src/components/portal/superdrop/imersiva.tsx"],
   ] as const)("%s: os nomes do pedido de fotos, do acervo e da página batem", (prefixo, fotos, pagina) => {
     const pedido = ler("docs/prompts/fotos-imersivas-superdrop-bras-cargas-gpt.md");
     const doPedido = new Set([...pedido.matchAll(new RegExp(`\\b(${prefixo}-[a-z0-9-]+)\\.png`, "g"))].map((m) => m[1]!));

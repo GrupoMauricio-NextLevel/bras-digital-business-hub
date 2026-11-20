@@ -14,8 +14,7 @@ export const AUDIENCES = [
 ];
 
 export const SUPPLIER_PLANS = [
-  { key: "superdrop", name: "SuperDrop", tagline: "Opere no subdomínio da plataforma", setup: "R$ 1.500", monthly: "R$ 300", fee: "3%", items: ["Painel do fornecedor, esteira e expedição", "Página de vendas do seu catálogo", "Carteira, etiquetas e pós-venda dos membros", "Sem taxa por pedido nos primeiros 15 dias"] },
-  { key: "white-label", name: "White Label", tagline: "Sua marca, seu domínio", setup: "R$ 15.000", monthly: "R$ 2.500", fee: "1,5%", items: ["Tudo do SuperDrop", "Marca e domínio próprios", "Menor taxa por pedido", "Implantação acompanhada"] },
+  { key: "white-label", name: "White Label", tagline: "Sua marca, seu domínio", setup: "R$ 15.000", monthly: "R$ 2.500", fee: "1,5%", items: ["Painel do fornecedor, esteira e expedição", "Página de vendas do seu catálogo", "Marca e domínio próprios", "Implantação acompanhada"] },
 ];
 
 export const MEMBER_FEES = [

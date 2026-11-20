@@ -53,7 +53,7 @@ export default async function Parceiros() {
   const [settings, book] = await Promise.all([getPartnerSettings(db), getPriceBook(db)]);
   const plans = OFFER_KEYS.map((k) => ({ key: k as string, name: book.offers[k].name, setupCents: book.offers[k].setupCents, monthlyCents: book.offers[k].monthlyCents })).filter((p) => p.setupCents > 0 || p.monthlyCents > 0);
   const tiers = [...settings.tiers].sort((a, b) => a.min - b.min);
-  const foto = formatosDisponiveis("superdrop", "pa-parceiros-hero").length > 0;
+  const foto = formatosDisponiveis("commerce", "pa-parceiros-hero").length > 0;
   const jsonLd = { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: FAQ.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) };
   return (
     <>
@@ -72,7 +72,7 @@ export default async function Parceiros() {
             <Link href="/login" className={`${btn} border border-band-foreground/30 hover:bg-band-foreground/10 focus-visible:outline-band-foreground`}>Entrar no escritório</Link>
           </div>
           </div>
-          {foto ? <FotoOpcional marca="superdrop" nome="pa-parceiros-hero" alt="Parceiro mostra algo no tablet para a dona de uma loja pequena, numa conversa informal no balcão." priority className="!rounded-2xl" /> : null}
+          {foto ? <FotoOpcional marca="commerce" nome="pa-parceiros-hero" alt="Parceiro mostra algo no tablet para a dona de uma loja pequena, numa conversa informal no balcão." priority className="!rounded-2xl" /> : null}
           </div>
           <ul className="mt-8 grid gap-3 text-sm text-band-muted sm:grid-cols-3">
             {tiers.map((t) => <li key={t.min} className="rounded-xl border border-band-foreground/15 bg-surface/5 p-4"><span className="block text-3xl font-extrabold text-highlight tabular-nums">{t.bps / 100}%</span>{t.max ? (t.min === t.max ? `com ${t.min} ativação no mês` : `de ${t.min} a ${t.max} ativações no mês`) : `a partir de ${t.min} ativações no mês`}<span className="block text-xs text-band-muted">de comissão sobre o setup</span></li>)}

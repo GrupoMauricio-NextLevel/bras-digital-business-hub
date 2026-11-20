@@ -4,7 +4,7 @@ import { requireBrandFeature } from "@/lib/brand-server";
 import { FotoOpcional } from "@/components/portal/imagem-em-criacao";
 import { FLOW, MEMBER_FEES } from "../content";
 
-export const metadata: Metadata = { title: "Como funciona", description: "Do pedido do cliente à entrega: o que cada papel faz na SuperDrop." };
+export const metadata: Metadata = { title: "Como funciona", description: "Do pedido do cliente à entrega: o que cada papel faz na plataforma." };
 
 /** Cena de cada passo (lote C da auditoria de imagens): publicar, vender e enviar. Passo sem cena fica só com o texto. */
 const PASSO_FOTO: Record<number, { nome: string; alt: string }> = {
@@ -23,7 +23,7 @@ export default async function ComoFunciona() {
       <ol className="mt-10 space-y-4">
         {FLOW.map((s, i) => {
           const foto = PASSO_FOTO[i];
-          return <li key={s.title} className="flex flex-wrap gap-4 rounded-xl border border-border p-5 sm:flex-nowrap sm:items-center"><span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-band font-bold text-reflection">{i + 1}</span><div className="min-w-0 flex-1"><h2 className="font-semibold">{s.title}</h2><p className="text-muted-foreground">{s.text}</p></div>{foto ? <FotoOpcional marca="superdrop" nome={foto.nome} alt={foto.alt} ratio="4 / 3" priority={i === 0} className="w-full !rounded-lg sm:w-56 sm:shrink-0" /> : null}</li>;
+          return <li key={s.title} className="flex flex-wrap gap-4 rounded-xl border border-border p-5 sm:flex-nowrap sm:items-center"><span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-band font-bold text-reflection">{i + 1}</span><div className="min-w-0 flex-1"><h2 className="font-semibold">{s.title}</h2><p className="text-muted-foreground">{s.text}</p></div>{foto ? <FotoOpcional marca="commerce" nome={foto.nome} alt={foto.alt} ratio="4 / 3" priority={i === 0} className="w-full !rounded-lg sm:w-56 sm:shrink-0" /> : null}</li>;
         })}
       </ol>
       <h2 className="mt-14 font-[family-name:var(--nl-font-display)] text-2xl font-extrabold">Taxa por pedido do membro</h2>

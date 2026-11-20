@@ -64,7 +64,7 @@ export default async function Planos() {
     <div className="mx-auto max-w-6xl px-4 py-16">
       <h1 className="font-[family-name:var(--nl-font-display)] text-4xl font-extrabold tracking-tight">Planos</h1>
       <p className="mt-3 max-w-2xl text-lg text-muted-foreground">Assine por Pix e o acesso ao plano é liberado na hora. Tem o cupom do seu fornecedor? Teste 7 dias sem cartão; depois do teste, o acesso é pausado até o pagamento.</p>
-      <FotoOpcional marca="superdrop" nome="sd-planos-faixa" alt="" ratio={null} className="mt-8 aspect-[21/9] !rounded-2xl sm:aspect-[3/1]" />
+      <FotoOpcional marca="commerce" nome="sd-planos-faixa" alt="" ratio={null} className="mt-8 aspect-[21/9] !rounded-2xl sm:aspect-[3/1]" />
       <div className="mt-10"><MemberPlans /></div>
 
       <h2 className="mt-14 text-2xl font-bold">Taxa por pedido</h2>

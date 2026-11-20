@@ -25,7 +25,7 @@ describe("Club só onde existe", () => {
   });
 
   it("telas do lojista, do fornecedor e das páginas de entrada não falam de Club nem de pontos", () => {
-    const pastas = ["src/app/merchant", "src/app/supplier", "src/app/commerce", "src/app/login", "src/app/esqueci-senha", "src/components/portal/superdrop", "src/components/app"];
+    const pastas = ["src/app/merchant", "src/app/supplier", "src/app/commerce", "src/app/login", "src/app/esqueci-senha", "src/components/app"];
     const arquivos = (d: string): string[] => readdirSync(d).flatMap((f) => { const p = join(d, f); return statSync(p).isDirectory() ? arquivos(p) : /\.tsx?$/.test(f) ? [p] : []; });
     const achados: string[] = [];
     for (const arq of pastas.flatMap(arquivos)) {

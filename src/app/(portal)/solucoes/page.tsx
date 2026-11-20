@@ -37,7 +37,7 @@ export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
   const title = "NextLevel Soluções para empresas: loja virtual, migração, temas e marketing";
-  const description = "Diagnóstico gratuito e uma jornada clara: fundação, lançamento, aquisição, otimização e escala. Plataforma Commerce, SuperDrop, Loja Pronta, Migração, temas, tráfego e White Label.";
+  const description = "Diagnóstico gratuito e uma jornada clara: fundação, lançamento, aquisição, otimização e escala. Plataforma Commerce, Loja Pronta, Migração, temas, tráfego e White Label.";
   return { title: { absolute: title }, description, alternates: { canonical: `${groupSiteUrl()}/solucoes` }, openGraph: { title, description, url: `${groupSiteUrl()}/solucoes`, siteName: "NextLevel", type: "website", locale: "pt_BR", images: [{ url: `${groupSiteUrl()}/portal/nextlevel/equipe/v1/eq-og-escritorio.jpg`, width: 1200, height: 630, alt: "Equipe NextLevel na sede, em São Paulo" }] } };
 }
 
@@ -51,7 +51,7 @@ const FAQ_SOLUCOES = [
   { q: "A verba de anúncios passa pela NextLevel?", a: "Não. Na gestão de anúncios, a verba é paga por você direto à plataforma (Meta, Google, Mercado Livre). A NextLevel cobra só a gestão." },
   { q: "Consigo trazer a minha loja de outra plataforma?", a: "Sim, pela Migração. Ela atende lojas de plataformas como Shopify, Nuvemshop, Tray, WooCommerce, Loja Integrada, Yampi e WBuy; o limite de produtos e o que entra em cada pacote estão descritos na página da solução." },
   { q: "Vocês garantem resultado de vendas?", a: "Não. Entregamos o que está escrito no escopo de cada solução. O resultado depende do seu produto, do preço e da operação." },
-  { q: "Quem está por trás da NextLevel?", a: "A NextLevel Marketing Ltda., o grupo que desenvolve e opera o SuperDrop, a NextLevel Commerce, o Brás Digital Club e a NextLevel Cargas." },
+  { q: "Quem está por trás da NextLevel?", a: "A NextLevel Marketing Ltda., o grupo que desenvolve e opera a NextLevel Commerce e a NextLevel Cargas." },
 ];
 
 export default async function SolucoesPage({ searchParams }: { searchParams: Promise<{ previa?: string; porta?: string }> }) {
@@ -70,13 +70,13 @@ export default async function SolucoesPage({ searchParams }: { searchParams: Pro
   const contato = supportContacts();
   const vitrine = v2 ? projetarVitrine({
     itens: items, fases: journey.phases, oferta: plans.offer ? { trialDays: plans.offer.trialDays, firstPeriodCents: plans.offer.firstPeriodCents ?? null, feeHolidayMonths: plans.offer.feeHolidayMonths } : null,
-    link: (path) => withAttribution(path, attr), commerce: { base: brand.code === "NEXTLEVEL_COMMERCE" ? "" : commerce.baseUrl, signupOpen: commerce.signupOpen }, superdrop: { base: commerce.baseUrl, tagline: commerce.tagline },
+    link: (path) => withAttribution(path, attr), commerce: { base: brand.code === "NEXTLEVEL_COMMERCE" ? "" : commerce.baseUrl, signupOpen: commerce.signupOpen },
   }) : null;
   const porta = vitrine?.portas.find((p) => p.key === sp.porta)?.key ?? null;
   const conteudo = (
     <>
       <JsonLd data={[
-        { "@context": "https://schema.org", "@type": "Organization", name: "NextLevel Marketing Ltda.", url: `${groupSiteUrl()}/solucoes`, brand: ["NextLevel Commerce", "SuperDrop"].map((n) => ({ "@type": "Brand", name: n })) },
+        { "@context": "https://schema.org", "@type": "Organization", name: "NextLevel Marketing Ltda.", url: `${groupSiteUrl()}/solucoes`, brand: ["NextLevel Commerce"].map((n) => ({ "@type": "Brand", name: n })) },
         { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: FAQ_SOLUCOES.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })) },
         { "@context": "https://schema.org", "@type": "ItemList", name: "Soluções NextLevel", itemListElement: pub.map((p, i) => ({ "@type": "ListItem", position: i + 1, url: `${groupSiteUrl()}/solucoes/${p.slug}`, name: p.name })) },
       ]} />
@@ -229,5 +229,5 @@ export default async function SolucoesPage({ searchParams }: { searchParams: Pro
       {businessLigado() ? <TambemDaNextLevel atual="solucoes" solucoesHref="/solucoes" base={brand.code === "NEXTLEVEL_COMMERCE" ? "" : commerce.baseUrl} /> : null}
     </>
   );
-  return vitrine ? <SelecaoProvider catalogo={[...vitrine.itens, ...vitrine.familias.filter((f) => f.key === "SUPERDROP").flatMap((f) => f.itens)]}>{conteudo}</SelecaoProvider> : conteudo;
+  return vitrine ? <SelecaoProvider catalogo={[...vitrine.itens]}>{conteudo}</SelecaoProvider> : conteudo;
 }

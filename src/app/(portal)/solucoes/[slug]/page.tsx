@@ -35,7 +35,7 @@ export default async function SolucaoPublica({ params }: { params: Promise<{ slu
   const voltar = `/login?voltar=${encodeURIComponent(`/merchant/services/solucao/${p.slug}`)}`;
   const signupHref = p.family === "COMMERCE_PLAN" ? withAttribution(commerce.signupOpen ? `${commerceBase}/cadastro?plano=${p.key}` : `${commerceBase}/quero-minha-loja`, attr) : voltar;
   // No site do grupo não há login de lojista (D149): cada cliente entra pelo endereço da marca da loja dele.
-  const loginLinks = brand.code === HOLDING_CODE && p.family !== "COMMERCE_PLAN" ? [{ label: "Entrar pela loja SuperDrop", href: `${brandByCode("SUPERDROP").baseUrl}${voltar}` }, { label: "Entrar pela loja Commerce", href: `${commerce.baseUrl}${voltar}` }] : undefined;
+  const loginLinks = brand.code === HOLDING_CODE && p.family !== "COMMERCE_PLAN" ? [{ label: "Entrar pela loja Commerce", href: `${commerce.baseUrl}${voltar}` }] : undefined;
   const offerPrice = p.prices.MONTHLY?.amountCents ?? p.prices.ONE_TIME?.amountCents ?? null;
   return (
     <div className="px-4 py-12">

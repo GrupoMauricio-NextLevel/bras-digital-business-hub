@@ -11,7 +11,7 @@ import { SUPPLIER_PLANS } from "../content";
 import { FotoOpcional, formatosDisponiveis } from "@/components/portal/imagem-em-criacao";
 
 export const metadata: Metadata = {
-  title: { absolute: "Seja fornecedor SuperDrop · Transforme seu catálogo em uma rede de lojas" },
+  title: { absolute: "Seja fornecedor · Transforme seu catálogo em uma rede de lojas" },
   description: "Uma plataforma completa para fornecedores: rede de lojas com o seu catálogo, esteira de expedição ao vivo, carteira por Pix e receita recorrente.",
   alternates: { canonical: "/seja-fornecedor" },
 };
@@ -34,7 +34,7 @@ const OPS = [
   { i: BarChart3, t: "Torre de controle", d: "Receita, saúde de cada loja, pedidos em atraso e alertas para agir antes do problema virar reclamação." },
 ];
 const STEPS = [
-  { t: "Fale com a NextLevel", d: "Conversamos sobre o seu catálogo, a sua operação e o modelo que faz sentido: SuperDrop ou White Label." },
+  { t: "Fale com a NextLevel", d: "Conversamos sobre o seu catálogo, a sua operação e o modelo que faz sentido: White Label ou operação própria." },
   { t: "Implantação acompanhada", d: "Cadastramos o seu catálogo, a equipe e a página de vendas com a sua marca e o seu WhatsApp." },
   { t: "Convide os primeiros membros", d: "Cada fornecedor tem cupom de teste de 7 dias e link de cadastro próprio para captar a rede." },
 ];
@@ -42,8 +42,8 @@ const STEPS = [
 export default async function SejaFornecedor() {
   await requireBrandFeature("dropship");
   const c = supportContacts();
-  const contact = c.whatsappUrl ? { href: c.whatsappUrl.replace(/text=.*$/, `text=${encodeURIComponent("Olá! Quero ser fornecedor SuperDrop.")}`), external: true } : c.email ? { href: `mailto:${c.email}?subject=${encodeURIComponent("Quero ser fornecedor SuperDrop")}`, external: false } : null;
-  const foto = formatosDisponiveis("superdrop", "sd-seja-fornecedor").length > 0;
+  const contact = c.whatsappUrl ? { href: c.whatsappUrl.replace(/text=.*$/, `text=${encodeURIComponent("Olá! Quero ser fornecedor NextLevel.")}`), external: true } : c.email ? { href: `mailto:${c.email}?subject=${encodeURIComponent("Quero ser fornecedor NextLevel")}`, external: false } : null;
+  const foto = formatosDisponiveis("commerce", "sd-seja-fornecedor").length > 0;
   return (
     <>
       <section className="relative overflow-hidden bg-band text-band-foreground">
@@ -53,14 +53,14 @@ export default async function SejaFornecedor() {
           <div>
           <span className="inline-flex rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-xs font-semibold text-reflection">Para quem produz, importa ou distribui</span>
           <h1 className="nl-display mt-5 max-w-4xl">Transforme o seu catálogo em uma rede de lojas que vende todo dia.</h1>
-          <p className="mt-5 max-w-2xl text-lg leading-relaxed text-band-muted">A SuperDrop entrega a plataforma completa para você operar como fornecedor: lojas dos seus membros, expedição organizada, carteira por Pix e receita recorrente sobre cada pedido. Você foca no produto; o sistema cuida do resto.</p>
+          <p className="mt-5 max-w-2xl text-lg leading-relaxed text-band-muted">A NextLevel entrega a plataforma completa para você operar como fornecedor: lojas dos seus membros, expedição organizada, carteira por Pix e receita recorrente sobre cada pedido. Você foca no produto; o sistema cuida do resto.</p>
           <div className="mt-8 flex flex-wrap gap-3">
             {contact ? <a href={contact.href} target={contact.external ? "_blank" : undefined} rel="noreferrer" className={`${btn} bg-primary text-primary-foreground hover:bg-primary focus-visible:outline-band-foreground`}>Quero ser fornecedor <ArrowRight className="size-5" aria-hidden /></a> : null}
             <a href="#modelos" className={`${btn} border border-band-foreground/30 hover:bg-band-foreground/10 focus-visible:outline-band-foreground`}>Ver os modelos e valores</a>
           </div>
           <p className="mt-4 text-sm text-band-muted">Fornecedores no lançamento: Alpha Outfit e MantosShop · sem taxa por pedido nos primeiros 15 dias</p>
           </div>
-          {foto ? <FotoOpcional marca="superdrop" nome="sd-seja-fornecedor" alt="Corredor do estoque de um fornecedor de moda, com peças dobradas nas prateleiras e um carrinho, na luz da manhã." priority className="!rounded-2xl" /> : null}
+          {foto ? <FotoOpcional marca="commerce" nome="sd-seja-fornecedor" alt="Corredor do estoque de um fornecedor de moda, com peças dobradas nas prateleiras e um carrinho, na luz da manhã." priority className="!rounded-2xl" /> : null}
           </div>
           <Reveal className="relative mx-auto mt-14 max-w-5xl"><LiveConveyor /></Reveal>
         </div>
@@ -112,7 +112,7 @@ export default async function SejaFornecedor() {
         </div>
       </section>
 
-      <BlocoEquipe lugar="seja-fornecedor" className="bg-canvas" contatos mensagem="Olá! Quero ser fornecedor do SuperDrop." />
+      <BlocoEquipe lugar="seja-fornecedor" className="bg-canvas" contatos mensagem="Olá! Quero ser fornecedor da NextLevel." />
 
       <section className="bg-band py-20 text-band-foreground">
         <div className="mx-auto flex max-w-6xl flex-col items-start gap-6 px-4 md:flex-row md:items-center md:justify-between">
